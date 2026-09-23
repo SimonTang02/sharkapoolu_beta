@@ -1,0 +1,235 @@
+{
+  "portals": {
+    "session_audit": {"concurrency": 4, "timeout_ms": 20000},
+    "company_profiles": [
+      {
+        "id": "mps_workday",
+        "priority": 100,
+        "adapter": "workday",
+        "company_patterns": ["^Monolithic Power Systems$", "^MPS$"],
+        "rules": {
+          "work_experience_label": "Professional Experience",
+          "voluntary_disclosures": {"gender": "omit", "terms": "required"},
+          "language_scale": {
+            "Native": "5 - Fluent",
+            "Fluent": "5 - Fluent",
+            "Professional Working Proficiency": "4 - Advanced"
+          },
+          "unsupported_language_options": ["Cantonese"],
+          "cover_letter_upload": false
+        }
+      },
+      {
+        "id": "nvidia_workday",
+        "priority": 100,
+        "adapter": "workday",
+        "company_patterns": ["^NVIDIA$"],
+        "rules": {
+          "voluntary_disclosures": {"gender": "required", "terms": "required"},
+          "action_timeout_ms": 6000,
+          "screenshot_timeout_ms": 15000,
+          "phone_number_format": "grouped_4",
+          "application_questions": {
+            "manual_review_questions": [
+              "Did you attend an NVIDIA university event in the past 3 months?"
+            ]
+          },
+          "cover_letter_upload": true
+        }
+      },
+      {
+        "id": "amd_campus_icims",
+        "priority": 100,
+        "adapter": "amd_icims",
+        "company_patterns": ["^AMD$"],
+        "rules": {"privacy_statement": "required", "human_captcha": true}
+      },
+      {
+        "id": "cambricon_moka",
+        "priority": 100,
+        "adapter": "moka",
+        "company_patterns": ["^Cambricon$", "寒武纪"],
+        "rules": {
+          "locale": "zh-CN",
+          "supported_phone_country_codes": ["+86"],
+          "incompatible_phone_policy": "fill_other_fields_and_stop_before_preview"
+        }
+      },
+      {
+        "id": "ti_oracle",
+        "priority": 100,
+        "adapter": "ti_oracle",
+        "company_patterns": ["Texas Instruments", "^TI$"],
+        "rules": {"resume_and_cover_letter": true}
+      }
+    ],
+    "adapters": [
+      {
+        "id": "handshake",
+        "priority": 60,
+        "platforms": ["handshake"],
+        "host_suffixes": ["upenn.joinhandshake.com", "app.joinhandshake.com"],
+        "dispatchable": false,
+        "session_probe": {"kind": "fixed_url", "url": "https://upenn.joinhandshake.com/job-search", "scope": "UPenn Handshake"},
+        "supports_draft": false
+      },
+      {
+        "id": "amd_icims",
+        "priority": 100,
+        "company_patterns": ["^AMD$"],
+        "host_suffixes": ["careers.amd.com", "campus-amd.icims.com", "global-external-amd.icims.com"],
+        "script": "application_bot/amd_icims.py",
+        "env_option": "--env",
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_template", "template": "https://campus-amd.icims.com/jobs/{external_id}/login"},
+        "supports_draft": false
+      },
+      {
+        "id": "infineon_eightfold",
+        "priority": 95,
+        "company_patterns": ["Infineon"],
+        "platforms": ["eightfold"],
+        "host_suffixes": ["jobs.infineon.com"],
+        "script": "application_bot/infineon.py",
+        "env_option": "--env",
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "workday",
+        "priority": 80,
+        "platforms": ["workday"],
+        "host_suffixes": ["myworkdayjobs.com"],
+        "script": "application_bot/cli.py",
+        "subcommand": "workday-preview",
+        "env_option": "--env-file",
+        "default_args": ["--start-application", "--advance-to-review", "--save-draft"],
+        "timeout_seconds": 420,
+        "session_probe": {"kind": "source_template", "template": "{host}/en-US/{site}/userHome", "scope": "{host}/{site}"},
+        "supports_draft": true
+      },
+      {
+        "id": "eightfold",
+        "priority": 70,
+        "platforms": ["eightfold"],
+        "host_suffixes": ["careers.qualcomm.com", "careers.micron.com"],
+        "script": "application_bot/eightfold.py",
+        "env_option": "--env",
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "ti_oracle",
+        "priority": 70,
+        "platforms": ["oracle_candidate_experience"],
+        "company_patterns": ["Texas Instruments"],
+        "host_suffixes": ["careers.ti.com"],
+        "script": "application_bot/ti_oracle.py",
+        "env_option": "--env",
+        "default_args": ["--replace-documents", "--fill-form"],
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "mediatek",
+        "priority": 70,
+        "platforms": ["mediatek"],
+        "host_suffixes": ["careers.mediatek.com"],
+        "script": "application_bot/mediatek_profile.py",
+        "dispatchable": false,
+        "session_probe": {"kind": "fixed_url", "url": "https://careers.mediatek.com/zh-cn/dashboard/my-resume"},
+        "supports_draft": false
+      },
+      {
+        "id": "hkstp",
+        "priority": 65,
+        "host_suffixes": ["talentjobseeker.hkstp.org", "hkstp.org", "b2clogin.com"],
+        "script": "application_bot/hkstp.py",
+        "env_option": "--env",
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": true
+      },
+      {
+        "id": "jobsdb",
+        "priority": 60,
+        "platforms": ["jobsdb_hk_cdp"],
+        "host_suffixes": ["jobsdb.com"],
+        "dispatchable": false,
+        "session_probe": {"kind": "fixed_url", "url": "https://hk.jobsdb.com/zh"},
+        "supports_draft": false
+      },
+      {
+        "id": "hotjob",
+        "priority": 50,
+        "platforms": ["hotjob"],
+        "host_suffixes": ["hotjob.cn"],
+        "dispatchable": false,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "zhiye",
+        "priority": 50,
+        "platforms": ["zhiye", "zhiye_html"],
+        "host_suffixes": ["zhiye.com"],
+        "dispatchable": false,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "huawei",
+        "priority": 50,
+        "host_suffixes": ["career.huawei.com"],
+        "dispatchable": false,
+        "session_probe": {"kind": "unsupported", "reason": "no stable read-only account endpoint is configured"},
+        "supports_draft": false
+      },
+      {
+        "id": "simplify",
+        "priority": 10,
+        "host_suffixes": ["simplify.jobs"],
+        "dispatchable": false,
+        "session_probe": {"kind": "unsupported", "reason": "browser extension state is audited separately"},
+        "supports_draft": false
+      },
+      {
+        "id": "moka",
+        "priority": 70,
+        "platforms": ["moka_cdp"],
+        "host_suffixes": ["mokahr.com"],
+        "script": "application_bot/moka.py",
+        "env_option": "--env",
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "shixiseng",
+        "priority": 70,
+        "platforms": ["shixiseng_cdp"],
+        "host_suffixes": ["shixiseng.com"],
+        "script": "application_bot/shixiseng.py",
+        "env_option": "--env",
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "apple",
+        "priority": 60,
+        "platforms": ["apple_jobs"],
+        "host_suffixes": ["jobs.apple.com"],
+        "session_probe": {"kind": "unsupported", "reason": "Apple ID state cannot be proven from a job detail without starting an application"},
+        "supports_draft": false
+      },
+      {
+        "id": "generic_icims",
+        "priority": 20,
+        "platforms": ["icims"],
+        "host_suffixes": ["icims.com"],
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "workflows": {
+    "penn_channels_refresh": {
+      "description": "Read Penn campus work, research, events and platform access states without mixing them into enterprise job rankings.",
+      "modules": ["penn_channels"],
+      "continue_on_error": false
+    },
+    "penn_refresh": {
+      "description": "Read Penn Handshake through the existing Chrome login, then rescore and rebuild reports.",
+      "modules": ["scan", "rescore", "scoring_report", "strategy_full", "weekly"],
+      "source_selector": {"include_types": ["handshake"]},
+      "max_workers": 1,
+      "continue_on_error": false
+    },
+    "daily": {
+      "description": "Full daily scan, delta strategy report, intervention report, and rebuilt weekly report.",
+      "modules": ["daily"],
+      "continue_on_error": false
+    },
+    "weekly_only": {
+      "description": "Rebuild the current weekly report from SQLite without network access.",
+      "modules": ["weekly"],
+      "continue_on_error": false
+    },
+    "digest_24h": {
+      "description": "Build or send the 24-hour digest from SQLite without fetching sources.",
+      "modules": ["digest"],
+      "continue_on_error": false
+    },
+    "report_only": {
+      "description": "Rebuild score, campaign, digest, and weekly reports without network access or rescoring.",
+      "modules": ["scoring_report", "strategy_full", "digest", "weekly"],
+      "continue_on_error": false
+    },
+    "http_refresh": {
+      "description": "Run only sources that do not require the Windows CDP browser, then rescore and report.",
+      "modules": ["scan", "rescore", "scoring_report", "strategy_full", "weekly"],
+      "source_selector": {"browser": "http"},
+      "max_workers": 4,
+      "continue_on_error": false
+    },
+    "browser_refresh": {
+      "description": "Run only CDP/browser-backed sources, then rescore and report.",
+      "modules": ["scan", "rescore", "scoring_report", "strategy_full", "weekly"],
+      "source_selector": {"browser": "cdp"},
+      "max_workers": 1,
+      "continue_on_error": false
+    },
+    "score_experiment": {
+      "description": "Evaluate a config overlay in memory without changing stored production scores.",
+      "modules": ["scoring_experiment"],
+      "continue_on_error": false
+    },
+    "login_audit": {
+      "description": "Read-only browser login/session audit.",
+      "modules": ["session_audit"],
+      "continue_on_error": false
+    }
+  },
+  "experiment_tracking": {
+    "write_manifest": true,
+    "include_effective_config_hash": true,
+    "report_limit": 100
+  }
+}

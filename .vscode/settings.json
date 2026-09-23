@@ -1,0 +1,24 @@
+{
+  "latex-workshop.latex.outDir": "%DIR%/../build",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "private-cv-latexmk",
+      "command": "bash",
+      "args": [
+        "%WORKSPACE_FOLDER%/scripts/latexmk_cv.sh",
+        "%DOC%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (private CV workspace)",
+      "tools": [
+        "private-cv-latexmk"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "latexmk (private CV workspace)"
+}

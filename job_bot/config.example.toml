@@ -1,0 +1,25 @@
+[database]
+path = "job_bot/data/jobs.sqlite3"
+
+[resume]
+default_version = "current"
+latex_command = "make current"
+
+[scoring]
+target_keywords = [
+  "RTL",
+  "SystemVerilog",
+  "CPU",
+  "microarchitecture",
+  "computer architecture",
+  "digital design",
+  "verification",
+  "Cocotb",
+  "EDA",
+  "logic synthesis",
+  "memory systems"
+]
+
+[safety]
+auto_submit = false
+require_human_approval = true

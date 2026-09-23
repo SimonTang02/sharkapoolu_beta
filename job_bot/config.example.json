@@ -1,0 +1,73 @@
+{
+  "database": {
+    "path": "private_data/database/jobs.sqlite3"
+  },
+  "scoring": {
+    "target_keywords": [
+      "intern",
+      "RTL",
+      "SystemVerilog",
+      "Verilog",
+      "CPU",
+      "microarchitecture",
+      "computer architecture",
+      "digital design",
+      "verification",
+      "Cocotb",
+      "EDA",
+      "logic synthesis",
+      "memory systems",
+      "VLSI",
+      "semiconductor"
+    ]
+  },
+  "email": {
+    "dry_run": true,
+    "smtp_host": "smtp.example.com",
+    "smtp_port": 587,
+    "starttls": true,
+    "username_env": "SMTP_USERNAME",
+    "password_env": "SMTP_PASSWORD",
+    "from": "jobbot@example.com",
+    "to": [],
+    "to_env": "JOBBOT_EMAIL_TO"
+  },
+  "sources": [
+    {
+      "name": "Example Greenhouse Company",
+      "type": "greenhouse",
+      "board_token": "company_token_here",
+      "company": "Company Name"
+    },
+    {
+      "name": "Example Lever Company",
+      "type": "lever",
+      "company": "company_slug_here",
+      "display_company": "Company Name"
+    },
+    {
+      "name": "Example RSS Feed",
+      "type": "rss",
+      "url": "https://example.com/jobs.rss",
+      "company": "Example",
+      "include_patterns": [
+        "intern|hardware|rtl|verification|cpu|architecture|eda|vlsi"
+      ],
+      "exclude_patterns": [
+        "senior|staff|principal"
+      ]
+    },
+    {
+      "name": "Example HTML Careers Page",
+      "type": "html",
+      "url": "https://example.com/careers",
+      "company": "Example",
+      "include_patterns": [
+        "intern|hardware|rtl|verification|cpu|architecture|eda|vlsi"
+      ],
+      "exclude_patterns": [
+        "senior|staff|principal"
+      ]
+    }
+  ]
+}

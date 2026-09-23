@@ -1,0 +1,22 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cvcompact}[2026/09/20 Readable two-page application resumes]
+% Load after any source-specific section definitions.
+\geometry{left=0.68in,right=0.68in,top=0.55in,bottom=0.55in}
+\setlength{\parskip}{3pt}
+\renewcommand{\namesize}{\LARGE}
+\renewcommand{\nameskip}{\smallskip}
+\renewcommand{\addressskip}{\smallskip}
+\newcommand{\cvneedspace}[1]{\par\begingroup\dimen0=\pagegoal\advance\dimen0 by -\pagetotal\ifdim\dimen0<#1\newpage\fi\endgroup}
+\renewenvironment{rSection}[1]{%
+  \cvneedspace{5\baselineskip}\vspace{5pt}%
+  {\color{CUHKPurple}\bfseries\MakeUppercase{#1}}\par\nobreak\vspace{2pt}\hrule\nobreak\vspace{4pt}%
+  \begin{list}{}{\leftmargin=0pt\topsep=0pt\parsep=0pt\itemsep=0pt}\item[]%
+}{\end{list}\vspace{1pt}}
+\renewenvironment{rSubsection}[4]{%
+  \par\addvspace{5pt}\noindent\begin{minipage}{\linewidth}%
+  {\bfseries #1}\hfill {#2}\par
+  \ifthenelse{\equal{#3}{}}{}{{\itshape #3}\hfill #4\par}%
+  \begin{list}{\textbullet}{\leftmargin=1em\labelsep=0.4em\topsep=2pt\parsep=0pt\itemsep=2pt}%
+}{\end{list}\end{minipage}\par\vspace{3pt}}
+\AtBeginDocument{\hypersetup{hidelinks}\setlength{\bibitemsep}{2pt}}
+\AtEndDocument{\ifnum\value{page}>2\PackageWarningNoLine{cvcompact}{Resume exceeds two pages. Edit content and inspect rendered PDF before upload}\fi}

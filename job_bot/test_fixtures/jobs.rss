@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Fixture Jobs</title>
+    <item>
+      <title>Digital Design Intern - RTL Verification</title>
+      <link>https://example.com/jobs/digital-design-intern</link>
+      <description>SystemVerilog, RTL, CPU microarchitecture, verification, and EDA workflows.</description>
+    </item>
+    <item>
+      <title>Senior Web Backend Engineer</title>
+      <link>https://example.com/jobs/backend-senior</link>
+      <description>Backend services and web APIs.</description>
+    </item>
+  </channel>
+</rss>

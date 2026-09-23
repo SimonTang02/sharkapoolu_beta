@@ -1,0 +1,22 @@
+{
+  "includes": ["../jobbot.json"],
+  "experiment": {
+    "name": "keyword_tuning_example",
+    "hypothesis": "Raise direct RTL/CDC evidence and test a smaller JobsDB page budget."
+  },
+  "patches": [
+    {
+      "path": "scoring.foundation_groups",
+      "match": {"name": "digital RTL design"},
+      "set": {
+        "base_score": 76,
+        "keywords": {"$append": ["clock-domain crossing", "CDC", "AMBA", "AXI"]}
+      }
+    },
+    {
+      "path": "sources",
+      "match": {"name": "JobsDB HK - Electronics Internships"},
+      "set": {"max_pages": 2}
+    }
+  ]
+}

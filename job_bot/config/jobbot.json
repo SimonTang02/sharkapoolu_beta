@@ -1,0 +1,13 @@
+{
+  "config_version": 2,
+  "includes": [
+    "runtime.json",
+    "workflows.json",
+    "sources.json",
+    "scoring.json",
+    "strategy.json",
+    "portals.json",
+    "penn_channels.json",
+    "field_mappings.json"
+  ]
+}

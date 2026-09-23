@@ -1,0 +1,69 @@
+{
+  "strategy": {
+    "name": "2027_cn_hk_campus_and_us_summer",
+    "purpose": "application_eligibility_and_priority",
+    "minimum_score": 58,
+    "direction_priority": [
+      "architecture",
+      "digital_design",
+      "verification",
+      "synthesis_sta",
+      "physical_design",
+      "dft",
+      "eda",
+      "analog_mixed_signal",
+      "hardware_validation"
+    ],
+    "classification_priority": [
+      "dft",
+      "physical_design",
+      "verification",
+      "synthesis_sta",
+      "analog_mixed_signal",
+      "architecture",
+      "digital_design",
+      "eda",
+      "hardware_validation"
+    ],
+    "tier_thresholds": {"A": 85, "B": 68},
+    "stored_score_bonus": {"minimum": 70, "points": 2},
+    "score_modifiers": [
+      {"name": "architecture in title", "points": 4, "scope": "title", "pattern": "architecture|microarchitecture|架构|处理器"},
+      {"name": "digital design in title", "points": 3, "scope": "title", "pattern": "rtl|digital|asic|soc前端|数字芯片"},
+      {"name": "direct implementation evidence", "points": 2, "scope": "all", "pattern": "systemverilog|verilog|cocotb|risc-v|risc v|cpu|gpu"}
+    ],
+    "foundation_overrides": [
+      {"title_pattern": "Hardware(?: Technologies)? Masters Engineering Internships", "foundation": "digital_design", "base_score": 86},
+      {"title_pattern": "2027 Masters Hardware Engineering (?:intern|co-op)", "foundation": "digital_design", "base_score": 84},
+      {"title_pattern": "NVIDIA 2027 Internships: Hardware Engineering", "foundation": "digital_design", "base_score": 86},
+      {"title_pattern": "^DV Intern\\b", "foundation": "verification", "base_score": 84},
+      {"title_pattern": "^PD Intern\\b", "foundation": "physical_design", "base_score": 73}
+    ],
+    "foundations": [
+      {"name": "architecture", "base_score": 96, "keywords": ["computer architecture", "microarchitecture", "gpu architecture", "cpu architecture", "soc architecture", "processor architecture", "performance modeling", "架构", "微架构", "处理器设计"]},
+      {"name": "digital_design", "base_score": 92, "keywords": ["digital design", "digital ic", "asic design", "rtl design", "logic design", "soc front", "front-end design", "frontend design", "数字芯片设计", "数字ic设计", "soc前端", "soc开发", "前端设计", "芯片设计工程师", "rtl", "asic"]},
+      {"name": "verification", "base_score": 84, "keywords": ["design verification", "hardware verification", "rtl verification", "formal verification", "pre-silicon verification", "uvm", "验证工程师", "芯片验证", "逻辑验证", "原型验证", "verification"]},
+      {"name": "synthesis_sta", "base_score": 79, "keywords": ["logic synthesis", "synthesis", "static timing", "sta", "timing closure", "lint", "clock domain crossing", "cdc", "逻辑综合", "时序", "芯片中端"]},
+      {"name": "physical_design", "base_score": 73, "keywords": ["physical design", "place and route", "place & route", "p&r", "backend", "back-end", "物理设计", "数字后端", "芯片后端"]},
+      {"name": "dft", "base_score": 70, "keywords": ["design for test", "testability", "scan insertion", "dft", "可测性"]},
+      {"name": "eda", "base_score": 68, "keywords": ["electronic design automation", "eda", "cad engineer", "circuit simulation"]},
+      {"name": "analog_mixed_signal", "base_score": 58, "keywords": ["analog design", "mixed signal", "mixed-signal", "模拟芯片", "模拟ic", "定制电路"]},
+      {"name": "hardware_validation", "base_score": 52, "keywords": ["hardware", "silicon validation", "post-silicon", "fpga", "circuit design"]}
+    ],
+    "patterns": {
+      "china_hk": "china|hong kong|中国|香港|北京|上海|深圳|苏州|杭州|南京|成都|西安|武汉|合肥|天津|广州|东莞|厦门|珠海|无锡",
+      "united_states": "united states|\\bus\\b|u\\.s\\.|california|texas|massachusetts|colorado|oregon|washington|arizona|new york|new jersey|pennsylvania|north carolina|vermont|maine|santa clara|san jose|austin|hillsboro|boxborough|fort collins|longmont|rochester|secaucus|irvine",
+      "internship": "\\bintern(?:ship)?s?\\b|\\bco-?op\\b|实习|實習",
+      "explicit_2027": "2027|27届|2027届|2027 届",
+      "campus": "new college grad|new grad|graduate|campus|应届|應屆|校招|校园招聘|校园",
+      "summer": "summer(?:/fall)?\\s*2027|2027\\s*summer|2027 internships?",
+      "spring_winter_only": "winter/spring 2027|spring 2027",
+      "senior": "\\b(?:senior|staff|principal|manager|director|lead)\\b|资深|高级|主管|经理|负责人|专家",
+      "off_direction": "sales|marketing|account manager|recruit|finance|software test|data analyst|^software engineering|developer technology|autonomous vehicles and robotics|solution architect|解决方案架构|编译|compiler|芯片软件|开源框架|mechanical|thermal|packag(?:e|ing)|product development|fae|现场应用|销售|市场|财务|封装工艺"
+    },
+    "tracks": {
+      "cn_hk_2027_campus": {"enabled": true, "role_kinds": ["full_time", "unknown"]},
+      "us_summer_2027_internship": {"enabled": true, "role_kinds": ["internship"]}
+    }
+  }
+}

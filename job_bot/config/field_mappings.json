@@ -1,0 +1,27 @@
+{
+  "field_mappings": {
+    "identity": {
+      "first_name": "fields.first_name",
+      "last_name": "fields.last_name",
+      "preferred_name": "fields.preferred_name",
+      "email": "fields.email",
+      "phone": "fields.phone",
+      "linkedin_url": "fields.linkedin_url"
+    },
+    "documents": {
+      "resume": "documents.resume_path",
+      "cover_letter": "documents.cover_letter_path"
+    },
+    "regional_policy": {
+      "mainland_china": {"name_style": "chinese_if_available"},
+      "hong_kong": {"name_style": "english", "phone_region": "+852"},
+      "united_states": {"name_style": "english"}
+    },
+    "safety": {
+      "fill_only_authorized_values": true,
+      "never_infer_missing_legal_answers": true,
+      "allow_submit": false,
+      "capture_review_artifact": true
+    }
+  }
+}

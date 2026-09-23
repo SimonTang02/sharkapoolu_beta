@@ -1,0 +1,240 @@
+{
+  "penn_channels": {
+    "enabled": true,
+    "channels": [
+      {
+        "id": "workday",
+        "name": "Workday@Penn Student Employment",
+        "kind": "campus_job",
+        "entry_url": "https://srfs.upenn.edu/student-employment/job-search",
+        "entry_link": "Search for Jobs",
+        "hosts": [
+          "myworkday.com",
+          "upenn.edu"
+        ],
+        "note": "Student recruiting, not Penn staff careers. Keep work-study eligibility explicit; do not apply enterprise IC filters."
+      },
+      {
+        "id": "engineering",
+        "name": "Penn Engineering recruiting events",
+        "kind": "event",
+        "entry_url": "https://careerservices.upenn.edu/channels/engineering/",
+        "hosts": [
+          "careerservices.upenn.edu"
+        ],
+        "link_pattern": "/events/\\d{4}/\\d{2}/\\d{2}/[^/]+",
+        "public": true
+      },
+      {
+        "id": "engineering_hub",
+        "name": "Penn Engineering Career Development Hub",
+        "kind": "resource",
+        "entry_url": "https://academics.engineering.upenn.edu/engagement/career-development-homepage/",
+        "hosts": [
+          "upenn.edu"
+        ],
+        "public": false,
+        "official_reference": "https://academics.engineering.upenn.edu/student-career-development/"
+      },
+      {
+        "id": "interstride",
+        "name": "Interstride Penn",
+        "kind": "external_job",
+        "entry_url": "https://student.interstride.com/",
+        "official_reference": "https://www.interstride.com/upenn/",
+        "hosts": [
+          "interstride.com"
+        ],
+        "note": "Student login required; authenticated job-list mapping must be verified before enabling ingestion."
+      },
+      {
+        "id": "careershift",
+        "name": "CareerShift Penn",
+        "kind": "external_job",
+        "entry_url": "https://upenn.careershift.com/signin/upenn",
+        "hosts": [
+          "careershift.com"
+        ],
+        "note": "Login or first-time registration may be required."
+      },
+      {
+        "id": "goinglobal",
+        "name": "GoinGlobal Penn",
+        "kind": "external_job",
+        "entry_url": "https://online.goinglobal.com/user/login",
+        "hosts": [
+          "goinglobal.com"
+        ],
+        "note": "Paused at user request; interpreted \"coin\" platform as GoinGlobal. Skip reads and login-page reopening until resumed.",
+        "official_reference": "https://careerservices.upenn.edu/resources/goinglobal/",
+        "enabled": false
+      },
+      {
+        "id": "mypenn",
+        "name": "MyPenn alumni networking",
+        "kind": "network",
+        "entry_url": "https://mypenn.upenn.edu/",
+        "hosts": [
+          "mypenn.upenn.edu"
+        ],
+        "note": "Navigation and login status only. Do not harvest alumni profiles or send outreach."
+      },
+      {
+        "id": "curf",
+        "name": "CURF Research Directory",
+        "kind": "research_lead",
+        "entry_url": "https://curf.upenn.edu/undergraduate-research/research-directory",
+        "hosts": [
+          "curf.upenn.edu"
+        ],
+        "link_pattern": "^https://curf\\.upenn\\.edu/rd/[^/]+",
+        "note": "Primarily undergraduate research leads; listing does not prove pay, current availability, or master's eligibility. Current visible page only."
+      }
+    ],
+    "campus_employment": {
+      "enabled": true,
+      "scenario_hourly_usd": [
+        15,
+        18,
+        20
+      ],
+      "leads": [
+        {
+          "title": "Intramural Sports Official — Penn Recreation",
+          "kind": "campus_job",
+          "url": "https://recreation.upenn.edu/sports/2021/8/26/structured-sports-employment-opportunities.aspx",
+          "checked_at": "2026-09-18",
+          "status": "常设招聘介绍；当前空缺/入职日期待确认",
+          "weekly_hours": [
+            10,
+            15
+          ],
+          "hours_basis": "官网通常工时，非保证排班",
+          "eligibility": "无需 Work-Study；无需既往经验；研究生资格待确认",
+          "next_step": "确认当前空缺、时薪、最早入职日期和雇佣证明",
+          "priority": 1
+        },
+        {
+          "title": "Gameday Operations Assistant — Penn Recreation",
+          "kind": "campus_job",
+          "url": "https://recreation.upenn.edu/sports/2021/8/26/structured-sports-employment-opportunities.aspx",
+          "checked_at": "2026-09-18",
+          "status": "常设招聘介绍；当前空缺/入职日期待确认",
+          "weekly_hours": [
+            10,
+            15
+          ],
+          "hours_basis": "官网通常工时，非保证排班",
+          "eligibility": "Work-Study / 研究生资格待确认",
+          "next_step": "确认非 Work-Study 可申请、时薪及入职日期",
+          "priority": 2
+        },
+        {
+          "title": "JR00108489 Delivery & Operations — Penn Student Agencies",
+          "kind": "campus_job",
+          "url": "https://psa.universitylife.upenn.edu/join/",
+          "checked_at": "2026-09-18",
+          "status": "历史参考：页面标注 August 2025 start；当前招聘待 Workday 复核",
+          "hourly_usd": [
+            18,
+            18
+          ],
+          "weekly_hours": [
+            5,
+            10
+          ],
+          "hours_basis": "官网历史岗位工时，当前条件待复核",
+          "pay_basis": "官网 2025 招聘报价，非已确认的 2026 报价",
+          "eligibility": "Student Worker；PSA 接受研究生及非 Work-Study，岗位细则待复核",
+          "next_step": "Workday 搜索 JR00108489；确认仍开放及最新待遇",
+          "priority": 3
+        },
+        {
+          "title": "JR00108497 Photographer — Penn Student Agencies",
+          "kind": "campus_job",
+          "url": "https://psa.universitylife.upenn.edu/join/",
+          "checked_at": "2026-09-18",
+          "status": "历史参考：页面标注 August 2025 start；当前招聘待 Workday 复核",
+          "hourly_usd": [
+            20,
+            20
+          ],
+          "weekly_hours": [
+            5,
+            10
+          ],
+          "hours_basis": "官网历史岗位工时，当前条件待复核",
+          "pay_basis": "官网 2025 招聘报价，非已确认的 2026 报价",
+          "eligibility": "Student Worker；摄影技能/作品要求待确认",
+          "next_step": "有摄影经验再核验 JR00108497；不作为快速入职首选",
+          "priority": 4
+        },
+        {
+          "title": "Graduate Student Center Fellow",
+          "url": "https://gsc.upenn.edu/about/grad-center-team/join-our-team",
+          "hourly_usd": [
+            20,
+            20
+          ],
+          "weekly_hours": [
+            8,
+            12
+          ],
+          "status": "2026–27 待遇已公布；年度招聘为主，学期中空缺需确认",
+          "pay_basis": "当前官网报价",
+          "hours_basis": "官网平均每周工时",
+          "eligibility": "全日制研究生；申请时已在 Penn 完成至少一学期；8月培训已过",
+          "next_step": "先核对已完成一学期条件，再确认是否补招；首学期学生暂不优先",
+          "priority": 5,
+          "kind": "campus_job",
+          "checked_at": "2026-09-18"
+        },
+        {
+          "title": "Penn Libraries 学生助理（流通台／技术支持等）",
+          "url": "https://www.library.upenn.edu/news/student-jobs",
+          "status": "官方招聘指南；全年可能补招，非具体空缺",
+          "eligibility": "一般无需专门知识；具体岗位 Work-Study 和研究生资格待 Workday 确认",
+          "next_step": "Workday 搜索 Library；优先非 Work-Study 且可近期开始的岗位",
+          "priority": 2,
+          "kind": "campus_job",
+          "checked_at": "2026-09-18"
+        },
+        {
+          "title": "Recreation Operations Assistant — Pottruck",
+          "url": "https://recreation.upenn.edu/sports/2019/9/25/employment-opportunities.aspx",
+          "status": "官网保留学生申请入口；当前空缺待 Workday 核验",
+          "eligibility": "客户服务、基本电脑知识；夜间/周末排班；需长时间走动及搬运最高50磅",
+          "next_step": "读取 Workday 学生岗位详情，确认时薪、排班及空缺",
+          "priority": 3,
+          "kind": "campus_job",
+          "checked_at": "2026-09-18"
+        },
+        {
+          "title": "Combining Epidemiology & Architecture",
+          "url": "https://curf.upenn.edu/rd/combining-epidemiology-architecture",
+          "kind": "paid_research_lead",
+          "checked_at": "2026-09-18",
+          "status": "CURF Paid=Yes，含秋季；并非已确认的有薪空缺",
+          "eligibility": "目录偏本科生；研究生能否申请、当前空缺和雇主须确认",
+          "next_step": "先确认硕士资格、当前经费、时薪与最早开始日期，再考虑申请",
+          "priority": 6
+        },
+        {
+          "title": "Basic science research on obesity and nutritional neuroscience",
+          "url": "https://curf.upenn.edu/rd/basic-science-research-obesity-and-nutritional-neuroscience",
+          "kind": "paid_research_lead",
+          "checked_at": "2026-09-18",
+          "status": "CURF Paid=Yes，含秋季；并非已确认的有薪空缺",
+          "eligibility": "目录偏本科生；研究生能否申请、当前空缺和雇主须确认",
+          "next_step": "先确认硕士资格、当前经费、时薪与最早开始日期，再考虑申请",
+          "priority": 6,
+          "weekly_hours": [
+            15,
+            15
+          ],
+          "hours_basis": "项目说明约15小时/周；排班待确认"
+        }
+      ]
+    }
+  }
+}

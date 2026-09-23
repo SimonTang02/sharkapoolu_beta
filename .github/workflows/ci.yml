@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit publishable files
+        run: python3 scripts/audit_public_repo.py
+      - name: Run unit tests
+        run: python3 -m unittest discover -s . -p 'test_*.py'
+      - name: Validate shared configuration
+        run: python3 job_bot/config_inspect.py --config job_bot/config.china_hk_ic_foreign.json

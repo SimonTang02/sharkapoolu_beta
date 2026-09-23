@@ -1,0 +1,75 @@
+{
+  "database": {
+    "path": "private_data/database/china_hk_ic_foreign.sqlite3"
+  },
+  "scan": {
+    "max_workers": 8,
+    "retry_attempts": 2,
+    "retry_backoff_seconds": 1,
+    "lifecycle_guard": {
+      "enabled": true,
+      "minimum_items": 1,
+      "minimum_fraction_of_previous": 0.05,
+      "allow_empty": false
+    },
+    "auto_start_windows_chrome": true,
+    "browser_start_wait_seconds": 12
+  },
+  "application_browser": {
+    "mode": "windows_cdp",
+    "auto_submit": false,
+    "local_persistent": {
+      "description": "Launch the original isolated Chromium profile inside WSL"
+    },
+    "windows_cdp": {
+      "url_env": "CHROME_CDP_URL",
+      "url": "",
+      "description": "Connect through the WSL-only Windows portproxy to the dedicated JobApplyChrome profile"
+    }
+  },
+  "tab_management": {
+    "enabled": true,
+    "max_active_tabs": 15,
+    "auto_adopt_matching_tabs": true,
+    "close_clean_duplicates": true,
+    "close_clean_legacy": false,
+    "preserve_populated_forms": true,
+    "preserve_one_session_anchor_per_tenant": true,
+    "screenshot_before_close": true
+  },
+  "digest": {
+    "include_scan_errors": true,
+    "max_items": 0,
+    "min_score": 8,
+    "deduplicate_similar": true,
+    "title_match_bypass_score": 40,
+    "include_title_patterns": [
+      "RTL|SystemVerilog|Verilog|Digital|Analog|Mixed.Signal|ASIC|SoC|CPU|GPU|Processor|Architecture|Verification|Validation|DFT|Physical Design|Layout|Circuit|\\bIC\\b|FPGA|Hardware|Firmware|Embedded|Memory|SRAM|DRAM|NAND|EDA|CAD|Synthesis|Electrical|Electronic|Semiconductor|Silicon|芯片|集成电路|数字|模拟|电路|架构|处理器|验证|测试|后端|版图|硬件|嵌入式|存储|半导体"
+    ],
+    "exclude_title_patterns": [
+      "\\b(?:senior|staff|principal|director|manager|lead|leader|supervisor|technician|expert|architect|sr\\.?)\\b|equipment|photolithography|process development|process integration|manufacturing|SMT|assembly|solutions architect|account executive|customer quality|finance|accountant|purchasing|marketing|sales|human resources|company limited|高级|资深|主管|经理|总监|专家|首席|架构师|设备|光刻|工艺开发|工艺整合|制造|装配|财务|会计|采购|销售|市场|人力资源"
+    ]
+  },
+  "reporting": {
+    "timezone": "Asia/Shanghai",
+    "weekly": {
+      "enabled": true,
+      "generate_after_daily": true,
+      "week_start": "monday",
+      "max_items_per_section": 25,
+      "include_session_audit": true,
+      "write_latest_pointer": true
+    }
+  },
+  "email": {
+    "dry_run": true,
+    "smtp_host": "smtp.example.com",
+    "smtp_port": 587,
+    "starttls": true,
+    "username_env": "SMTP_USERNAME",
+    "password_env": "SMTP_PASSWORD",
+    "from": "jobbot@example.com",
+    "to": [],
+    "to_env": "JOBBOT_EMAIL_TO"
+  }
+}

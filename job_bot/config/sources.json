@@ -1,0 +1,1813 @@
+{
+  "sources": [
+    {
+      "name": "NVIDIA Greater China Hardware",
+      "type": "workday",
+      "host": "https://nvidia.wd5.myworkdayjobs.com",
+      "tenant": "nvidia",
+      "site": "NVIDIAExternalCareerSite",
+      "company": "NVIDIA",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "ASIC China",
+        "RTL China",
+        "Verification China",
+        "Physical Design China",
+        "SoC China",
+        "Hardware Intern China",
+        "Shanghai ASIC",
+        "Shenzhen Hardware"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|Hongkong|香港|中国",
+        "ASIC|RTL|SoC|GPU|CPU|Verification|Physical Design|STA|DFT|Hardware|IC|Silicon|PCB"
+      ],
+      "official_reference": "https://jobs.nvidia.com/"
+    },
+    {
+      "name": "AMD Greater China Engineering",
+      "type": "jibe",
+      "api_url": "https://careers.amd.com/api/jobs",
+      "params": {
+        "country": "China|Hong Kong|Taiwan",
+        "sortBy": "relevance",
+        "descending": "false",
+        "internal": "false"
+      },
+      "job_url_template": "https://careers.amd.com/careers-home/jobs/{slug}",
+      "page_size": 10,
+      "max_pages": 20,
+      "company": "AMD",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Greater China|Hong Kong|Shanghai|Shenzhen|Beijing|香港|中国",
+        "ASIC|RTL|SoC|CPU|GPU|Verification|Physical Design|Hardware|Silicon|IC"
+      ],
+      "official_reference": "https://careers.amd.com/careers-home/"
+    },
+    {
+      "name": "Qualcomm China Careers",
+      "type": "eightfold",
+      "host": "https://careers.qualcomm.com",
+      "domain": "qualcomm.com",
+      "company": "Qualcomm",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "Hong Kong"
+      ],
+      "search_texts": [
+        ""
+      ],
+      "max_pages": 30,
+      "request_delay_seconds": 0.5,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|Chengdu|Guangzhou|Foshan|香港|中国",
+        "ASIC|RTL|SoC|CPU|GPU|Verification|Hardware|Silicon|IC|Analog|Digital"
+      ],
+      "official_reference": "https://www.qualcomm.com/company/careers"
+    },
+    {
+      "name": "Qualcomm APAC Internship",
+      "type": "eightfold",
+      "host": "https://careers.qualcomm.com",
+      "domain": "qualcomm.com",
+      "company": "Qualcomm",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "Hong Kong"
+      ],
+      "search_texts": [
+        "intern"
+      ],
+      "max_pages": 10,
+      "request_delay_seconds": 0.5,
+      "role_kinds": [
+        "internship",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|APAC|Intern|Internship|Early",
+        "ASIC|RTL|SoC|CPU|GPU|Verification|Hardware|Silicon|IC|Analog|Digital"
+      ],
+      "official_reference": "https://www.qualcomm.com/company/careers/internships-and-early-in-career-opportunities/apac"
+    },
+    {
+      "name": "Apple China Silicon Technologies",
+      "type": "apple_jobs",
+      "url": "https://jobs.apple.com/en-us/search?location=china-CHNC&team=silicon-technologies-HRDWR-SILT",
+      "company": "Apple",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Shanghai|Shenzhen|Beijing|Suzhou|香港|Hong Kong",
+        "Silicon|ASIC|SoC|CPU|GPU|DRAM|RTL|Verification|Validation|Physical Design|Hardware|IC|Analog|Digital"
+      ],
+      "official_reference": "https://jobs.apple.com/en-us/search?location=china-CHNC&team=silicon-technologies-HRDWR-SILT"
+    },
+    {
+      "name": "NXP Greater China IC Design",
+      "type": "workday",
+      "host": "https://nxp.wd3.myworkdayjobs.com",
+      "tenant": "nxp",
+      "site": "careers",
+      "company": "NXP Semiconductors",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "Analog China",
+        "Digital China",
+        "IC Design China",
+        "Mixed Signal China",
+        "Campus China",
+        "Intern China",
+        "Shanghai Analog",
+        "Suzhou Analog"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Suzhou|Tianjin|Shenzhen|Wuhan|Xi'an|Xian|香港|中国",
+        "Analog|Mixed Signal|Mixed-Signal|Digital|IC Design|SoC|RTL|Verification|Layout|Cadence|SPICE"
+      ],
+      "official_reference": "https://www.nxp.com/company/about-nxp/careers%3ACAREERS"
+    },
+    {
+      "name": "Analog Devices China Careers",
+      "type": "workday",
+      "host": "https://analogdevices.wd1.myworkdayjobs.com",
+      "tenant": "analogdevices",
+      "site": "External",
+      "company": "Analog Devices",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "Analog China",
+        "Mixed Signal China",
+        "IC Design China",
+        "Verification China",
+        "Digital China",
+        "Intern China",
+        "Shanghai Hardware"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|香港|中国",
+        "Analog|Mixed Signal|Mixed-Signal|IC|Circuit|Power|ADC|DAC|Digital|Verification"
+      ],
+      "official_reference": "https://www.analog.com/en/careers/career-opportunities.html"
+    },
+    {
+      "name": "Infineon Greater China Careers",
+      "type": "eightfold",
+      "host": "https://jobs.infineon.com",
+      "domain": "infineon.com",
+      "company": "Infineon Technologies",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "Hong Kong"
+      ],
+      "search_texts": [
+        "analog",
+        "digital",
+        "IC design",
+        "mixed signal",
+        "verification",
+        "hardware",
+        "intern"
+      ],
+      "max_pages": 10,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "Hong Kong|Mainland China|Beijing|Wuxi|Shanghai|Shenzhen|香港|中国",
+        "Analog|Digital|IC|Semiconductor|Power|Mixed Signal|Verification|Hardware"
+      ],
+      "official_reference": "https://www.infineon.com/careers/our-locations-greater-china"
+    },
+    {
+      "name": "STMicroelectronics China Careers",
+      "type": "html",
+      "url": "https://www.st.com/content/st_com/en/about/careers/life-at-st.html",
+      "company": "STMicroelectronics",
+      "source_category": "official_company_search",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|香港|中国",
+        "Analog|Digital|IC|Semiconductor|MCU|SoC|Verification|Hardware"
+      ],
+      "official_reference": "https://www.st.com/content/st_com/en/about/careers/life-at-st.html"
+    },
+    {
+      "name": "Texas Instruments China Careers",
+      "type": "oracle_ce",
+      "api_host": "https://edbz.fa.us2.oraclecloud.com",
+      "public_host": "https://careers.ti.com",
+      "site": "CX",
+      "language": "en",
+      "company": "Texas Instruments",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "Hong Kong"
+      ],
+      "search_texts": [
+        "analog",
+        "digital",
+        "IC design",
+        "mixed signal",
+        "power",
+        "verification",
+        "hardware",
+        "intern"
+      ],
+      "page_size": 25,
+      "max_pages": 5,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Shanghai|Shenzhen|Hong Kong|香港|中国",
+        "Analog|Digital|IC Design|Mixed Signal|Power|PMIC|SPICE|Cadence"
+      ],
+      "official_reference": "https://www.ti.com.cn/general/cn/docs/gencontent.tsp?contentId=73304"
+    },
+    {
+      "name": "Broadcom China IC Design",
+      "type": "workday",
+      "host": "https://broadcom.wd1.myworkdayjobs.com",
+      "tenant": "broadcom",
+      "site": "External_Career",
+      "company": "Broadcom",
+      "source_category": "official_company_search",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; 26fall-intern-job-monitor/0.1)"
+      },
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "IC Design China",
+        "ASIC China",
+        "RTL China",
+        "Shanghai IC",
+        "Physical Design China",
+        "Intern China"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|Zhangjiang|香港|中国",
+        "IC Design|ASIC|RTL|Synthesis|Timing|Physical Design|STA|DFT|Verification|SoC|Analog|Digital"
+      ],
+      "official_reference": "https://www.broadcom.com/company/careers"
+    },
+    {
+      "name": "Marvell China Careers",
+      "type": "workday",
+      "host": "https://marvell.wd1.myworkdayjobs.com",
+      "tenant": "marvell",
+      "site": "MarvellCareers",
+      "company": "Marvell",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "ASIC China",
+        "IC Design China",
+        "Verification China",
+        "Physical Design China",
+        "Hardware China",
+        "Intern China",
+        "Shanghai Silicon"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|香港|中国",
+        "Design Engineering|Physical Design|Hardware|ASIC|RTL|SoC|Verification|Silicon|IC"
+      ],
+      "official_reference": "https://cn.marvell.com/company/careers.html"
+    },
+    {
+      "name": "Microchip Hong Kong and China",
+      "type": "workday",
+      "host": "https://microchiphr.wd5.myworkdayjobs.com",
+      "tenant": "microchiphr",
+      "site": "external",
+      "company": "Microchip Technology",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "China analog",
+        "Hong Kong analog",
+        "MCU China",
+        "IC China",
+        "Design China",
+        "Intern China"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Hangzhou|Shenzhen|Kowloon|香港|中国",
+        "Analog|MCU|Wireless|Digital|IC|Circuit|Semiconductor|Verification|Hardware"
+      ],
+      "official_reference": "https://www.microchip.com/en-us/about/careers/microchip-around-the-world/asia-pacific/hong-kong"
+    },
+    {
+      "name": "Qorvo China Careers",
+      "type": "html",
+      "url": "https://careers.qorvo.com/",
+      "company": "Qorvo",
+      "source_category": "official_company_search",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Shenzhen|Beijing|香港|中国",
+        "RF|Analog|Digital|IC|Semiconductor|Hardware|Design|Verification"
+      ],
+      "official_reference": "https://careers.qorvo.com/"
+    },
+    {
+      "name": "Monolithic Power Systems China Hong Kong",
+      "type": "workday",
+      "host": "https://monolithicpower.wd12.myworkdayjobs.com",
+      "tenant": "monolithicpower",
+      "site": "MPS_Careers",
+      "company": "Monolithic Power Systems",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "search_texts": [
+        "Analog China",
+        "Digital China",
+        "IC Design China",
+        "Mixed Signal China",
+        "Power China",
+        "Hardware China",
+        "Intern China",
+        "Hong Kong Engineering"
+      ],
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|Shanghai|Hangzhou|Chengdu|Shenzhen|香港|中国",
+        "Analog|IC|Mixed Signal|Mixed-Signal|Power|PMIC|LDO|DAC|ADC|Design|Product Engineer"
+      ],
+      "official_reference": "https://www.monolithicpower.com/en/about-mps/careers/job-listings.html"
+    },
+    {
+      "name": "Synopsys China EDA and IP",
+      "type": "html",
+      "url": "https://careers.synopsys.com/location/china-jobs/44408/1814991/2/3",
+      "company": "Synopsys",
+      "source_category": "official_company_search",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Shanghai|Shenzhen|Beijing|Wuhan|Hong Kong|香港|中国",
+        "Analog Design|R&D Engineering|Applications Engineering|EDA|IP|Verification|Digital Design|FPGA|IC Design"
+      ],
+      "official_reference": "https://careers.synopsys.com/location/china-jobs/44408/1814991/2/3"
+    },
+    {
+      "name": "Synopsys Global Internships",
+      "type": "html",
+      "url": "https://careers.synopsys.com/search-jobs/Hire%20Type%3A%20Intern/44408/1",
+      "company": "Synopsys",
+      "source_category": "official_company_search",
+      "role_kinds": [
+        "internship",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Asia-Pacific|Intern|Internship|Student",
+        "Design Verification|IC Design|FPGA|Digital Design|EDA|Semiconductor IP|Static Analysis"
+      ],
+      "official_reference": "https://www.synopsys.com/careers/internships.html"
+    },
+    {
+      "name": "Cadence China Workday Careers",
+      "type": "workday",
+      "host": "https://cadence.wd1.myworkdayjobs.com",
+      "tenant": "cadence",
+      "site": "external_careers",
+      "company": "Cadence",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "China verification",
+        "China design engineer",
+        "Shanghai verification",
+        "EDA China",
+        "Intern China",
+        "Hardware China"
+      ],
+      "include_patterns": [
+        "China|Shanghai|Beijing|Shenzhen|Hong Kong|香港|中国",
+        "VLSI|SoC|IP|RTL|UVM|SystemVerilog|Verification|EDA|Hardware|Design Engineer"
+      ],
+      "official_reference": "https://www.cadence.com/zh_CN/home/company/careers/interns-and-new-grads.html"
+    },
+    {
+      "name": "Siemens EDA China Careers",
+      "type": "jobsyn",
+      "api_url": "https://prod-search-api.jobsyn.org/api/v1/solr/search",
+      "public_host": "https://jobs.sw.siemens.com",
+      "company": "Siemens EDA",
+      "source_category": "official_company_search",
+      "headers": {
+        "Origin": "https://jobs.sw.siemens.com",
+        "Referer": "https://jobs.sw.siemens.com/",
+        "X-Origin": "jobs.sw.siemens.com",
+        "Accept": "application/json"
+      },
+      "params": {
+        "location": "chn",
+        "businessStructures": "electronic-design-automation-eda"
+      },
+      "page_size": 10,
+      "max_pages": 5,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Shanghai|Beijing|Shenzhen|Suzhou|Hong Kong|香港|中国",
+        "EDA|IC|ASIC|RTL|Verification|Calibre|Tessent|Digital|Analog|Physical Design"
+      ],
+      "official_reference": "https://jobs.sw.siemens.com/business-structure/electronic-design-automation-eda/jobs/"
+    },
+    {
+      "name": "MediaTek Mainland China Careers",
+      "type": "mediatek",
+      "url": "https://careers.mediatek.com/zh-cn/jobs",
+      "company": "MediaTek",
+      "source_category": "official_company_search",
+      "locale": "zh_CN",
+      "locale_path": "zh-cn",
+      "page_size": 100,
+      "max_pages": 10,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|合肥|深圳|成都|武汉|上海|Mainland China|China|Hong Kong|香港|中国",
+        "Chip Design|Digital IC|Analog_RF|Algorithm|Architecture|RTL|SoC|Verification|Hardware"
+      ],
+      "official_reference": "https://careers.mediatek.com/zh-cn/jobs"
+    },
+    {
+      "name": "Arm Hardware and Architecture Careers",
+      "type": "html",
+      "url": "https://careers.arm.com/en/search-jobs",
+      "company": "Arm",
+      "source_category": "official_company_search",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Beijing|Austin|San Jose|中国|香港",
+        "Hardware|Architecture|CPU|GPU|SoC|RTL|ASIC|Verification|Physical Design|Silicon|Circuit"
+      ],
+      "title_include_patterns": [
+        "Hardware|Architect|CPU|GPU|SoC|ASIC|RTL|Verification|Physical Design|Circuit|Silicon"
+      ],
+      "official_reference": "https://careers.arm.com/en/search-jobs"
+    },
+    {
+      "name": "Renesas China Hong Kong US Engineering",
+      "type": "attrax",
+      "url": "https://jobs.renesas.com/jobs",
+      "company": "Renesas Electronics",
+      "source_category": "official_company_search",
+      "option_ids": [
+        620,
+        776
+      ],
+      "page_size": 48,
+      "max_pages": 6,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Beijing|Shenzhen|Austin|San Jose|中国|香港",
+        "Analog|Mixed.Signal|Digital|IC|SoC|MCU|Circuit|Verification|Hardware|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "Analog|Mixed.Signal|Digital|\\bIC\\b|SoC|MCU|Circuit|Verification|Hardware|Semiconductor"
+      ],
+      "official_reference": "https://jobs.renesas.com/jobs"
+    },
+    {
+      "name": "onsemi China Hong Kong US Careers",
+      "type": "oracle_ce",
+      "api_host": "https://hctz.fa.us2.oraclecloud.com",
+      "public_host": "https://hctz.fa.us2.oraclecloud.com/hcmUI/CandidateExperience",
+      "site": "CX_1001",
+      "language": "en",
+      "company": "onsemi",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "Hong Kong",
+        "United States"
+      ],
+      "search_texts": [
+        "analog",
+        "digital",
+        "IC design",
+        "mixed signal",
+        "power",
+        "circuit",
+        "verification",
+        "hardware",
+        "semiconductor",
+        "intern"
+      ],
+      "page_size": 25,
+      "max_pages": 10,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Suzhou|中国|香港",
+        "Analog|Mixed.Signal|Digital|IC|Power|Circuit|Verification|Hardware|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "Analog|Mixed.Signal|Digital|\\bIC\\b|Circuit|Verification|Hardware|Semiconductor"
+      ],
+      "official_reference": "https://www.onsemi.com/careers"
+    },
+    {
+      "name": "Micron Global Hardware and Silicon",
+      "type": "eightfold",
+      "host": "https://careers.micron.com",
+      "domain": "micron.com",
+      "company": "Micron Technology",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "locations": [
+        "China",
+        "United States"
+      ],
+      "search_texts": [
+        "memory",
+        "DRAM",
+        "NAND",
+        "circuit",
+        "digital",
+        "analog",
+        "verification",
+        "architecture",
+        "hardware",
+        "intern"
+      ],
+      "max_pages": 10,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Xi.an|Boise|中国|香港",
+        "Memory|DRAM|NAND|Circuit|Digital|Analog|RTL|Verification|Architecture|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "Memory|DRAM|NAND|Circuit|Digital|Analog|RTL|Verification|Architect|Hardware|Silicon"
+      ],
+      "official_reference": "https://careers.micron.com/careers"
+    },
+    {
+      "name": "Intel Hardware and Silicon Careers",
+      "type": "workday",
+      "host": "https://intel.wd1.myworkdayjobs.com",
+      "tenant": "intel",
+      "site": "External",
+      "company": "Intel",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "search_texts": [
+        "Hardware China",
+        "Silicon China",
+        "CPU China",
+        "GPU China",
+        "Architecture China",
+        "Verification China",
+        "Circuit China",
+        "Intern China",
+        "Hardware United States",
+        "Silicon United States"
+      ],
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Beijing|Shenzhen|Austin|Hillsboro|San Jose|中国|香港",
+        "CPU|GPU|Architecture|SoC|ASIC|RTL|Verification|Physical Design|Circuit|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "CPU|GPU|Architect|SoC|ASIC|RTL|Verification|Physical Design|Circuit|Hardware|Silicon"
+      ],
+      "official_reference": "https://jobs.intel.com/"
+    },
+    {
+      "name": "Samsung Semiconductor Engineering Careers",
+      "type": "greenhouse",
+      "board_token": "samsungsemiconductor",
+      "company": "Samsung Semiconductor",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Austin|San Jose|中国|香港",
+        "Memory|DRAM|NAND|CPU|GPU|SoC|Architecture|Circuit|Hardware|Silicon|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "Memory|DRAM|NAND|CPU|GPU|SoC|Architect|Circuit|Hardware|Silicon|Semiconductor"
+      ],
+      "title_exclude_patterns": [
+        "Sales|Account|Marketing|Product Manager|Program Manager|Director|Recruit|Counsel"
+      ],
+      "official_reference": "https://semiconductor.samsung.com/about-us/careers/"
+    },
+    {
+      "name": "SK hynix Semiconductor Careers",
+      "type": "html",
+      "url": "https://recruit.skhynix.com/",
+      "company": "SK hynix",
+      "source_category": "official_company_portal_pending_adapter",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Wuxi|San Jose|中国|香港|중국|미국",
+        "Memory|DRAM|NAND|Circuit|Digital|Analog|Verification|Architecture|Hardware|Semiconductor|반도체"
+      ],
+      "title_include_patterns": [
+        "Memory|DRAM|NAND|Circuit|Digital|Analog|Verification|Architect|Hardware|Semiconductor|반도체"
+      ],
+      "official_reference": "https://recruit.skhynix.com/"
+    },
+    {
+      "name": "Kioxia Memory and SSD Careers",
+      "type": "smartrecruiters",
+      "company_code": "Kioxia",
+      "page_size": 100,
+      "max_pages": 5,
+      "company": "Kioxia",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|San Jose|中国|香港",
+        "Memory|NAND|Flash|SSD|Circuit|Controller|Architecture|Hardware|Silicon|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "Memory|NAND|Flash|SSD|Circuit|Controller|Architect|Hardware|Silicon|Semiconductor"
+      ],
+      "title_exclude_patterns": [
+        "Sales|Business|Product Manager|Program Manager|Director|Recruit|Counsel"
+      ],
+      "official_reference": "https://www.kioxia-holdings.com/en-jp/careers.html"
+    },
+    {
+      "name": "Lattice Semiconductor FPGA Careers",
+      "type": "workday",
+      "host": "https://latticesemi.wd5.myworkdayjobs.com",
+      "tenant": "latticesemi",
+      "site": "latticesemiconductorscareers",
+      "company": "Lattice Semiconductor",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "search_texts": [
+        "FPGA China",
+        "SoC China",
+        "RTL China",
+        "Verification China",
+        "Hardware China",
+        "Intern China",
+        "FPGA United States",
+        "RTL United States",
+        "Hardware United States"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|San Jose|Portland|中国|香港",
+        "FPGA|RTL|Digital|SoC|Verification|Architecture|Hardware|Silicon|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "FPGA|RTL|Digital|SoC|Verification|Architect|Hardware|Silicon|Semiconductor"
+      ],
+      "official_reference": "https://www.latticesemi.com/About/Jobs"
+    },
+    {
+      "name": "Rambus China Hong Kong US Engineering",
+      "type": "icims",
+      "url": "https://careers-rambus.icims.com/jobs/search?ss=1&in_iframe=1",
+      "company": "Rambus",
+      "source_category": "official_company_search",
+      "max_pages": 4,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|San Jose|中国|香港",
+        "Memory|Interface|SerDes|Digital|Analog|RTL|Verification|Architecture|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "Memory|Interface|SerDes|Digital|Analog|RTL|Verification|Architect|Hardware|Silicon"
+      ],
+      "official_reference": "https://careers.rambus.com/jobs/search"
+    },
+    {
+      "name": "Skyworks Global Semiconductor Careers",
+      "type": "rss",
+      "url": "https://careers.skyworksinc.com/sitemap.xml",
+      "company": "Skyworks",
+      "source_category": "official_company_rss",
+      "location_from_title": true,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Irvine|Austin|中国|香港",
+        "RF|Analog|Mixed.Signal|IC|Circuit|Digital|Verification|Hardware|Semiconductor"
+      ],
+      "title_include_patterns": [
+        "\\bRF\\b|Analog|Mixed.Signal|\\bIC\\b|Circuit|Digital|Verification|Hardware|Semiconductor"
+      ],
+      "official_reference": "https://careers.skyworksinc.com/"
+    },
+    {
+      "name": "Cirrus Logic Hardware and IC Careers",
+      "type": "lever",
+      "api_host": "https://api.eu.lever.co",
+      "board_token": "cirrus",
+      "company": "Cirrus Logic",
+      "display_company": "Cirrus Logic",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "China|Hong Kong|United States|Shanghai|Shenzhen|Austin|中国|香港",
+        "Analog|Mixed.Signal|Digital|IC|Circuit|DSP|Verification|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "Analog|Mixed.Signal|Digital|\\bIC\\b|Circuit|DSP|Verification|Hardware|Silicon"
+      ],
+      "official_reference": "https://www.cn.cirrus.com/careers"
+    },
+    {
+      "name": "MaxLinear China Hong Kong International IC Careers",
+      "type": "icims",
+      "url": "https://careersintl-maxlinear.icims.com/jobs/search?ss=1&in_iframe=1",
+      "company": "MaxLinear",
+      "source_category": "official_company_search",
+      "max_pages": 3,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "CN-|HK-|China|Hong Kong|Shanghai|Shenzhen|中国|香港",
+        "RF|Analog|Mixed.Signal|Digital|IC|SoC|Circuit|Verification|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "\\bRF\\b|Analog|Mixed.Signal|Digital|\\bIC\\b|SoC|Circuit|Verification|Hardware|Silicon"
+      ],
+      "official_reference": "https://www.maxlinear.com/company/careers"
+    },
+    {
+      "name": "MaxLinear United States IC Careers",
+      "type": "icims",
+      "url": "https://careersus-maxlinear.icims.com/jobs/search?ss=1&in_iframe=1",
+      "company": "MaxLinear",
+      "source_category": "official_company_search",
+      "max_pages": 2,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "US-|United States",
+        "RF|Analog|Mixed.Signal|Digital|IC|SoC|Circuit|Verification|Hardware|Silicon"
+      ],
+      "title_include_patterns": [
+        "\\bRF\\b|Analog|Mixed.Signal|Digital|\\bIC\\b|SoC|Circuit|Verification|Hardware|Silicon"
+      ],
+      "official_reference": "https://www.maxlinear.com/company/careers"
+    },
+    {
+      "name": "Huawei HiSilicon Chip Careers",
+      "type": "huawei_cdp",
+      "public_url": "https://career.huawei.com/cn/social-recruitment-job-list",
+      "api_url": "https://apigw-dgg-b0.huawei.com/api/apig/channelhw/recruitmentPosition/pub/getJobPage?X-HW-ID=app_000000035886",
+      "page_size": 100,
+      "max_pages": 20,
+      "query_modes": [
+        {
+          "jobType": "SR",
+          "role_kind": "full_time"
+        },
+        {
+          "jobType": "CR",
+          "recruitmentType": "FRESH_GRADUATE",
+          "role_kind": "full_time"
+        },
+        {
+          "jobType": "CR",
+          "recruitmentType": "INTERN",
+          "role_kind": "internship"
+        }
+      ],
+      "company": "Huawei HiSilicon",
+      "source_category": "official_company_browser_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "中国|香港|北京|上海|深圳|东莞|武汉|西安|成都|南京|杭州|China|Hong Kong",
+        "芯片|半导体|IC|数字|模拟|电路|架构|CPU|GPU|SoC|RTL|验证|后端|硬件"
+      ],
+      "title_include_patterns": [
+        "芯片|半导体|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://www.hisilicon.com/cn/about-us/career"
+    },
+    {
+      "name": "UNISOC Campus Social and Internship Careers",
+      "type": "hotjob",
+      "suite_key": "SU629649680dcad452299568a2",
+      "public_url": "https://wecruit.hotjob.cn/SU629649680dcad452299568a2/pb/index.html",
+      "recruit_types": [
+        1,
+        2
+      ],
+      "page_size": 15,
+      "max_pages": 40,
+      "company": "UNISOC",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "中国|北京|上海|深圳|天津|杭州|成都|西安|南京|武汉|China",
+        "芯片|集成电路|数字IC|模拟IC|RTL|SoC|CPU|验证|DFT|后端|版图|硬件"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字|模拟|IP设计|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|后端|硬件设计|电路设计|版图"
+      ],
+      "official_reference": "https://www.unisoc.com/cn/about/join-us"
+    },
+    {
+      "name": "Cambricon Social Careers",
+      "type": "html",
+      "url": "https://joinus.cambricon.com/apply/cambricon/1113",
+      "company": "Cambricon",
+      "source_category": "official_company_moka_search",
+      "role_kinds": [
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|合肥|西安|南京|昆山|中国|China",
+        "芯片|处理器|架构|数字|RTL|SoC|验证|DFT|后端|版图|硬件|电路"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计|版图"
+      ],
+      "official_reference": "https://joinus.cambricon.com/apply/cambricon/1113"
+    },
+    {
+      "name": "Cambricon Campus Careers",
+      "type": "moka_cdp",
+      "url": "https://app.mokahr.com/campus-recruitment/cambricon/44201#/jobs?project=100124265",
+      "max_scrolls": 12,
+      "max_pages": 5,
+      "default_location": "中国",
+      "company": "Cambricon",
+      "source_category": "official_company_browser_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|合肥|西安|南京|昆山|中国|China",
+        "芯片|处理器|架构|数字|RTL|SoC|验证|DFT|后端|版图|硬件|电路"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计|版图"
+      ],
+      "official_reference": "https://app.mokahr.com/campus-recruitment/cambricon/44201#/jobs?project=100124265"
+    },
+    {
+      "name": "Horizon Robotics Careers",
+      "type": "hotjob",
+      "suite_key": "SU64819a4f2f9d2433ba8b043a",
+      "public_url": "https://wecruit.hotjob.cn/SU64819a4f2f9d2433ba8b043a/pb/social.html",
+      "recruit_types": [
+        1,
+        2
+      ],
+      "page_size": 15,
+      "max_pages": 30,
+      "company": "Horizon Robotics",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|杭州|南京|成都|中国|China",
+        "芯片|处理器|架构|数字|RTL|SoC|验证|后端|硬件|电路|智能驾驶"
+      ],
+      "title_include_patterns": [
+        "芯片|ISP|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://www.horizon.auto/about?tp=5"
+    },
+    {
+      "name": "Biren Technology Careers",
+      "type": "moka_cdp",
+      "url": "https://app.mokahr.com/social-recruitment/biren/44726#/jobs",
+      "max_scrolls": 12,
+      "max_pages": 5,
+      "company": "Biren Technology",
+      "source_category": "official_company_browser_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|杭州|成都|中国|China",
+        "GPU|芯片|Chiplet|架构|数字|RTL|SoC|验证|DFT|后端|硬件|电路"
+      ],
+      "title_include_patterns": [
+        "芯片|Chiplet|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://www.birentech.com/join/"
+    },
+    {
+      "name": "Moore Threads Careers",
+      "type": "zhiye",
+      "api_url": "https://mthreads.zhiye.com/api/Jobad/GetJobAdPageList",
+      "public_url": "https://mthreads.zhiye.com/campus/jobs",
+      "categories": [
+        "2"
+      ],
+      "page_size": 100,
+      "max_pages": 5,
+      "company": "Moore Threads",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|杭州|成都|西安|中国|China",
+        "GPU|芯片|架构|数字|RTL|SoC|验证|DFT|后端|硬件|电路"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://www.mthreads.com/jobs"
+    },
+    {
+      "name": "Alibaba T-Head Chip Careers",
+      "type": "alibaba_cdp",
+      "public_url": "https://campus-talent.alibaba.com/campus/position",
+      "department_label": "平头哥",
+      "batches": [
+        {
+          "id": 100000760001,
+          "role_kind": "full_time"
+        },
+        {
+          "id": 100000560002,
+          "role_kind": "internship"
+        },
+        {
+          "id": 100000560001,
+          "role_kind": "internship"
+        }
+      ],
+      "max_pages": 10,
+      "company": "Alibaba T-Head",
+      "source_category": "official_company_browser_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "杭州|上海|北京|成都|深圳|中国|China",
+        "平头哥|芯片|RISC.V|CPU|架构|数字|RTL|SoC|验证|DFT|后端|硬件"
+      ],
+      "title_include_patterns": [
+        "平头哥|芯片|集成电路|数字IC|模拟IC|IC设计|RISC.V|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://campus-talent.alibaba.com/campus/gov"
+    },
+    {
+      "name": "Kunlunxin Campus Careers",
+      "type": "zhiye_html",
+      "host": "https://kunlunxin.zhiye.com",
+      "sections": [
+        "Social",
+        "Campus",
+        "Intern"
+      ],
+      "search_texts": [
+        "芯片",
+        "集成电路",
+        "数字",
+        "模拟",
+        "RTL",
+        "SoC",
+        "CPU",
+        "GPU",
+        "架构",
+        "验证",
+        "DFT",
+        "物理设计",
+        "硬件",
+        "电路"
+      ],
+      "page_size": 10,
+      "max_pages": 1,
+      "company": "Kunlunxin",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|中国|China",
+        "昆仑|AI芯片|芯片|架构|数字|RTL|SoC|验证|DFT|后端|硬件|电路"
+      ],
+      "title_include_patterns": [
+        "昆仑|AI芯片|芯片|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|GPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|电路设计"
+      ],
+      "official_reference": "https://kunlunxin.zhiye.com/Campus"
+    },
+    {
+      "name": "Xiaomi China Chip and Hardware Careers",
+      "type": "xiaomi",
+      "api_url": "https://hr.xiaomi.com/website/api/agent/searchJobPage",
+      "public_url": "https://hr.xiaomi.com/website/opportunities.html",
+      "search_texts": [
+        "芯片",
+        "数字电路",
+        "硬件",
+        "FPGA",
+        "RTL",
+        "SoC",
+        "架构",
+        "验证"
+      ],
+      "page_size": 100,
+      "max_pages": 5,
+      "company": "Xiaomi",
+      "source_category": "official_company_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "中国|北京|上海|深圳|南京|武汉|西安|成都|合肥|杭州|Hong Kong|香港",
+        "芯片|集成电路|数字|模拟|RTL|SoC|CPU|GPU|FPGA|验证|DFT|后端|版图|硬件|电路|架构"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字IC|模拟IC|IC设计|IC验证|RTL|SoC|CPU|GPU|NPU|处理器|DDR|SerDes|高速接口|基带|DFT|物理设计|数字后端|硬件设计|硬件开发|电路设计|FPGA|版图"
+      ],
+      "official_reference": "https://hr.xiaomi.com/website/opportunities.html"
+    },
+    {
+      "name": "DJI China Hardware and Chip Careers",
+      "type": "moka_cdp",
+      "url": "https://apply.careers.dji.com/social-recruitment/dji/170070#/jobs",
+      "max_scrolls": 16,
+      "max_pages": 10,
+      "default_location": "中国",
+      "company": "DJI",
+      "source_category": "official_company_browser_search",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "中国|深圳|上海|北京|杭州|西安|南京|东莞|Hong Kong|香港",
+        "芯片|集成电路|数字|模拟|RTL|SoC|CPU|FPGA|验证|DFT|后端|硬件|电路|架构|图传|飞控"
+      ],
+      "title_include_patterns": [
+        "芯片|集成电路|数字IC|模拟IC|IC设计|RTL|SoC|CPU|处理器|架构|验证|DFT|物理设计|数字后端|硬件设计|硬件开发|电路设计|FPGA|射频|图传|飞控"
+      ],
+      "official_reference": "https://we.dji.com/zh-CN/position"
+    },
+    {
+      "name": "NVIDIA United States 2027 Hardware Internships",
+      "type": "workday",
+      "host": "https://nvidia.wd5.myworkdayjobs.com",
+      "tenant": "nvidia",
+      "site": "NVIDIAExternalCareerSite",
+      "company": "NVIDIA",
+      "source_category": "official_company_us_2027_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "search_texts": [
+        "2027 Internships Hardware",
+        "2027 Internships ASIC",
+        "2027 Internships Computer Architecture",
+        "2027 Internships Verification",
+        "2027 Internships Physical Design",
+        "2027 Internships DFT"
+      ],
+      "include_patterns": [
+        "United States|US,|Santa Clara|Austin|California|Texas",
+        "2027",
+        "Intern|Internship",
+        "ASIC|RTL|SoC|CPU|GPU|Architecture|Verification|Physical Design|VLSI|DFT|Hardware|Silicon"
+      ],
+      "official_reference": "https://jobs.nvidia.com/"
+    },
+    {
+      "name": "AMD United States 2027 Hardware Internships",
+      "type": "jibe",
+      "api_url": "https://careers.amd.com/api/jobs",
+      "params": {
+        "country": "United States",
+        "sortBy": "relevance",
+        "descending": "false",
+        "internal": "false"
+      },
+      "job_url_template": "https://careers.amd.com/careers-home/jobs/{slug}",
+      "page_size": 10,
+      "max_pages": 40,
+      "company": "AMD",
+      "source_category": "official_company_us_2027_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "include_patterns": [
+        "United States|California|Texas|Massachusetts|Colorado|New York|New Jersey",
+        "2027",
+        "Intern|Co-op",
+        "ASIC|RTL|SoC|CPU|GPU|Architecture|Verification|Physical Design|VLSI|Hardware|Silicon|Circuit"
+      ],
+      "official_reference": "https://careers.amd.com/students/"
+    },
+    {
+      "name": "Qualcomm United States Hardware Internships",
+      "type": "eightfold",
+      "host": "https://careers.qualcomm.com",
+      "domain": "qualcomm.com",
+      "company": "Qualcomm",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "locations": [
+        "United States"
+      ],
+      "search_texts": [
+        "2027 intern hardware",
+        "intern ASIC",
+        "intern digital design",
+        "intern verification",
+        "intern architecture"
+      ],
+      "max_pages": 40,
+      "request_delay_seconds": 0.5,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "include_patterns": [
+        "United States|California|San Diego|Santa Clara|Austin",
+        "Intern|Internship|Co-op",
+        "ASIC|RTL|SoC|CPU|GPU|Architecture|Verification|Hardware|Silicon|IC|Digital"
+      ],
+      "official_reference": "https://www.qualcomm.com/company/careers/internships-and-early-in-career-opportunities"
+    },
+    {
+      "name": "Apple United States Silicon Internships",
+      "type": "apple_jobs",
+      "url": "https://jobs.apple.com/en-us/search?team=internships-STDNT-INTRN&location=united-states-USA",
+      "company": "Apple",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "unknown"
+      ],
+      "include_patterns": [
+        "United States|California|Texas|Massachusetts|Oregon|Washington|Colorado|Florida|Arizona|New York",
+        "Intern|Internship",
+        "Silicon|ASIC|SoC|CPU|GPU|Architecture|RTL|Verification|Validation|Physical Design|Hardware|IC|Analog|Digital"
+      ],
+      "official_reference": "https://jobs.apple.com/en-us/search?location=united-states-USA&team=silicon-technologies-HRDWR-SILT"
+    },
+    {
+      "name": "Analog Devices United States Hardware Internships",
+      "type": "workday",
+      "host": "https://analogdevices.wd1.myworkdayjobs.com",
+      "tenant": "analogdevices",
+      "site": "External",
+      "company": "Analog Devices",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "search_texts": [
+        "Digital Design Engineer Intern",
+        "ASIC Intern United States",
+        "Verification Intern United States",
+        "Circuit Design Intern United States",
+        "Hardware Intern United States"
+      ],
+      "include_patterns": [
+        "United States|California|Massachusetts|North Carolina|Texas|Colorado",
+        "Intern|Internship|Co-op",
+        "Analog|Mixed Signal|IC|Circuit|Digital|RTL|Verification|ASIC|Hardware|Silicon"
+      ],
+      "official_reference": "https://www.analog.com/en/careers/career-opportunities.html"
+    },
+    {
+      "name": "Broadcom United States Silicon Internships",
+      "type": "workday",
+      "host": "https://broadcom.wd1.myworkdayjobs.com",
+      "tenant": "broadcom",
+      "site": "External_Career",
+      "company": "Broadcom",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "search_texts": [
+        "ASIC Intern United States",
+        "RTL Intern United States",
+        "IC Design Intern United States",
+        "Verification Intern United States",
+        "Physical Design Intern United States"
+      ],
+      "include_patterns": [
+        "United States|California|Colorado|Texas|Pennsylvania|Massachusetts",
+        "Intern|Internship|Co-op",
+        "IC Design|ASIC|RTL|Synthesis|Timing|Physical Design|STA|DFT|Verification|SoC|Digital|Hardware"
+      ],
+      "official_reference": "https://www.broadcom.com/company/careers"
+    },
+    {
+      "name": "Marvell United States Silicon Internships",
+      "type": "workday",
+      "host": "https://marvell.wd1.myworkdayjobs.com",
+      "tenant": "marvell",
+      "site": "MarvellCareers",
+      "company": "Marvell",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship|Co-op"
+      ],
+      "search_texts": [
+        "2027 Intern ASIC",
+        "2027 Intern Verification",
+        "2027 Intern Digital Design",
+        "Intern RTL United States",
+        "Intern Hardware United States"
+      ],
+      "include_patterns": [
+        "United States|California|Massachusetts|Vermont|Texas|Pennsylvania",
+        "2027|Summer",
+        "Intern|Internship|Co-op",
+        "Design Engineering|Physical Design|Hardware|ASIC|RTL|SoC|Verification|Architecture|Silicon|IC"
+      ],
+      "official_reference": "https://www.marvell.com/company/careers.html"
+    },
+    {
+      "name": "Cadence United States 2027 Hardware Internships",
+      "type": "workday",
+      "host": "https://cadence.wd1.myworkdayjobs.com",
+      "tenant": "cadence",
+      "site": "external_careers",
+      "company": "Cadence",
+      "source_category": "official_company_us_2027_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship"
+      ],
+      "search_texts": [
+        "Summer 2027 Digital Design",
+        "2027 Intern RTL",
+        "2027 Intern Verification",
+        "2027 Intern Computer Architecture",
+        "2027 Intern EDA",
+        "2027 Intern Hardware"
+      ],
+      "include_patterns": [
+        "United States|San Jose|Austin|California|Texas|Massachusetts|North Carolina",
+        "2027|Summer",
+        "Intern|Internship",
+        "VLSI|SoC|IP|RTL|UVM|SystemVerilog|Verification|EDA|Hardware|Design Engineer|Architecture"
+      ],
+      "official_reference": "https://www.cadence.com/en_US/home/company/careers/interns-and-new-grads.html"
+    },
+    {
+      "name": "Texas Instruments United States Hardware Internships",
+      "type": "oracle_ce",
+      "api_host": "https://edbz.fa.us2.oraclecloud.com",
+      "public_host": "https://careers.ti.com",
+      "site": "CX",
+      "language": "en",
+      "company": "Texas Instruments",
+      "source_category": "official_company_us_internship",
+      "sync_active": true,
+      "locations": [
+        "United States"
+      ],
+      "search_texts": [
+        "digital design intern",
+        "IC design intern",
+        "verification intern",
+        "hardware intern",
+        "analog design intern"
+      ],
+      "page_size": 25,
+      "max_pages": 10,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "title_include_patterns": [
+        "Intern|Internship"
+      ],
+      "include_patterns": [
+        "United States|Texas|California|Arizona|Maine",
+        "Intern|Internship",
+        "Analog|Digital|IC Design|Mixed Signal|RTL|Verification|Architecture|Hardware|Circuit"
+      ],
+      "official_reference": "https://careers.ti.com/"
+    },
+    {
+      "name": "Etched United States 2027 ASIC Internships",
+      "type": "ashby",
+      "board_name": "etched",
+      "company": "Etched",
+      "source_category": "official_company_us_2027_internship",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "include_patterns": [
+        "San Jose|United States|California",
+        "Summer.{0,3}27|Summer 2027|Spring.{0,3}27|2027",
+        "Intern",
+        "RTL|ASIC|SoC|Design Verification|DV|Physical Design|Architecture|Hardware|Silicon|DFT"
+      ],
+      "official_reference": "https://jobs.ashbyhq.com/etched"
+    },
+    {
+      "name": "SpaceX United States 2027 Silicon Internships",
+      "type": "greenhouse",
+      "board_token": "spacex",
+      "company": "SpaceX",
+      "source_category": "official_company_us_2027_internship_export_controlled",
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "include_patterns": [
+        "United States|California|Washington|Irvine|Palo Alto|Redmond|Flexible",
+        "Summer 2027",
+        "Silicon|ASIC|RTL|Architecture|VLSI|Logic Design|Circuit Design|Verification|Synthesis"
+      ],
+      "official_reference": "https://job-boards.greenhouse.io/spacex"
+    },
+    {
+      "name": "JobsDB HK - IC Design and Microelectronics",
+      "type": "jobsdb_hk",
+      "url": "https://hk.jobsdb.com/zh/integrated-circuit-design-jobs",
+      "company": "JobsDB HK",
+      "source_category": "third_party_board_high_signal",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "Hong Kong|香港|沙田|科學園|科学园|大埔|元朗|Shatin|Science Park|Yuen Long",
+        "Integrated circuit|IC Design|Microelectronics|ASIC|FPGA|RTL|EDA|semiconductor|芯片|集成电路|微电子"
+      ],
+      "exclude_patterns": [
+        "sales|marketing|finance|accountant|采购|销售|市场|金融|投資|投资"
+      ],
+      "official_reference": "https://hk.jobsdb.com/"
+    },
+    {
+      "name": "JobsDB HK - Electronics Internships",
+      "type": "jobsdb_hk",
+      "url": "https://hk.jobsdb.com/zh/electronic-intern-jobs",
+      "company": "JobsDB HK",
+      "source_category": "third_party_board_internship",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "unknown"
+      ],
+      "include_patterns": [
+        "Hong Kong|香港|沙田|科學園|科学园|大埔|元朗|Shatin|Science Park|Yuen Long",
+        "Intern|Internship|Trainee|实习|實習|RTH",
+        "Electronic|Electrical|IC|FPGA|ASIC|Microelectronics|Semiconductor|芯片|集成电路|电路|電子|电子"
+      ],
+      "exclude_patterns": [
+        "sales|marketing|finance|accountant|采购|销售|市场|金融|投資|投资"
+      ],
+      "official_reference": "https://hk.jobsdb.com/zh/electronic-intern-jobs"
+    },
+    {
+      "name": "JobsDB HK - Semiconductor Hardware",
+      "type": "jobsdb_hk",
+      "url": "https://hk.jobsdb.com/zh/semiconductor-jobs",
+      "company": "JobsDB HK",
+      "source_category": "third_party_board_broad",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "Hong Kong|香港|沙田|科學園|科学园|大埔|元朗|Shatin|Science Park|Yuen Long",
+        "Semiconductor|Power semiconductor|SiC|GaN|Hardware|FPGA|ASIC|IC|Validation|Testing|芯片|半导体|半導體"
+      ],
+      "exclude_patterns": [
+        "sales|marketing|finance|accountant|采购|销售|市场|金融|投資|投资"
+      ],
+      "official_reference": "https://hk.jobsdb.com/"
+    },
+    {
+      "name": "BOSS Zhipin - Shanghai Digital IC Frontend",
+      "type": "zhipin",
+      "enabled": false,
+      "url": "https://www.zhipin.com/zhaopin/d5b842583ff2a7e01X1-2dW-GQ~~/",
+      "company": "BOSS Zhipin",
+      "source_category": "third_party_board_high_variance_disabled",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "上海|张江|浦东|闵行|徐汇|Yangpu|Shanghai",
+        "数字IC|数字 ic|数字前端|RTL|Verilog|SystemVerilog|SoC|ASIC|DFT|时序|综合"
+      ],
+      "exclude_patterns": [
+        "销售|市场|财务|采购|FAE|客服|猎头"
+      ],
+      "official_reference": "https://www.zhipin.com/"
+    },
+    {
+      "name": "BOSS Zhipin - Shanghai IC Design Broad",
+      "type": "zhipin",
+      "enabled": false,
+      "url": "https://www.zhipin.com/zhaopin/83672db50219995003dy2dW1Ew~~/",
+      "company": "BOSS Zhipin",
+      "source_category": "third_party_board_broad_disabled",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "上海|张江|浦东|闵行|徐汇|Shanghai",
+        "IC设计|集成电路|模拟IC|数字IC|ASIC|SoC|RTL|Verilog|版图|物理设计|验证"
+      ],
+      "exclude_patterns": [
+        "销售|市场|财务|采购|FAE|客服|猎头"
+      ],
+      "official_reference": "https://www.zhipin.com/"
+    },
+    {
+      "name": "BOSS Zhipin - Shanghai ASIC and DFT",
+      "type": "zhipin",
+      "enabled": false,
+      "url": "https://www.zhipin.com/zhaopin/32c21b282346bfe00nd-09y4Eg~~/",
+      "company": "BOSS Zhipin",
+      "source_category": "third_party_board_specialized_disabled",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "include_patterns": [
+        "上海|深圳|张江|浦东|徐汇|Shanghai|Shenzhen",
+        "ASIC|DFT|RTL|微架构|Microarchitecture|SoC|GPU|PCIE|PCIe|时序|低功耗"
+      ],
+      "exclude_patterns": [
+        "销售|市场|财务|采购|FAE|客服|猎头"
+      ],
+      "official_reference": "https://www.zhipin.com/"
+    },
+    {
+      "name": "Shixiseng - Semiconductor Internships",
+      "type": "shixiseng",
+      "url": "https://www.shixiseng.com/interns?keyword=%E5%8D%8A%E5%AF%BC%E4%BD%93",
+      "company": "实习僧",
+      "source_category": "third_party_board_broad_internship",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|成都|武汉|苏州|杭州|合肥|西安|南京|广州|全国",
+        "半导体|芯片|IC|集成电路|FPGA|硬件|电路|嵌入式|微电子"
+      ],
+      "exclude_patterns": [
+        "采购|销售|市场|金融|证券|投资|行研|咨询|运营|公关"
+      ],
+      "official_reference": "https://www.shixiseng.com/"
+    },
+    {
+      "name": "Shixiseng - Integrated Circuit Internships",
+      "type": "shixiseng",
+      "url": "https://www.shixiseng.com/interns?keyword=%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF",
+      "company": "实习僧",
+      "source_category": "third_party_board_high_signal_internship",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|成都|武汉|苏州|杭州|合肥|西安|南京|广州|全国",
+        "集成电路|IC设计|数字IC|模拟IC|RTL|Verilog|验证|版图|EDA|芯片"
+      ],
+      "exclude_patterns": [
+        "采购|销售|市场|金融|证券|投资|行研|咨询|运营|公关"
+      ],
+      "official_reference": "https://www.shixiseng.com/interns?keyword=%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF"
+    },
+    {
+      "name": "Shixiseng - FPGA and IC Verification Internships",
+      "type": "shixiseng",
+      "url": "https://www.shixiseng.com/interns?keyword=FPGA",
+      "company": "实习僧",
+      "source_category": "third_party_board_fpga_verification_internship",
+      "fetch_via_cdp": true,
+      "max_pages": 3,
+      "sync_active": true,
+      "force_role_kind": "internship",
+      "role_kinds": [
+        "internship"
+      ],
+      "include_patterns": [
+        "北京|上海|深圳|成都|武汉|苏州|杭州|合肥|西安|南京|广州|全国",
+        "FPGA|Verilog|RTL|IC验证|数字逻辑|Vivado|SystemVerilog|硬件调试|ADC|DAC"
+      ],
+      "exclude_patterns": [
+        "采购|销售|市场|金融|证券|投资|行研|咨询|运营|公关"
+      ],
+      "official_reference": "https://www.shixiseng.com/"
+    },
+    {
+      "name": "CUHK CU Careers - Electronic and Computer Engineering",
+      "type": "cuhk_careers",
+      "enabled": true,
+      "url": "https://ai.cpdc.osa.cuhk.edu.hk/?keyword=ee",
+      "api_url": "https://api.ai.cpdc.osa.cuhk.edu.hk/job/search",
+      "referer": "https://ai.cpdc.osa.cuhk.edu.hk/?keyword=ee",
+      "origin": "https://ai.cpdc.osa.cuhk.edu.hk",
+      "search_texts": [
+        "ee",
+        "electronic engineering",
+        "computer hardware",
+        "semiconductor",
+        "microelectronics",
+        "fpga",
+        "asic",
+        "ic design",
+        "verification"
+      ],
+      "limit": 20,
+      "company": "CUHK CU Careers",
+      "ssl_verify": false,
+      "sync_active": true,
+      "source_category": "campus_portal_requires_login",
+      "role_kinds": [
+        "internship",
+        "full_time",
+        "unknown"
+      ],
+      "cookie_env_var": "PLATFORM_CUHK_CAREERS_COOKIE",
+      "required_env_vars": [
+        "PLATFORM_CUHK_CAREERS_COOKIE"
+      ],
+      "include_patterns": [
+        "Electronic Engineering|Computer Hardware|Engineering|Research & Development|Information Technology|Intern|Graduate|Full-time|Part-time|電子|电子|工程|實習|实习",
+        "\\bIC\\b|\\bASIC\\b|\\bFPGA\\b|\\bRTL\\b|\\bEDA\\b|SystemVerilog|Verilog|semiconductor|microelectronics|hardware|digital design|analog|mixed-signal|芯片|集成电路|微电子|硬件|数字电路|模拟电路"
+      ],
+      "title_include_patterns": [
+        "Digital Design|Analog|Mixed[- ]Signal|\\bIC\\b|\\bASIC\\b|\\bFPGA\\b|\\bRTL\\b|\\bSoC\\b|Silicon|Semiconductor|Microelectronics|\\bVLSI\\b|\\bDFT\\b|\\bSTA\\b|Physical Design|Design Verification|PCB Design|Hardware Design|Circuit Design|Chip|芯片|集成电路|数字(?:电路|设计|IC)|模拟(?:电路|设计|IC)|硬件设计|验证|版图"
+      ],
+      "exclude_patterns": [
+        "tutor|course tutor|teaching|teacher|human resources|recruitment|administrative|career stor|survey|sales|marketing|finance|accounting|customer service|procurement|导师|课程|教师|教学|人力资源|行政|采购|销售|市场|金融|會計|会计"
+      ],
+      "official_reference": "https://ai.cpdc.osa.cuhk.edu.hk/"
+    },
+    {
+      "name": "UPenn Handshake Hardware and IC Careers",
+      "type": "handshake",
+      "enabled": true,
+      "url": "https://upenn.joinhandshake.com/job-search",
+      "login_url": "https://upenn.joinhandshake.com/login",
+      "search_urls": [
+        "https://upenn.joinhandshake.com/job-search?query=hardware&per_page=25&sort=relevance&page=1",
+        "https://upenn.joinhandshake.com/job-search?query=ASIC&per_page=25&sort=relevance&page=1",
+        "https://upenn.joinhandshake.com/job-search?query=RTL&per_page=25&sort=relevance&page=1"
+      ],
+      "source_category": "official_university_careers",
+      "institution": "University of Pennsylvania",
+      "fetch_via_cdp": true,
+      "max_pages": 2,
+      "max_jobs": 45,
+      "sync_active": false,
+      "title_include_patterns": [
+        "hardware|ASIC|RTL|FPGA|silicon|semiconductor|verification|circuit|VLSI|CPU|GPU|SoC|physical.design|electrical.engineer"
+      ],
+      "official_reference": "https://careerservices.upenn.edu/resources/handshake/",
+      "integration_note": "Student website through existing PennKey Chrome session, not EDU API. Authenticated search/details and first ingestion verified 2026-09-18 UTC: 35 jobs. Bounded retrieval; never expire missing jobs."
+    }
+  ]
+}

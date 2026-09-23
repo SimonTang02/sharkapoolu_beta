@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "name": "Replace With Greenhouse Board",
+      "type": "greenhouse",
+      "board_token": "replace_me",
+      "company": "Replace Me"
+    },
+    {
+      "name": "Replace With Lever Board",
+      "type": "lever",
+      "company": "replace-me",
+      "display_company": "Replace Me"
+    }
+  ]
+}

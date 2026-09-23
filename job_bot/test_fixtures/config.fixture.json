@@ -1,0 +1,40 @@
+{
+  "database": {
+    "path": "job_bot/data/fixture.sqlite3"
+  },
+  "scoring": {
+    "target_keywords": [
+      "intern",
+      "RTL",
+      "SystemVerilog",
+      "CPU",
+      "microarchitecture",
+      "verification",
+      "EDA"
+    ]
+  },
+  "email": {
+    "dry_run": true,
+    "smtp_host": "smtp.example.com",
+    "smtp_port": 587,
+    "starttls": true,
+    "username_env": "SMTP_USERNAME",
+    "password_env": "SMTP_PASSWORD",
+    "from": "jobbot@example.com",
+    "to": ["recipient@example.test"]
+  },
+  "sources": [
+    {
+      "name": "Fixture RSS",
+      "type": "rss",
+      "url": "file:job_bot/test_fixtures/jobs.rss",
+      "company": "Fixture Semiconductor",
+      "include_patterns": [
+        "intern|rtl|systemverilog|cpu|microarchitecture|verification|eda"
+      ],
+      "exclude_patterns": [
+        "senior|staff|principal"
+      ]
+    }
+  ]
+}
