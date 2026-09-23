@@ -12,8 +12,20 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+
+
+def _default_private_root() -> Path:
+    """Keep source checkouts local and installed packages out of site-packages."""
+    if (PROJECT_ROOT / "pyproject.toml").is_file():
+        return PROJECT_ROOT / "private_data"
+    data_home = Path(
+        os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share")
+    ).expanduser()
+    return data_home / "sharkapoolu"
+
+
 PRIVATE_ROOT = Path(
-    os.environ.get("JOBBOT_PRIVATE_DIR", PROJECT_ROOT / "private_data")
+    os.environ.get("JOBBOT_PRIVATE_DIR", _default_private_root())
 ).expanduser().resolve()
 
 CREDENTIALS_FILE = PRIVATE_ROOT / "credentials" / "passport.env"
@@ -41,6 +53,7 @@ CV_VARIANTS_DIR = PRIVATE_ROOT / "cv" / "variants"
 
 def ensure_private_directories() -> None:
     for path in (
+        PRIVATE_ROOT,
         CREDENTIALS_FILE.parent,
         APPLICATION_PROFILE.parent,
         EVIDENCE_PROFILE.parent,

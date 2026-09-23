@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from private_paths import (  # noqa: E402
+    APPLICATION_KEYWORDS,
     APPLICATION_PROFILE,
     CREDENTIALS_FILE,
     EVIDENCE_PROFILE,
@@ -93,7 +94,12 @@ def public_text_files():
 def main() -> None:
     missing = [
         path
-        for path in (CREDENTIALS_FILE, APPLICATION_PROFILE, EVIDENCE_PROFILE)
+        for path in (
+            CREDENTIALS_FILE,
+            APPLICATION_PROFILE,
+            EVIDENCE_PROFILE,
+            APPLICATION_KEYWORDS,
+        )
         if not path.is_file()
     ]
     if missing:

@@ -97,8 +97,8 @@ require a separate sign-in, and all tenant-specific questions remain subject to
 human review.
 
 There is deliberately no explicit-submit command: the adapter blocks the final
-Submit action and requires `application_browser.auto_submit=false` plus
-`application_profile.local.json` safety `allow_submit=false`. CAPTCHA, MFA,
+Submit action and requires `application_browser.auto_submit=false` plus the
+private application profile's `safety.allow_submit=false`. CAPTCHA, MFA,
 sign-in verification, and unanswered screening questions produce a manual-action
 status; in Windows CDP mode the automation tab is left open for manual handling.
 
@@ -111,10 +111,17 @@ PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers \
   PYTHONPATH=.python_packages python3 -m playwright install chromium --no-shell
 ```
 
-Copy `application_profile.template.json` to the ignored
-`application_profile.local.json`, then fill only answers that are true and
-stable. Legal authorization, sponsorship, demographic, and declaration
-answers are never inferred.
+Create the ignored profile and related private files, then fill only answers
+that are true and stable:
+
+```bash
+python3 -m job_bot.private_config init
+python3 -m job_bot.private_config check
+```
+
+The application profile is stored at
+`private_data/profiles/application_profile.json`. Legal authorization,
+sponsorship, demographic, and declaration answers are never inferred.
 
 Queue a job already stored in SQLite and preview it:
 

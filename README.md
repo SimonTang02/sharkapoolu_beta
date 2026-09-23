@@ -1,120 +1,112 @@
-# 26fall_intern
+# Sharkapoolu
 
-This repository contains a local-first resume, job discovery, scoring, and
-review-assisted application workflow for hardware engineering roles. Final
-application submission always remains a human action.
+Sharkapoolu is a local-first toolkit for job discovery, ranking, resume
+tailoring, and review-assisted application preparation. It was built around
+hardware and digital-design recruiting, but its source and scoring layers are
+configurable. Candidate data stays outside the public Git history, and every
+final application submission remains a human action.
 
-Candidate identity, credentials, generated resumes, browser state, screenshots,
-and application databases belong under the ignored `private_data/` directory.
-Only `private_data/README.md`, which documents the local layout, is versioned.
+## Features
 
-## Workspace layout
+- Collect and normalize jobs from HTTP feeds, career APIs, and authenticated
+  browser sessions.
+- Score roles with configurable evidence, geography, degree, and role rules.
+- Generate daily and weekly reports from a local SQLite database.
+- Build resume-tailoring notes from an evidence profile and keyword library.
+- Prepare supported application forms in a dedicated browser and stop for
+  review before submission.
+- Validate public configuration and private candidate files without printing
+  secret or personal values.
 
-- `cv/`: CV/cover-letter code, shared LaTeX resources, tests, and documentation.
-- `job_bot/`: source collection, normalization, scoring, SQLite, and daily digest.
-- `application_bot/`: browser-assisted, review-only application preparation.
-- `private_data/`: ignored candidate identity, resumes, credentials, browser state,
-  databases, application screenshots, and generated application documents.
+## Quick start
 
-## Configuration
-
-`job_bot/config.china_hk_ic_foreign.json` is retained as a compatibility entry
-point. It now composes the versioned files under `job_bot/config/`:
-
-- `runtime.json`: database, concurrency/retry, browser, tabs, daily/weekly reporting, and email.
-- `workflows.json`: named module sequences and reproducible experiment tracking.
-- `sources.json`: job-source definitions only.
-- `scoring.json`: Foundation scoring used by the collector.
-- `strategy.json`: geographic/degree tracks, strategy foundations, and tiers.
-- `portals.json`: ATS matching, session probes, and no-submit adapter routing.
-- `field_mappings.json`: profile/document mappings, regional policy, and safety.
-
-Includes are resolved relative to the file that declares them and merged in
-order. Local overrides can therefore include `job_bot/config/jobbot.json` and
-override only the needed keys without copying the source list.
-
-Named objects inside lists can be changed with validated config `patches`,
-including `$append`/`$remove` keyword operations. Use `make config-check` to
-inspect the effective configuration and `make workflow-plan WORKFLOW=...` to
-preview modular runs. See `job_bot/config/README.md` for the tuning workflow.
-
-For a new clone, create the private directory structure described in
-`private_data/README.md`, then keep local overrides and credentials there or in
-the ignored `job_bot/config.local.json`. The checked-in examples contain only
-placeholder values.
-
-## Validation
-
-Run the portable test and release checks from the repository root:
+Python 3.10 or newer is required.
 
 ```bash
-make test
-make config-check
-make public-audit
+git clone git@github.com:SimonTang02/sharkapoolu_beta.git
+cd sharkapoolu_beta
+./scripts/bootstrap.sh
+source .venv/bin/activate
 ```
 
-`make public-audit` checks the files Git would publish for private paths,
-machine-specific absolute paths, credential-like files, generated documents,
-large files, and common token formats. It also compares public files with the
-local candidate profile when that profile is available.
-
-Before publishing an existing Git history, read
-[`docs/GITHUB_RELEASE.md`](docs/GITHUB_RELEASE.md). A clean snapshot is required
-when earlier commits contain resumes or other personal data; deleting them only
-from the latest commit does not remove them from Git history.
-
-## Daily and weekly reports
-
-Run `make daily` for collection, rescoring, a standalone daily delta, and a
-regenerated current-week report. Run `make weekly` to rebuild only the weekly
-report without visiting any job site.
-
-Daily delta files are point-in-time notifications. `weekly_YYYY-Www.md` is not
-built by appending those files: it is regenerated from SQLite and therefore
-reflects corrected job state, application progress, source health, and the
-latest login audit. `weekly_latest.md` is a convenient copy of the newest
-generated week.
-
-All candidate-specific LaTeX entry points live under
-`private_data/cv/source/`; the project root contains no resume source or PDF.
-
-## Local Render
-
-If a local TinyTeX installation is available under the ignored `.TinyTeX/`
-directory, render with:
+The bootstrap script creates `.venv`, installs the package, creates ignored
+private configuration files from safe examples, validates them, and runs the
+test suite. Fill the generated files under `private_data/`, then validate again:
 
 ```bash
-make current
-make visa
+jobbot-private check
+jobbot-config --config job_bot/config.china_hk_ic_foreign.json
 ```
 
-The generated PDFs will be placed in `private_data/cv/build/`.
+For browser-assisted collection and form preparation:
 
-## VSCode Live Preview
+```bash
+./scripts/bootstrap.sh --with-browser
+sudo .venv/bin/python -m playwright install-deps chromium  # Linux only, if needed
+```
 
-Install the VSCode extension `LaTeX Workshop`. This repository includes
-`.vscode/settings.json`, which invokes `scripts/latexmk_cv.sh` and builds on
-save. Open `private_data/cv/source/current.tex` or
-`private_data/cv/source/visa.tex`, save the file, then open the PDF preview tab.
+See [installation](docs/installation.md) for Windows CDP, TeX, encrypted data,
+and update instructions.
 
-## Overleaf Workflow
+## Repository layout
 
-Upload the contents of `private_data/cv/source/` together with
-`cv/latex/resume.cls` to Overleaf. Do not upload `job_bot/`,
-`application_bot/`, local databases, browser state, or `passport.env`. Compile
-`main.tex` for the current internship resume, or set the Overleaf main document
-to `visa.tex` for the visa version.
+```text
+application_bot/   Browser session checks and review-assisted form adapters
+cv/                Resume evidence, keyword, and document-generation code
+docs/              Installation, architecture, configuration, and interfaces
+examples/          Redacted templates copied into the private data tree
+job_bot/           Discovery, normalization, scoring, database, and reports
+schemas/           JSON Schemas for candidate-maintained private files
+scripts/           Bootstrap, privacy audit, and release utilities
+private_data/      Ignored identity, credentials, sessions, databases, and output
+```
 
-## Private document version strategy
+## Common commands
 
-Use three layers:
+| Command | Purpose |
+| --- | --- |
+| `make private-init` | Create missing private templates without overwriting files |
+| `make private-check` | Check private structure, cross-file consistency, and permissions |
+| `make config-check` | Resolve includes and validate the effective public config |
+| `make daily` | Collect, rescore, and write daily and weekly reports |
+| `make weekly` | Rebuild the weekly report from SQLite |
+| `make session-audit` | Check configured login sessions without exposing credentials |
+| `make workflow-plan WORKFLOW=http_refresh` | Preview a named modular workflow |
+| `make workflow WORKFLOW=http_refresh` | Run a named modular workflow |
+| `make test` | Run unit tests |
+| `make release-check` | Audit publishable files, test, and validate config |
 
-- `private_data/cv/archive/original_overleaf/` keeps the raw downloaded archive.
-- `private_data/cv/source/current.tex` and `visa.tex` keep purpose-specific versions.
-- Keep private document checkpoints outside the public Git history.
+The installed command-line entry points are `jobbot`, `applybot`, `cvbot`,
+`jobbot-config`, and `jobbot-private`.
 
-Suggested private checkpoint names:
+## Configuration model
 
-- `baseline-overleaf-download`
-- `intern-hardware-focus`
-- `visa-academic-version`
+Versioned configuration under `job_bot/config/` defines runtime behavior,
+sources, scoring, strategy, workflows, portal adapters, and field mappings.
+Ignored files under `private_data/` hold identity, evidence, keywords,
+credentials, browser state, application artifacts, and databases. Set
+`JOBBOT_PRIVATE_DIR` to relocate the entire private tree to an encrypted disk or
+private synced directory. A wheel installation defaults to the platform data
+directory instead of writing inside `site-packages`.
+
+Start with [configuration.md](docs/configuration.md). The repository-level
+[AGENTS.md](AGENTS.md) gives coding agents the complete operating contract,
+including safety rules, command selection, and extension points.
+
+## Safety and privacy
+
+- Never commit `private_data/`, resumes, cookies, tokens, screenshots, or local
+  databases.
+- Legal authorization, sponsorship, demographic, and declaration answers must
+  come from explicit candidate input.
+- Automation may prepare and save a draft only when its separate safety gate is
+  enabled. It must never click the final Submit control.
+- Run `make public-audit` before publishing. Use `make history-audit` when an
+  older Git history may have contained personal files.
+
+Read [SECURITY.md](SECURITY.md) before reporting a vulnerability or suspected
+data exposure. Contributions follow [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE)

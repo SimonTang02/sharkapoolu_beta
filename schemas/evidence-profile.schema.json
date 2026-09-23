@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SimonTang02/sharkapoolu_beta/main/schemas/evidence-profile.schema.json",
+  "title": "CV evidence profile",
+  "description": "Reviewed claims available to deterministic resume and cover-letter generation.",
+  "type": "object",
+  "required": ["schema_version", "identity", "evidence_groups"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "identity": {
+      "type": "object",
+      "properties": {
+        "display_name": {"type": "string"},
+        "headline_name": {"type": "string"},
+        "email": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "graduation_school": {"type": "string"},
+    "expected_graduation_date": {"type": "string"},
+    "tailored_summaries": {"type": "object", "additionalProperties": {"type": "string"}},
+    "candidate_summary": {"type": "string"},
+    "closing_strength": {"type": "string"},
+    "evidence_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "keywords", "evidence"],
+        "properties": {
+          "name": {"type": "string"},
+          "keywords": {"type": "array", "items": {"type": "string"}},
+          "evidence": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "education_gpa": {"type": "object"},
+    "graduation_confirmation": {"type": "object"}
+  },
+  "additionalProperties": true
+}

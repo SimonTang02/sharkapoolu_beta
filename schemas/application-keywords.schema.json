@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SimonTang02/sharkapoolu_beta/main/schemas/application-keywords.schema.json",
+  "title": "Application keyword library",
+  "description": "Evidence-backed technical and collaboration labels with role presets.",
+  "type": "object",
+  "required": ["schema_version", "sources", "usage_rules", "technical_keywords", "collaboration_personality_keywords", "role_presets"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "updated_at": {"type": "string"},
+    "purpose": {"type": "string"},
+    "sources": {"type": "object", "additionalProperties": {"type": "object"}},
+    "usage_rules": {"type": "array", "items": {"type": "string"}},
+    "technical_keywords": {"type": "array", "items": {"$ref": "#/$defs/keyword"}},
+    "collaboration_personality_keywords": {"type": "array", "items": {"$ref": "#/$defs/keyword"}},
+    "role_presets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "technical_ids", "collaboration_ids", "role_match_terms"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "technical_ids": {"type": "array", "items": {"type": "string"}},
+          "collaboration_ids": {"type": "array", "items": {"type": "string"}},
+          "role_match_terms": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "keyword": {
+      "type": "object",
+      "required": ["id", "english", "chinese", "evidence", "example_en", "source_ids", "claim_status"],
+      "properties": {
+        "id": {"type": "string"},
+        "english": {"type": "string"},
+        "chinese": {"type": "string"},
+        "evidence": {"type": "string"},
+        "example_en": {"type": "string"},
+        "source_ids": {"type": "array", "items": {"type": "string"}},
+        "claim_status": {"type": "string"},
+        "match_terms": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -34,6 +34,7 @@ from private_paths import (  # noqa: E402
     CURRENT_RESUME_TEX,
     JOBBOT_OUTPUT,
 )
+from job_bot.private_config import validate_application_profile  # noqa: E402
 
 
 DEFAULT_CONFIG = ROOT / "job_bot" / "config.china_hk_ic_foreign.json"
@@ -134,10 +135,24 @@ def cmd_list(args: argparse.Namespace) -> None:
 def load_profile(path: Path) -> dict:
     if not path.is_file():
         raise SystemExit(
-            f"Application profile not found: {path}. Copy job_bot/application_profile.template.json "
-            "to private_data/profiles/application_profile.json and fill it locally."
+            f"Application profile not found: {path}. Run "
+            "'python3 -m job_bot.private_config init' and fill the private profile."
         )
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        profile = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Invalid application profile JSON at line {exc.lineno}: {path}") from exc
+    if not isinstance(profile, dict):
+        raise SystemExit(f"Application profile root must be an object: {path}")
+    errors = [
+        issue
+        for issue in validate_application_profile(profile, str(path))
+        if issue.level == "ERROR"
+    ]
+    if errors:
+        summary = "; ".join(f"{issue.path}: {issue.message}" for issue in errors)
+        raise SystemExit(f"Invalid application profile: {summary}")
+    return profile
 
 
 def hydrate_known_resume_contacts(profile: dict, resume_tex: str) -> dict:

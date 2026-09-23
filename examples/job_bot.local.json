@@ -1,0 +1,20 @@
+{
+  "includes": [
+    "../../job_bot/config/jobbot.json"
+  ],
+  "database": {
+    "path": "private_data/database/china_hk_ic_foreign.sqlite3"
+  },
+  "application_browser": {
+    "auto_submit": false,
+    "windows_cdp": {
+      "url_env": "CHROME_CDP_URL",
+      "url": ""
+    }
+  },
+  "email": {
+    "dry_run": true,
+    "to": [],
+    "to_env": "JOBBOT_EMAIL_TO"
+  }
+}

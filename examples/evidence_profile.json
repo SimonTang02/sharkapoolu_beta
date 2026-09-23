@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SimonTang02/sharkapoolu_beta/main/schemas/evidence-profile.schema.json",
+  "schema_version": 1,
+  "identity": {
+    "display_name": "",
+    "headline_name": "",
+    "email": ""
+  },
+  "graduation_school": "",
+  "expected_graduation_date": "",
+  "tailored_summaries": {
+    "default": ""
+  },
+  "candidate_summary": "",
+  "closing_strength": "",
+  "evidence_groups": [
+    {
+      "name": "",
+      "keywords": [],
+      "evidence": ""
+    }
+  ],
+  "education_gpa": {},
+  "graduation_confirmation": {
+    "school": "",
+    "year": null,
+    "month": null,
+    "confirmed_on": "",
+    "source": ""
+  }
+}

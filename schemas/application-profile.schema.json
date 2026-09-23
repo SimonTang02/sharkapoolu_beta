@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SimonTang02/sharkapoolu_beta/main/schemas/application-profile.schema.json",
+  "title": "Application profile",
+  "description": "Candidate facts and explicitly reviewed application answers. Keep this file private.",
+  "type": "object",
+  "required": ["schema_version", "fields", "documents", "safety"],
+  "properties": {
+    "schema_version": {"const": 1, "description": "Profile format version."},
+    "fields": {
+      "type": "object",
+      "description": "Stable identity and contact values. Blank means unknown; it must not be inferred.",
+      "properties": {
+        "how_did_you_hear": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "previous_nvidia_worker": {"type": ["boolean", "null"]},
+        "first_name": {"type": "string"},
+        "last_name": {"type": "string"},
+        "preferred_name": {"type": "string"},
+        "chinese_name": {"type": "string"},
+        "native_first_name": {"type": "string"},
+        "native_last_name": {"type": "string"},
+        "email": {"type": "string"},
+        "phone": {"type": "string"},
+        "address_line_1": {"type": "string"},
+        "city": {"type": "string"},
+        "postal_code": {"type": "string"},
+        "country": {"type": "string"},
+        "date_of_birth": {"type": "string", "description": "Use YYYY-MM-DD or leave blank."},
+        "linkedin_url": {"type": "string"},
+        "github_url": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "documents": {
+      "type": "object",
+      "description": "Default private document paths; per-job profiles may override them.",
+      "properties": {
+        "resume_path": {"type": "string"},
+        "cover_letter_path": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "education": {"type": "array", "items": {"$ref": "#/$defs/datedRecord"}},
+    "languages": {"type": "array", "items": {"type": "object"}},
+    "work_experience": {"type": "array", "items": {"$ref": "#/$defs/datedRecord"}},
+    "projects": {"type": "array", "items": {"$ref": "#/$defs/datedRecord"}},
+    "skills": {"type": "array", "items": {"type": "string"}},
+    "workday_checkbox_groups": {
+      "type": "object",
+      "description": "Portal option groups keyed by logical group name. Values must be reviewed exact labels.",
+      "additionalProperties": {"type": "array", "items": {"type": "string"}}
+    },
+    "custom_answers": {
+      "type": "object",
+      "description": "Exact portal question text mapped to a reviewed answer. Null means unanswered.",
+      "additionalProperties": {"type": ["string", "boolean", "number", "null"]}
+    },
+    "answer_rules": {"type": "array", "description": "Pattern-based reviewed answers for wording variants.", "items": {"type": "object"}},
+    "voluntary_disclosures": {"type": "object"},
+    "explicit_authorization": {
+      "type": "object",
+      "description": "User-confirmed work authorization scope. Residence country is not authorization.",
+      "properties": {
+        "user_confirmed": {"type": "boolean"},
+        "location_scopes": {"type": "array", "items": {"enum": ["mainland_china", "hong_kong", "united_states"]}},
+        "work_authorized": {"type": ["boolean", "null"]},
+        "sponsorship_required": {"type": ["boolean", "null"]},
+        "company_consents": {"type": "object", "additionalProperties": {"type": "boolean"}}
+      },
+      "additionalProperties": true
+    },
+    "career_preferences": {"type": "object"},
+    "personal_facts_confirmation": {
+      "type": "object",
+      "description": "Optional dated provenance for candidate-confirmed facts that do not yet have a first-class field."
+    },
+    "safety": {
+      "type": "object",
+      "required": ["allow_sensitive_answers", "allow_server_draft", "allow_submit"],
+      "properties": {
+        "allow_sensitive_answers": {"type": "boolean"},
+        "allow_server_draft": {"type": "boolean"},
+        "allow_submit": {"const": false, "description": "The shared automation contract never enables final submission."}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "datedRecord": {
+      "type": "object",
+      "properties": {
+        "from_month": {"type": ["integer", "null"], "minimum": 1, "maximum": 12},
+        "from_year": {"type": ["integer", "null"]},
+        "to_month": {"type": ["integer", "null"], "minimum": 1, "maximum": 12},
+        "to_year": {"type": ["integer", "null"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

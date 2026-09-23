@@ -156,7 +156,17 @@ Preserve project evidence.
             INSERT INTO applications(id, job_id) VALUES(1, 1);
         ''')
         master = self.root / 'profile.json'
-        master.write_text(json.dumps({'fields': {}, 'custom_answers': {'sponsorship': 'pending'}}))
+        master.write_text(json.dumps({
+            'schema_version': 1,
+            'fields': {},
+            'documents': {},
+            'custom_answers': {'sponsorship': 'pending'},
+            'safety': {
+                'allow_sensitive_answers': False,
+                'allow_server_draft': False,
+                'allow_submit': False,
+            },
+        }))
         source = self.root / 'source.tex'
         source.write_text('')
         resume = self.root / 'resume.pdf'

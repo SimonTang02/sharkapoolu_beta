@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SimonTang02/sharkapoolu_beta/main/schemas/application-keywords.schema.json",
+  "schema_version": 1,
+  "updated_at": "",
+  "purpose": "Evidence-scoped labels for resumes and application forms.",
+  "sources": {
+    "resume": {
+      "path": "private_data/cv/source/current.tex",
+      "description": "Reviewed canonical resume source."
+    },
+    "evidence": {
+      "path": "private_data/cv/profile/evidence_profile.json",
+      "description": "Reviewed evidence inventory."
+    }
+  },
+  "usage_rules": [
+    "Use only claims supported by a listed source.",
+    "Do not infer proficiency, years of experience, or personality ratings.",
+    "Review every selected label before submission."
+  ],
+  "technical_keywords": [],
+  "collaboration_personality_keywords": [],
+  "role_presets": []
+}

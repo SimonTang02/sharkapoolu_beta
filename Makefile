@@ -7,11 +7,23 @@ TEXBIN ?= $(PROJECT_ROOT)/.TinyTeX/bin/x86_64-linux
 export PATH := $(TEXBIN):$(PATH)
 export TEXINPUTS := $(LATEX_CLASS_DIR):$(SOURCE_DIR):$(TEXINPUTS)
 
-.PHONY: all current visa clean check-tools daily weekly session-audit config-check workflow workflow-plan test public-audit history-audit release-check public-snapshot
+.PHONY: all bootstrap install-browser private-init private-check current visa clean check-tools daily weekly session-audit config-check workflow workflow-plan test public-audit history-audit release-check public-snapshot
 
 CONFIG ?= job_bot/config.china_hk_ic_foreign.json
 
 all: current visa
+
+bootstrap:
+	./scripts/bootstrap.sh
+
+install-browser:
+	./scripts/bootstrap.sh --with-browser
+
+private-init:
+	python3 -m job_bot.private_config init
+
+private-check:
+	python3 -m job_bot.private_config check
 
 current:
 	@mkdir -p $(OUTDIR)

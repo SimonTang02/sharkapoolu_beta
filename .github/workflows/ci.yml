@@ -15,6 +15,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate bootstrap script
+        run: |
+          test -x scripts/bootstrap.sh
+          bash -n scripts/bootstrap.sh
+      - name: Install package
+        run: python3 -m pip install -e .
+      - name: Validate generated private configuration
+        env:
+          JOBBOT_PRIVATE_DIR: ${{ runner.temp }}/sharkapoolu-private
+        run: |
+          jobbot-private init
+          jobbot-private check
+      - name: Build and smoke-test wheel
+        run: |
+          python3 -m pip wheel . --no-deps --wheel-dir "${RUNNER_TEMP}/wheels"
+          python3 -m pip install --force-reinstall --no-deps "${RUNNER_TEMP}"/wheels/*.whl
+          cd "${RUNNER_TEMP}"
+          JOBBOT_PRIVATE_DIR="${RUNNER_TEMP}/wheel-private" jobbot-private init
+          JOBBOT_PRIVATE_DIR="${RUNNER_TEMP}/wheel-private" jobbot-private check
       - name: Audit publishable files
         run: python3 scripts/audit_public_repo.py
       - name: Run unit tests
