@@ -41,6 +41,24 @@ Every adapter must honor these contracts:
 Reserved adapter hooks include session probes, draft support, environment-file
 options, per-portal timeouts, and generic routing by host suffix.
 
+### Employer application limits
+
+`application_limits` records the maximum number of applications for one exact
+employer name, recruiting category, and inclusive date window. `enforcement`
+is `hard` for a stated portal limit or `advisory` for a recommendation.
+`max_preferences_per_application` records a separate preference limit without
+counting each preference as another application. Store the policy URL and note
+whether the window is an official deadline or an internal tracking period.
+
+Tag matching postings in `jobs.recruitment_category` (for example,
+`2027_campus`). A company-wide rule uses category `all`. The dispatcher checks
+the rule against confirmed `submitted` applications before starting an
+adapter. A hard limit stops the adapter; an unclassified job at an employer
+with a category-specific hard rule requires category review. Advisory limits
+remain visible in the dispatch plan. Check one record directly with
+`python3 -m application_bot.application_limits <application-id>`. Limit rows and
+job tags are local database state; real application history stays private.
+
 ## Configuration overlays
 
 JSON configuration supports ordered `includes`. Paths are relative to the file
@@ -89,4 +107,3 @@ The architecture leaves room for:
 
 An integration must remain optional: a fresh clone and the core test suite may
 not require its credentials, account, proprietary SDK, or network availability.
-

@@ -21,6 +21,7 @@ from application_bot.portal_registry import (  # noqa: E402
     resolve_adapter,
     resolve_company_profile,
 )
+from application_bot.application_limits import check_application_limit  # noqa: E402
 from job_bot.bot import connect_db, load_config  # noqa: E402
 from private_paths import APPLICATION_OUTPUT, CREDENTIALS_FILE  # noqa: E402
 
@@ -43,6 +44,7 @@ class DispatchPlan:
     command: list[str] | None
     result_code: int | None = None
     error: str = ""
+    application_limit: dict | None = None
 
 
 def application_rows(conn, application_ids: list[int], campaign_id: int | None):
@@ -73,7 +75,9 @@ def application_rows(conn, application_ids: list[int], campaign_id: int | None):
     ).fetchall()
 
 
-def build_plans(config, rows, config_path: Path, env_path: Path) -> list[DispatchPlan]:
+def build_plans(
+    config, rows, config_path: Path, env_path: Path, limit_checks: dict | None = None
+) -> list[DispatchPlan]:
     plans = []
     for row in rows:
         adapter = resolve_adapter(
@@ -92,7 +96,15 @@ def build_plans(config, rows, config_path: Path, env_path: Path) -> list[Dispatc
             if adapter
             else None
         )
+        limit_check = (limit_checks or {}).get(int(row["id"]))
         state = "ready" if command else "manual_or_unsupported"
+        if limit_check and limit_check.state in (
+            "application_limit_reached", "category_review_required"
+        ):
+            state = limit_check.state
+            command = None
+        elif limit_check and limit_check.state == "limit_advisory":
+            state = "ready_with_limit_advisory" if command else "limit_advisory"
         company_profile = (
             resolve_company_profile(
                 config,
@@ -115,6 +127,7 @@ def build_plans(config, rows, config_path: Path, env_path: Path) -> list[Dispatc
                 supports_draft=adapter.supports_draft if adapter else False,
                 timeout_seconds=adapter.timeout_seconds if adapter else 0,
                 command=command,
+                application_limit=asdict(limit_check) if limit_check else None,
             )
         )
     return plans
@@ -138,8 +151,12 @@ def main() -> int:
         raise SystemExit("Config safety.allow_submit must be false")
     conn = connect_db(config)
     rows = application_rows(conn, args.application_id, args.campaign_id)
+    limit_checks = {
+        int(row["id"]): check_application_limit(conn, int(row["id"]))
+        for row in rows
+    }
     conn.close()
-    plans = build_plans(config, rows, args.config, args.env_file)
+    plans = build_plans(config, rows, args.config, args.env_file, limit_checks)
 
     if args.execute:
         for plan in plans:

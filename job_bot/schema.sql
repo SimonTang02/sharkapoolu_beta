@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   url TEXT UNIQUE,
   platform TEXT,
   role_kind TEXT,
+  recruitment_category TEXT,
   description TEXT,
   status TEXT DEFAULT 'collected',
   fit_score INTEGER,
@@ -54,6 +55,27 @@ CREATE TABLE IF NOT EXISTS application_events (
 
 CREATE INDEX IF NOT EXISTS idx_applications_job_id ON applications(job_id);
 CREATE INDEX IF NOT EXISTS idx_application_events_application_id ON application_events(application_id);
+
+-- A cap applies to one employer, recruiting category, and submission window.
+-- Use category 'all' only when the employer explicitly sets a company-wide cap.
+CREATE TABLE IF NOT EXISTS application_limits (
+  id INTEGER PRIMARY KEY,
+  company TEXT NOT NULL,
+  category TEXT NOT NULL,
+  window_start TEXT NOT NULL,
+  window_end TEXT NOT NULL,
+  max_applications INTEGER NOT NULL CHECK (max_applications > 0),
+  max_preferences_per_application INTEGER,
+  enforcement TEXT NOT NULL DEFAULT 'hard'
+    CHECK (enforcement IN ('hard', 'advisory')),
+  source_url TEXT,
+  notes TEXT,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (company, category, window_start, window_end)
+);
+
+CREATE INDEX IF NOT EXISTS idx_application_limits_company_window
+  ON application_limits(company, window_start, window_end);
 
 CREATE TABLE IF NOT EXISTS browser_tabs (
   application_id INTEGER PRIMARY KEY REFERENCES applications(id),

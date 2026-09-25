@@ -225,6 +225,7 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
         "is_active": "INTEGER DEFAULT 1",
         "raw_json": "TEXT",
         "role_kind": "TEXT",
+        "recruitment_category": "TEXT",
     })
     add_columns(conn, "applications", {
         "profile_path": "TEXT",
