@@ -22,6 +22,7 @@ TEXT_SUFFIXES = {
     ".ps1",
     ".py",
     ".sh",
+    ".sql",
     ".sty",
     ".tex",
     ".toml",

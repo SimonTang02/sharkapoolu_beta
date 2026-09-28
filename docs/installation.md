@@ -1,5 +1,9 @@
 # Installation
 
+For two online WSL machines that need the same private SQLite data, follow
+[the shared database setup](shared-database.md). The database stays on one host,
+and the other machine uses authenticated SSH for database operations.
+
 ## Requirements
 
 - Git

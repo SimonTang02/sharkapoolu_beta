@@ -1,0 +1,18 @@
+{
+  "_comment": {
+    "purpose": "Public example only. Copy to the private config/database_connection.json; fill real machine settings there. This file contains no database rows or credentials.",
+    "mode": "local: this machine owns the SQLite file. ssh: this client runs SQL on the host. Start in local mode; use jobbot-db configure for a client.",
+    "host": "Existing SSH alias or user@host. Define its key and port in your local SSH config. No password or private key belongs in JSON.",
+    "project_dir": "Repository root on the database host. Use the host's actual path; ~/ is supported.",
+    "python": "Python executable on the host, relative to project_dir or an absolute path. The usual editable install uses .venv/bin/python.",
+    "private_dir": "Host's private root when JOBBOT_PRIVATE_DIR is customized. null uses the host project's default private_data. Use a host absolute path when filling this field.",
+    "request_timeout": "Per protocol request timeout in seconds, from 1 to 300. This is separate from SSH connection and SQLite lock timeouts.",
+    "storage": "Save the filled file only under the resolved private root, with mode 600. The host normally needs no connection file. Never change to local to work around a failed SSH connection."
+  },
+  "mode": "local",
+  "host": "example-db",
+  "project_dir": "~/workspace/sharkapoolu_beta",
+  "python": ".venv/bin/python",
+  "private_dir": null,
+  "request_timeout": 60
+}

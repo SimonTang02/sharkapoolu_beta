@@ -1,5 +1,10 @@
 # Sharkapoolu
 
+New users and coding agents: start with the complete
+[operating and handoff guide](AGENT_HANDOFF.md) and
+[commented public templates](examples/README.md), including a fictional
+Mike Malon / NYU Computer Science resume and the shared-database settings.
+
 Sharkapoolu is a local-first toolkit for job discovery, ranking, resume
 tailoring, and review-assisted application preparation. It was built around
 hardware and digital-design recruiting, but its source and scoring layers are
@@ -12,6 +17,8 @@ final application submission remains a human action.
   browser sessions.
 - Score roles with configurable evidence, geography, degree, and role rules.
 - Generate daily and weekly reports from a local SQLite database.
+- Share the private SQLite database between online WSL machines over SSH; see
+  [setup and operating limits](docs/shared-database.md).
 - Build resume-tailoring notes from an evidence profile and keyword library.
 - Prepare supported application forms in a dedicated browser and stop for
   review before submission.

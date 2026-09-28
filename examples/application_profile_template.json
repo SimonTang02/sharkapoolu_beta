@@ -1,0 +1,87 @@
+{
+  "_comment": {
+    "fiction": "Mike Malon and every example below are fictional demonstration data. Replace or remove them before preparing a real application.",
+    "schema_version": "Keep 1 unless the application ships a schema migration.",
+    "fields": "Legal name/contact fields must match the real candidate. Blank means unresolved. Reserved example.com addresses are demonstration contacts only.",
+    "documents": "Paths identify reviewed local PDFs; replace them with paths readable on the machine that owns the browser. Database sharing does not copy PDFs.",
+    "education": "One record per degree. Use school/degree/major exactly as awarded, GPA with its denominator, integer months 1-12 and four-digit years. Empty portal_values means no employer-specific spelling override.",
+    "languages": "Candidate-confirmed language, native flag and proficiency. An empty list makes no claim.",
+    "work_experience": "Add only supported employer, role, location, date and description records. Empty means none recorded.",
+    "projects": "Describe actual work, contribution, tools, dates and evidence; remove fictional examples.",
+    "skills": "Short labels supported by the evidence profile. Do not copy JD requirements as candidate abilities.",
+    "workday_checkbox_groups": "Exact portal group labels and confirmed selected values; leave empty until inspected.",
+    "custom_answers": "Exact question text maps to a confirmed answer. Keep legal, sponsorship and unknown answers null.",
+    "answer_rules": "Narrow prompt rules with provenance; do not make broad rules for legal or sensitive questions.",
+    "voluntary_disclosures": "Optional candidate choices; null means unresolved. accept_terms remains false until this application's terms are reviewed.",
+    "explicit_authorization": "Confirmed work-authorization facts, location_scopes and company_consents. NYU enrollment does not establish nationality, immigration or work eligibility.",
+    "career_preferences": "Candidate-specific location/role and resume-language preferences. Rendered PDF review should remain true.",
+    "personal_facts_confirmation": "Dated provenance for additional real facts; use an empty object until confirmed.",
+    "safety": "allow_sensitive_answers permits only already confirmed facts; allow_server_draft needs explicit draft scope and command; allow_submit must stay false."
+  },
+  "schema_version": 1,
+  "fields": {
+    "how_did_you_hear": "",
+    "previous_nvidia_worker": null,
+    "first_name": "Mike",
+    "last_name": "Malon",
+    "preferred_name": "Mike",
+    "chinese_name": "",
+    "native_first_name": "",
+    "native_last_name": "",
+    "email": "mike.malon@example.com",
+    "phone": "",
+    "address_line_1": "",
+    "city": "New York",
+    "postal_code": "",
+    "country": "",
+    "date_of_birth": "",
+    "linkedin_url": "",
+    "github_url": ""
+  },
+  "documents": {
+    "resume_path": "private_data/cv/build/current.pdf",
+    "cover_letter_path": ""
+  },
+  "education": [{
+    "school": "New York University",
+    "degree": "Bachelor of Science",
+    "field_of_study": "Computer Science",
+    "gpa": "",
+    "from_month": 9,
+    "from_year": 2024,
+    "to_month": 5,
+    "to_year": 2028,
+    "portal_values": {}
+  }],
+  "languages": [],
+  "work_experience": [],
+  "projects": [],
+  "skills": ["Python", "SQL", "Git"],
+  "workday_checkbox_groups": {},
+  "custom_answers": {
+    "Are you legally authorized to work in the country where this position is located?": null,
+    "Will you require employer support to obtain or maintain authorization to work in that country?": null
+  },
+  "answer_rules": [],
+  "voluntary_disclosures": {"gender": null, "accept_terms": false},
+  "explicit_authorization": {
+    "user_confirmed": false,
+    "location_scopes": [],
+    "work_authorized": null,
+    "sponsorship_required": null,
+    "company_consents": {}
+  },
+  "career_preferences": {
+    "accept_role_or_city_adjustment": null,
+    "resume_language_policy": {
+      "china_owned_employers": "",
+      "other_employers": "English",
+      "explicit_role_language_requirement_overrides_default": true,
+      "max_pages_preferred": 2,
+      "rendered_pdf_review_required": true,
+      "chinese_font": ""
+    }
+  },
+  "personal_facts_confirmation": {},
+  "safety": {"allow_sensitive_answers": false, "allow_server_draft": false, "allow_submit": false}
+}

@@ -61,6 +61,18 @@
         "adapter": "ti_oracle",
         "company_patterns": ["Texas Instruments", "^TI$"],
         "rules": {"resume_and_cover_letter": true}
+      },
+      {
+        "id": "micron_eightfold",
+        "priority": 100,
+        "adapter": "micron",
+        "company_patterns": ["^Micron"],
+        "rules": {
+          "resume_upload": true,
+          "terms_checkbox": "manual_confirm_only",
+          "job_specific_questions": "inventory_and_fill_confirmed_only",
+          "success_marker": "感谢您的申请"
+        }
       }
     ],
     "adapters": [
@@ -114,6 +126,17 @@
         "platforms": ["eightfold"],
         "host_suffixes": ["careers.qualcomm.com", "careers.micron.com"],
         "script": "application_bot/eightfold.py",
+        "env_option": "--env",
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "micron",
+        "priority": 90,
+        "platforms": ["eightfold"],
+        "company_patterns": ["^Micron"],
+        "host_suffixes": ["careers.micron.com"],
+        "script": "application_bot/micron.py",
         "env_option": "--env",
         "session_probe": {"kind": "application_url"},
         "supports_draft": false

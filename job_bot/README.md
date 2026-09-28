@@ -326,15 +326,15 @@ decision bands, and current top matches:
 python3 job_bot/scoring_report.py
 ```
 
-### 2027 two-track application strategy
+### Configurable application strategy
 
 The application shortlist is now split from the ordinary daily digest:
 
-1. Mainland China/Hong Kong full-time roles must be a 2027/new-graduate role
-   or come from an official campus portal.
-2. United States internships must target Summer 2027 (or be an explicitly
-   rolling Apple master's hardware internship), allow master's students, and
-   pass term/degree/export-control checks.
+The current shared strategy has three review tracks: China/Hong Kong campus
+full-time, US new-graduate full-time, and US summer internships. Configure the
+recruiting cycle, degree, graduation window and target directions for the actual
+candidate in a private overlay. A score or review queue never proves eligibility.
+Official role requirements and employer application limits still need review.
 
 The US collector set includes dedicated NVIDIA, AMD, Qualcomm, Apple, ADI,
 Broadcom, Marvell, Cadence, TI, Etched, and SpaceX sources in addition to the
@@ -355,7 +355,7 @@ python3 job_bot/strategy_report.py
 The preferred daily entry point now checks the dedicated Windows Chrome,
 starts it automatically from WSL when possible, scans ordinary HTTP sources in
 parallel, keeps shared-CDP sources serial, rescoring stored jobs, and writes both
-the two-track delta report and a compact human-intervention report:
+the configured strategy delta report and a compact human-intervention report:
 
 ```bash
 python3 job_bot/daily_pipeline.py \
@@ -380,10 +380,10 @@ changes are not retried blindly; they are routed to the intervention report.
 Only login expiry, MFA/CAPTCHA, genuinely ambiguous eligibility answers, portal
 layout changes, and final submission should require human review.
 
-Use the truthful degree dates appropriate to each track: the full-time variant
-can state June 2027, while an internship variant must show a real enrollment
-date that covers the entire internship. The strategy report never submits an
-application.
+Use the same candidate-confirmed degree dates for every track. Check each
+internship's enrollment and return-to-school requirements against those dates;
+do not change a graduation date to fit a role. The strategy report never submits
+an application. New users should read the complete [handoff guide](../AGENT_HANDOFF.md).
 
 ## Local Test
 

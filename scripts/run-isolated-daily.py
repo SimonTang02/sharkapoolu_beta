@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from job_bot.bot import DEFAULT_CONFIG, db_path, load_config, load_env_file
+from job_bot.shared_database import connect as connect_database
 from job_bot.applications.nvidia_workday import _playwright_api
 from job_bot.browser_connection import check_cdp_health
 from job_bot.daily_pipeline import cdp_endpoint
@@ -28,7 +29,7 @@ def main() -> int:
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d_%H%M%S")
     run_dir = JOBBOT_OUTPUT / ("isolated_scan_" + stamp)
     run_dir.mkdir(parents=True, mode=0o700)
-    with sqlite3.connect(db_path(config)) as source, sqlite3.connect(run_dir / "before.sqlite3") as backup:
+    with connect_database(db_path(config)) as source, sqlite3.connect(run_dir / "before.sqlite3") as backup:
         source.backup(backup)
     manifest = {"started_at": dt.datetime.now(dt.timezone.utc).isoformat(), "browser": health.browser}
     with _playwright_api()() as playwright:

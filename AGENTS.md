@@ -8,6 +8,12 @@ tests, browser behavior, or release files. More detail is available in
 [`docs/installation.md`](docs/installation.md), and
 [`SECURITY.md`](SECURITY.md).
 
+At the start of a new conversation, also read [`AGENT_HANDOFF.md`](AGENT_HANDOFF.md)
+for the complete installation, operating, application and shared-database guide.
+Public templates and their filling instructions are indexed in
+[`examples/README.md`](examples/README.md). Inspect the actual local private
+configuration and machine role before operating an existing installation.
+
 ## Mission and boundaries
 
 Sharkapoolu is a local-first toolkit for:

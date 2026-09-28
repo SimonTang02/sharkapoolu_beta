@@ -57,6 +57,7 @@ from job_bot.source_selector import (  # noqa: E402
     uses_browser,
 )
 from private_paths import DATABASE_DIR, JOBBOT_OUTPUT  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
 from job_bot.scan_browser import new_scan_page, close_scan_page  # noqa: E402
 
 DEFAULT_CONFIG = ROOT / "job_bot" / "config.china_hk_ic_foreign.json"
@@ -203,7 +204,7 @@ def db_path(config: dict[str, Any]) -> Path:
 def connect_db(config: dict[str, Any]) -> sqlite3.Connection:
     path = db_path(config)
     path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(path)
+    conn = connect_database(path)
     conn.row_factory = sqlite3.Row
     ensure_schema(conn)
     return conn

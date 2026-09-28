@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Build the two-track 2027 campus / US summer-intern application shortlist."""
+"""Build the 2027 campus, US new-grad, and US internship review queues."""
 
 from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import re
 import sqlite3
@@ -17,10 +18,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 DEFAULT_CONFIG = ROOT / "job_bot/config.china_hk_ic_foreign.json"
-DEFAULT_DB = ROOT / "private_data/database/china_hk_ic_foreign.sqlite3"
-DEFAULT_OUT = ROOT / "private_data/outputs/job_bot"
 
-from job_bot.bot import load_config
+from job_bot.bot import db_path, load_config
+from job_bot.shared_database import connect as connect_database
+from private_paths import JOB_DATABASE, JOBBOT_OUTPUT
+
+DEFAULT_DB = JOB_DATABASE
+DEFAULT_OUT = JOBBOT_OUTPUT
 
 FOUNDATIONS: list[tuple[str, int, tuple[str, ...]]] = [
     (
@@ -43,8 +47,18 @@ FOUNDATIONS: list[tuple[str, int, tuple[str, ...]]] = [
         ),
     ),
     (
+        "accelerator_design",
+        90,
+        ("npu", "bpu", "ai accelerator", "tensor processor", "神经网络处理器", "加速器设计"),
+    ),
+    (
+        "fpga_design",
+        88,
+        ("fpga", "programmable logic", "可编程逻辑"),
+    ),
+    (
         "verification",
-        84,
+        54,
         (
             "design verification", "hardware verification", "rtl verification",
             "formal verification", "pre-silicon verification", "uvm", "验证工程师",
@@ -84,7 +98,7 @@ FOUNDATIONS: list[tuple[str, int, tuple[str, ...]]] = [
     ),
     (
         "hardware_validation",
-        52,
+        60,
         ("hardware", "silicon validation", "post-silicon", "fpga", "circuit design"),
     ),
 ]
@@ -96,13 +110,18 @@ CHINA_HK = re.compile(
 UNITED_STATES = re.compile(
     r"united states|\bus\b|u\.s\.|california|texas|massachusetts|colorado|oregon|washington|"
     r"arizona|new york|new jersey|pennsylvania|north carolina|vermont|maine|santa clara|san jose|"
-    r"austin|hillsboro|boxborough|fort collins|longmont|rochester|secaucus|irvine",
+    r"austin|hillsboro|boxborough|fort collins|longmont|rochester|secaucus|irvine|"
+    r"chicago|needham|cambridge|\b(?:IL|MA|NY|CA|PA|TX|WA|OR|CO|AZ|NJ|NC|MD)\b",
     re.I,
 )
 INTERNSHIP = re.compile(r"\bintern(?:ship)?s?\b|\bco-?op\b|实习|實習", re.I)
 EXPLICIT_2027 = re.compile(r"2027|27届|2027届|2027 届", re.I)
 CAMPUS = re.compile(r"new college grad|new grad|graduate|campus|应届|應屆|校招|校园招聘|校园", re.I)
-SUMMER = re.compile(r"summer(?:/fall)?\s*2027|2027\s*summer|2027 internships?", re.I)
+SUMMER = re.compile(
+    r"summer(?:/fall)?\s*2027|2027\s*summer|2027 internships?|"
+    r"from\s+(?:may|june|july)\b.{0,55}?2027\s+to\s+(?:august|september)",
+    re.I | re.S,
+)
 SPRING_WINTER_ONLY = re.compile(r"winter/spring 2027|spring 2027", re.I)
 SENIOR = re.compile(
     r"\b(?:senior|staff|principal|manager|director|lead)\b|资深|高级|主管|经理|负责人|专家",
@@ -112,21 +131,24 @@ OFF_DIRECTION = re.compile(
     r"sales|marketing|account manager|recruit|finance|software test|data analyst|"
     r"^software engineering|developer technology|autonomous vehicles and robotics|"
     r"solution architect|解决方案架构|编译|compiler|芯片软件|开源框架|"
-    r"mechanical|thermal|packag(?:e|ing)|product development|fae|现场应用|销售|市场|财务|封装工艺",
+    r"mechanical|thermal|packag(?:e|ing)|product development|fae|现场应用|销售|市场|财务|封装工艺|自动驾驶系统架构|软件系统|基础架构平台",
     re.I,
 )
 MINIMUM_SCORE = 58
 TIER_A_SCORE = 85
 TIER_B_SCORE = 68
 CLASSIFICATION_PRIORITY = [
-    "dft", "physical_design", "verification", "synthesis_sta",
-    "analog_mixed_signal", "architecture", "digital_design", "eda",
-    "hardware_validation",
+    "architecture", "digital_design", "accelerator_design", "fpga_design",
+    "synthesis_sta", "physical_design", "dft", "eda",
+    "analog_mixed_signal", "hardware_validation", "verification",
 ]
 TRACKS = {
     "cn_hk_2027_campus": {"enabled": True, "role_kinds": ["full_time", "unknown"]},
+    "us_2027_new_grad": {"enabled": True, "role_kinds": ["full_time", "unknown"]},
     "us_summer_2027_internship": {"enabled": True, "role_kinds": ["internship"]},
 }
+EXCLUDE_VERIFICATION_ONLY = True
+VERIFICATION_TITLE = re.compile(r"verification|validation|验证|驗證|测试|\buvm\b|\bDV intern\b", re.I)
 STORED_SCORE_BONUS = {"minimum": 70, "points": 2}
 STRATEGY_SCORE_MODIFIERS = [
     {"points": 4, "scope": "title", "pattern": r"architecture|microarchitecture|架构|处理器"},
@@ -137,7 +159,7 @@ FOUNDATION_OVERRIDES = [
     {"title_pattern": r"Hardware(?: Technologies)? Masters Engineering Internships", "foundation": "digital_design", "base_score": 86},
     {"title_pattern": r"2027 Masters Hardware Engineering (?:intern|co-op)", "foundation": "digital_design", "base_score": 84},
     {"title_pattern": r"NVIDIA 2027 Internships: Hardware Engineering", "foundation": "digital_design", "base_score": 86},
-    {"title_pattern": r"^DV Intern\b", "foundation": "verification", "base_score": 84},
+    {"title_pattern": r"^DV Intern\b", "foundation": "verification", "base_score": 54},
     {"title_pattern": r"^PD Intern\b", "foundation": "physical_design", "base_score": 73},
 ]
 
@@ -148,6 +170,7 @@ def configure_strategy(config: dict) -> None:
     global CAMPUS, SUMMER, SPRING_WINTER_ONLY, SENIOR, OFF_DIRECTION
     global MINIMUM_SCORE, TIER_A_SCORE, TIER_B_SCORE, CLASSIFICATION_PRIORITY, TRACKS
     global STORED_SCORE_BONUS, STRATEGY_SCORE_MODIFIERS, FOUNDATION_OVERRIDES
+    global EXCLUDE_VERIFICATION_ONLY
     strategy = config.get("strategy", {})
     foundations = strategy.get("foundations")
     if foundations:
@@ -185,6 +208,7 @@ def configure_strategy(config: dict) -> None:
         )
     ]
     TRACKS = dict(strategy.get("tracks", TRACKS))
+    EXCLUDE_VERIFICATION_ONLY = bool(strategy.get("exclude_verification_only", True))
     STORED_SCORE_BONUS = dict(strategy.get("stored_score_bonus", STORED_SCORE_BONUS))
     STRATEGY_SCORE_MODIFIERS = list(
         strategy.get("score_modifiers", STRATEGY_SCORE_MODIFIERS)
@@ -256,7 +280,6 @@ def internship_eligibility(title: str, text: str, source: str) -> tuple[bool, st
         r"master|m\.?s\.?|graduate student", combined, re.I
     ):
         return False, "仅限本科生"
-    has_2027 = bool(EXPLICIT_2027.search(combined))
     has_summer = bool(SUMMER.search(combined))
     if "Apple United States Silicon Internships" in source and re.search(
         r"Hardware(?: Technologies)? Masters Engineering Internships", title, re.I
@@ -264,9 +287,9 @@ def internship_eligibility(title: str, text: str, source: str) -> tuple[bool, st
         return True, "Apple 硬件硕士滚动实习；需在匹配团队时确认 Summer 2027 日期"
     if SPRING_WINTER_ONLY.search(title) and not re.search(r"summer", title, re.I):
         return False, "仅 Winter/Spring 2027"
-    if not has_2027 and not has_summer:
+    if not has_summer:
         return False, "未确认 Summer 2027"
-    note = "2027 Summer 已确认"
+    note = "岗位标示 2027 实习；需逐岗核对日期、2027-06 毕业与 CPT/OPT 资格"
     if re.search(r"not eligible for visa sponsorship|no visa sponsorship", text, re.I):
         note += "；不提供 sponsorship，需以 CPT/现有授权申请"
     elif re.search(r"must be legally authorized|work authorization", text, re.I):
@@ -295,6 +318,67 @@ def foundation_override(title: str) -> tuple[str, int] | None:
     return None
 
 
+def is_verification_only(title: str) -> bool:
+    """Conservatively hold verification-titled roles for explicit human override."""
+    return EXCLUDE_VERIFICATION_ONLY and bool(VERIFICATION_TITLE.search(title))
+
+
+def us_new_grad_signal(title: str, text: str, source: str) -> tuple[bool, str]:
+    if INTERNSHIP.search(title) or re.search(r"ph\.?d\.? only|博士专属", title, re.I):
+        return False, ""
+    if re.search(r"2026|2028|2029", title) and not EXPLICIT_2027.search(title):
+        return False, ""
+    if EXPLICIT_2027.search(title) or CAMPUS.search(title) or (
+        EXPLICIT_2027.search(text) and CAMPUS.search(source)
+    ):
+        return True, "需核对 2027-06 毕业窗口、美国工作授权及后续雇主支持"
+    return False, ""
+
+
+def hard_limit_capacity(conn: sqlite3.Connection) -> dict[str, dict[str, int]]:
+    """Return remaining employer/category slots in the current recruiting window."""
+    today = dt.date.today().isoformat()
+    result: dict[str, dict[str, int]] = {}
+    for limit in conn.execute(
+        """SELECT company, category, max_applications, window_start, window_end
+           FROM application_limits
+           WHERE enforcement='hard' AND window_start<=? AND window_end>=?""",
+        (today, today),
+    ):
+        category = str(limit["category"])
+        count = conn.execute(
+            """SELECT count(DISTINCT a.id)
+               FROM applications a JOIN jobs j ON j.id=a.job_id
+               WHERE lower(j.company)=lower(?) AND a.status='submitted'
+                 AND (?='all' OR j.recruitment_category=?)
+                 AND substr(coalesce(a.submitted_at,a.created_at),1,10)
+                     BETWEEN ? AND ?""",
+            (limit["company"], category, category,
+             limit["window_start"], limit["window_end"]),
+        ).fetchone()[0]
+        remaining = max(0, int(limit["max_applications"]) - int(count))
+        result.setdefault(str(limit["company"]).casefold(), {})[category] = remaining
+    return result
+
+
+def exhausted_hard_limits(conn: sqlite3.Connection) -> dict[str, set[str]]:
+    return {
+        company: {category for category, remaining in categories.items() if remaining == 0}
+        for company, categories in hard_limit_capacity(conn).items()
+    }
+
+
+def hard_limit_holds_job(
+    company: str, category: str | None, role_kind: str, limits: dict[str, set[str]]
+) -> bool:
+    company_limits = limits.get(company.casefold(), set())
+    return bool(company_limits) and (
+        "all" in company_limits or category in company_limits or
+        (not category and role_kind in ("full_time", "unknown")
+         and any(key.endswith("_campus") for key in company_limits))
+    )
+
+
 def tier_for(score: int) -> str:
     if score >= TIER_A_SCORE:
         return "A"
@@ -303,28 +387,60 @@ def tier_for(score: int) -> str:
     return "C"
 
 
-def collect(conn: sqlite3.Connection) -> tuple[list[Candidate], list[Candidate], dict[str, int]]:
+def collect(conn: sqlite3.Connection) -> tuple[list[Candidate], list[Candidate], list[Candidate], dict[str, int]]:
     conn.row_factory = sqlite3.Row
+    blocked_job_ids = {
+        int(row[0]) for row in conn.execute(
+            """SELECT DISTINCT job_id FROM applications
+               WHERE status IN ('submitted', 'eligibility_blocked', 'listing_closed')"""
+        )
+    }
+    capacities = hard_limit_capacity(conn)
+    exhausted_limits = {
+        company: {category for category, remaining in rules.items() if remaining == 0}
+        for company, rules in capacities.items()
+    }
     rows = conn.execute(
         """
-        SELECT id, company, title, location, url, role_kind, description,
+        SELECT id, company, title, location, url, role_kind, recruitment_category,
+               description, status,
                fit_score, source_name, first_seen
         FROM jobs
         WHERE is_active = 1
         """
     ).fetchall()
     campus_jobs: list[Candidate] = []
+    us_new_grads: list[Candidate] = []
     us_internships: list[Candidate] = []
+    job_categories = {int(row["id"]): str(row["recruitment_category"] or "") for row in rows}
     stats = {
         "active_examined": len(rows),
         "campus_off_direction": 0,
         "campus_not_2027": 0,
         "us_wrong_term_or_degree": 0,
         "below_threshold": 0,
+        "verification_held": 0,
+        "already_resolved": 0,
+        "company_limit_held": 0,
+        "remaining_slots_held": 0,
     }
 
     for row in rows:
+        if int(row["id"]) in blocked_job_ids or row["status"] in (
+            "applied", "closed", "eligibility_blocked", "listing_closed"
+        ):
+            stats["already_resolved"] += 1
+            continue
         title = str(row["title"] or "")
+        if hard_limit_holds_job(
+            str(row["company"] or ""), row["recruitment_category"],
+            str(row["role_kind"] or ""), exhausted_limits
+        ):
+            stats["company_limit_held"] += 1
+            continue
+        if is_verification_only(title):
+            stats["verification_held"] += 1
+            continue
         location = str(row["location"] or "")
         source = str(row["source_name"] or "")
         description = str(row["description"] or "")
@@ -332,7 +448,7 @@ def collect(conn: sqlite3.Connection) -> tuple[list[Candidate], list[Candidate],
         combined = " ".join((title, location, description, source, url))
         foundation = foundation_override(title) or foundation_for(title)
         if not foundation and re.search(r"hardware|silicon", title, re.I):
-            foundation = ("hardware_validation", 52)
+            foundation = ("hardware_validation", 60)
         if not foundation:
             continue
         foundation_name, base = foundation
@@ -375,6 +491,30 @@ def collect(conn: sqlite3.Connection) -> tuple[list[Candidate], list[Candidate],
                 stats["campus_not_2027"] += 1
 
         is_us = bool(UNITED_STATES.search(geography)) and not bool(CHINA_HK.search(geography))
+        grad_track = TRACKS.get("us_2027_new_grad", {})
+        if (
+            grad_track.get("enabled", False)
+            and is_us
+            and row["role_kind"] in grad_track.get("role_kinds", ("full_time", "unknown"))
+        ):
+            eligible, eligibility = us_new_grad_signal(title, combined, source)
+            if eligible:
+                us_new_grads.append(
+                    Candidate(
+                        job_id=int(row["id"]),
+                        track="us_2027_new_grad",
+                        company=str(row["company"] or ""),
+                        title=title,
+                        location=location,
+                        score=score,
+                        tier=tier_for(score),
+                        foundation=foundation_name,
+                        eligibility=eligibility,
+                        source=source,
+                        url=url,
+                        first_seen=str(row["first_seen"] or ""),
+                    )
+                )
         us_track = TRACKS.get("us_summer_2027_internship", {})
         if (
             us_track.get("enabled", True)
@@ -419,7 +559,35 @@ def collect(conn: sqlite3.Connection) -> tuple[list[Candidate], list[Candidate],
             key=lambda item: (-item.score, item.company.casefold(), item.title.casefold()),
         )
 
-    return unique_sorted(campus_jobs), unique_sorted(us_internships), stats
+    used_slots: dict[tuple[str, str], int] = {}
+
+    def keep_within_remaining_slots(items: list[Candidate]) -> list[Candidate]:
+        kept = []
+        for item in unique_sorted(items):
+            company = item.company.casefold()
+            category = job_categories[item.job_id]
+            applicable = [
+                (company, key, remaining)
+                for key, remaining in capacities.get(company, {}).items()
+                if key == "all" or key == category or
+                (not category and item.track == "cn_hk_2027_campus"
+                 and key.endswith("_campus"))
+            ]
+            if any(used_slots.get((co, key), 0) >= remaining
+                   for co, key, remaining in applicable):
+                stats["remaining_slots_held"] += 1
+                continue
+            kept.append(item)
+            for co, key, _ in applicable:
+                used_slots[(co, key)] = used_slots.get((co, key), 0) + 1
+        return kept
+
+    return (
+        keep_within_remaining_slots(campus_jobs),
+        keep_within_remaining_slots(us_new_grads),
+        keep_within_remaining_slots(us_internships),
+        stats,
+    )
 
 
 def latest_source_statuses(conn: sqlite3.Connection) -> list[dict[str, object]]:
@@ -487,23 +655,72 @@ def render_section(title: str, items: list[Candidate]) -> list[str]:
     return lines
 
 
+def sync_strategy_reviews(
+    conn: sqlite3.Connection, config: dict, candidates: list[Candidate]
+) -> str:
+    """Atomically replace the review queue without changing jobs or applications."""
+    policy = json.dumps(config.get("strategy", {}), sort_keys=True, ensure_ascii=False)
+    policy_hash = hashlib.sha256(policy.encode("utf-8")).hexdigest()
+    now = dt.datetime.now(dt.timezone.utc).isoformat()
+    with conn:
+        conn.execute(
+            """CREATE TABLE IF NOT EXISTS job_strategy_reviews (
+                 job_id INTEGER NOT NULL REFERENCES jobs(id),
+                 track TEXT NOT NULL,
+                 policy_hash TEXT NOT NULL,
+                 score INTEGER NOT NULL,
+                 tier TEXT NOT NULL,
+                 foundation TEXT NOT NULL,
+                 eligibility_note TEXT NOT NULL,
+                 review_state TEXT NOT NULL DEFAULT 'review_required',
+                 updated_at TEXT NOT NULL,
+                 PRIMARY KEY (job_id, track)
+               )"""
+        )
+        conn.execute("DELETE FROM job_strategy_reviews")
+        conn.executemany(
+            """INSERT INTO job_strategy_reviews
+               (job_id, track, policy_hash, score, tier, foundation,
+                eligibility_note, review_state, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, 'review_required', ?)""",
+            [
+                (item.job_id, item.track, policy_hash, item.score, item.tier,
+                 item.foundation, item.eligibility, now)
+                for item in candidates
+            ],
+        )
+    return policy_hash
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--db", type=Path, help="Override the configured database path")
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
+    parser.add_argument(
+        "--sync-db", action="store_true",
+        help="Replace the DB review queue; never changes jobs or application statuses",
+    )
     parser.add_argument(
         "--since",
         help="Only include jobs first discovered on or after this ISO timestamp",
     )
     args = parser.parse_args()
+    if args.sync_db and args.since:
+        parser.error("--sync-db requires a full snapshot without --since")
 
-    configure_strategy(load_config(args.config))
+    config = load_config(args.config)
+    configure_strategy(config)
 
-    conn = sqlite3.connect(args.db)
-    campus_jobs, us_internships, stats = collect(conn)
+    conn = connect_database(args.db or db_path(config))
+    campus_jobs, us_new_grads, us_internships, stats = collect(conn)
     source_statuses = latest_source_statuses(conn)
     source_failures = [row for row in source_statuses if row["status"] == "error"]
+    policy_hash = None
+    if args.sync_db:
+        policy_hash = sync_strategy_reviews(
+            conn, config, campus_jobs + us_new_grads + us_internships
+        )
     conn.close()
 
     if args.since:
@@ -520,6 +737,7 @@ def main() -> int:
             return seen >= cutoff
 
         campus_jobs = [item for item in campus_jobs if discovered_after(item)]
+        us_new_grads = [item for item in us_new_grads if discovered_after(item)]
         us_internships = [item for item in us_internships if discovered_after(item)]
 
     now = dt.datetime.now().astimezone()
@@ -530,29 +748,36 @@ def main() -> int:
     json_path = args.out_dir / f"application_strategy_2027_{report_kind}_{stamp}.json"
 
     lines = [
-        "# 2027 双轨投递清单" + ("（新增）" if args.since else "（全量）"),
+        "# 2027 三轨岗位审查清单" + ("（新增）" if args.since else "（全量）"),
         "",
         f"生成时间：{now.isoformat(timespec='seconds')}",
         "",
         *((f"增量基线：{args.since}", "") if args.since else ()),
-        "筛选口径：大陆/香港仅保留明确 2027 届或官方校招入口的正职；美国仅保留已确认 2027 Summer/2027 internship、且学历要求不排斥硕士生的实习。",
-        "方向优先级：架构 > 数字设计/RTL > 验证 > 综合/STA > PD/DFT > EDA > 模拟/通用硬件。",
+        "筛选口径：大陆/香港 2027 届校招正职；美国 2027 应届正职及 2027 暑期实习，均需逐岗核对毕业窗口和工作授权。纯验证标题暂不进入自动清单。",
+        "方向优先级：架构 > 数字设计/RTL > NPU/加速器 > FPGA > 综合/STA > PD/DFT > EDA > 模拟/通用硬件。",
         "",
     ]
     lines += render_section("赛道一：大陆/香港 2027 届校招正职", campus_jobs)
-    lines += render_section("赛道二：美国 2027 Summer 实习", us_internships)
+    lines += render_section("赛道二：美国 2027 应届正职（资格待核）", us_new_grads)
+    lines += render_section("赛道三：美国 2027 Summer 实习（日期/身份待核）", us_internships)
     lines += [
         "## 使用说明",
         "",
-        "- 正职材料使用 Jun 2027 毕业日期；美国暑期实习材料使用能覆盖完整实习期的真实在读毕业日期。",
+        "- 简历统一使用真实 Jun 2027 毕业日期；毕业后的美国实习不得假定能用 CPT，须核对 OPT、实习期和雇主要求。",
         "- `不提供 sponsorship` 不等于一定不能使用 CPT；填写时仍需按岗位原文和个人真实身份回答工作授权问题。",
-        "- Tier A 建议优先定制简历；Tier B 可批量准备后人工复核；本报告不授权最终提交。",
+        "- 宾大有薪兼职由 campus_employment_report 单独核验当前空缺、时薪、每周工时和学生身份；专业匹配只作加分。",
+        "- 本清单全部为 review_required；Tier A 优先核资格和定制简历，不代表可直接提交。",
         "",
         "## 扫描统计",
         "",
         f"- 活跃岗位检查：{stats['active_examined']}",
         f"- 大陆/香港入选：{len(campus_jobs)}",
+        f"- 美国应届正职待核：{len(us_new_grads)}",
         f"- 美国暑期实习入选：{len(us_internships)}",
+        f"- 纯验证标题暂缓：{stats['verification_held']}",
+        f"- 已提交／资格不符／关闭而排除：{stats['already_resolved']}",
+        f"- 招聘周期硬性名额已满而暂缓：{stats['company_limit_held']}",
+        f"- 仅保留剩余志愿数而暂缓：{stats['remaining_slots_held']}",
         f"- 美国因学位或实习学期不符而排除：{stats['us_wrong_term_or_degree']}",
         "",
         "## 数据源覆盖",
@@ -594,7 +819,9 @@ def main() -> int:
         "generated_at": now.isoformat(timespec="seconds"),
         "since": args.since,
         "campus_jobs": [asdict(item) for item in campus_jobs],
+        "us_new_grads": [asdict(item) for item in us_new_grads],
         "us_summer_internships": [asdict(item) for item in us_internships],
+        "policy_hash": policy_hash,
         "stats": stats,
         "source_statuses": source_statuses,
         "source_failures": source_failures,
@@ -602,7 +829,7 @@ def main() -> int:
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(md_path)
     print(json_path)
-    print(f"campus={len(campus_jobs)} us_summer={len(us_internships)}")
+    print(f"campus={len(campus_jobs)} us_new_grad={len(us_new_grads)} us_summer={len(us_internships)}")
     return 0
 
 

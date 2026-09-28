@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from zoneinfo import ZoneInfo
 
-from job_bot.bot import load_config
+from job_bot.bot import ensure_schema, load_config
 from job_bot.weekly_report import (
     DEFAULT_CONFIG,
     build_report,
@@ -41,26 +41,8 @@ class WeeklyReportTests(unittest.TestCase):
             root = Path(directory)
             database = root / "jobs.sqlite3"
             conn = sqlite3.connect(database)
-            conn.executescript(
-                """
-                CREATE TABLE jobs (
-                  id INTEGER PRIMARY KEY, company TEXT, title TEXT,
-                  location TEXT, url TEXT, role_kind TEXT, description TEXT,
-                  fit_score INTEGER, source_name TEXT, first_seen TEXT,
-                  last_seen TEXT, updated_at TEXT, is_active INTEGER,
-                  inactive_since TEXT
-                );
-                CREATE TABLE applications (
-                  id INTEGER PRIMARY KEY, job_id INTEGER, status TEXT,
-                  submitted_at TEXT, updated_at TEXT
-                );
-                CREATE TABLE scan_runs (
-                  id INTEGER PRIMARY KEY, source_name TEXT, started_at TEXT,
-                  finished_at TEXT, status TEXT, jobs_seen INTEGER,
-                  jobs_new INTEGER, error TEXT
-                );
-                """
-            )
+            conn.row_factory = sqlite3.Row
+            ensure_schema(conn)
             jobs = [
                 (
                     1, "Fixture CN", "RTL Design New College Grad 2027",
@@ -97,7 +79,8 @@ class WeeklyReportTests(unittest.TestCase):
                 """
             )
             conn.execute(
-                "INSERT INTO applications VALUES (1,1,'submitted',?,?)",
+                "INSERT INTO applications(id,job_id,status,submitted_at,updated_at) "
+                "VALUES (1,3,'submitted',?,?)",
                 ("2026-09-01T03:00:00+00:00", "2026-09-01T03:00:00+00:00"),
             )
             conn.execute(

@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 DEFAULT_CONFIG = ROOT / "job_bot" / "config.china_hk_ic_foreign.json"
 from private_paths import JOBBOT_OUTPUT  # noqa: E402
 from job_bot.bot import db_path, load_config  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
 
 DEFAULT_OUT = JOBBOT_OUTPUT
 
@@ -129,7 +130,7 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
 
     config = load_config(Path(args.config))
-    conn = sqlite3.connect(db_path(config))
+    conn = connect_database(db_path(config))
     conn.row_factory = sqlite3.Row
     rows = conn.execute(
         """

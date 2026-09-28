@@ -56,6 +56,21 @@ CREATE TABLE IF NOT EXISTS application_events (
 CREATE INDEX IF NOT EXISTS idx_applications_job_id ON applications(job_id);
 CREATE INDEX IF NOT EXISTS idx_application_events_application_id ON application_events(application_id);
 
+-- Rebuilt review queue for the current screening policy. It never asserts
+-- application eligibility or changes an application submission state.
+CREATE TABLE IF NOT EXISTS job_strategy_reviews (
+  job_id INTEGER NOT NULL REFERENCES jobs(id),
+  track TEXT NOT NULL,
+  policy_hash TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  tier TEXT NOT NULL,
+  foundation TEXT NOT NULL,
+  eligibility_note TEXT NOT NULL,
+  review_state TEXT NOT NULL DEFAULT 'review_required',
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (job_id, track)
+);
+
 -- A cap applies to one employer, recruiting category, and submission window.
 -- Use category 'all' only when the employer explicitly sets a company-wide cap.
 CREATE TABLE IF NOT EXISTS application_limits (

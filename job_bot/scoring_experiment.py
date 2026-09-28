@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from job_bot.bot import JobPosting, db_path, load_config, score_job  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
 from private_paths import JOBBOT_OUTPUT  # noqa: E402
 
 
@@ -32,7 +33,7 @@ def config_hash(config: dict[str, Any]) -> str:
 
 
 def evaluate(config: dict[str, Any], database: Path) -> list[dict[str, Any]]:
-    conn = sqlite3.connect(database)
+    conn = connect_database(database)
     conn.row_factory = sqlite3.Row
     rows = conn.execute(
         """

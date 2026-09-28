@@ -20,7 +20,6 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from application_bot.profile_policy import location_in_authorized_scope  # noqa: E402
 from cv.application_keywords import select_keywords, apply_keyword_selection  # noqa: E402
 from cv.bot.bot import (  # noqa: E402
     DEFAULT_PROFILE as EVIDENCE_PROFILE,
@@ -36,6 +35,11 @@ from job_bot.application_bot import (  # noqa: E402
     hydrate_known_resume_contacts,
 )
 from job_bot.bot import connect_db, load_config, utc_now  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
+from job_bot.strategy_report import (  # noqa: E402
+    collect as collect_strategy_jobs,
+    configure_strategy,
+)
 
 
 DEFAULT_CONFIG = ROOT / "job_bot" / "config.china_hk_ic_foreign.json"
@@ -78,51 +82,39 @@ def normalized_role_key(candidate: Candidate) -> tuple[str, str, str]:
 
 def direction_priority(reason: str) -> int:
     reason_l = reason.casefold()
-    if "cpu and computer architecture" in reason_l or "digital rtl design" in reason_l:
+    if any(term in reason_l for term in (
+        "cpu and computer architecture", "digital rtl design", "architecture",
+        "digital_design", "accelerator_design", "fpga_design",
+    )):
         return 0
-    if "rtl and silicon verification" in reason_l or "eda and logic synthesis" in reason_l:
+    if any(term in reason_l for term in ("eda and logic synthesis", "synthesis_sta")):
         return 1
+    if "rtl and silicon verification" in reason_l:
+        return 3
     return 2
 
 
-def select_candidates(conn: sqlite3.Connection, limit: int, min_score: int) -> list[Candidate]:
-    rows = conn.execute(
-        """
-        SELECT id, company, title, location, url, role_kind, fit_score,
-               score_reason, platform
-        FROM jobs
-        WHERE is_active = 1 AND fit_score >= ? AND url IS NOT NULL AND url != ''
-          AND role_kind IN ('internship', 'full_time')
-        """,
-        (min_score,),
-    ).fetchall()
-    candidates: list[Candidate] = []
-    for row in rows:
-        candidate = Candidate(
-            job_id=int(row["id"]),
-            company=str(row["company"] or "Unknown"),
-            title=str(row["title"] or "Untitled"),
-            location=str(row["location"] or ""),
-            url=str(row["url"]),
-            role_kind=str(row["role_kind"] or "unknown"),
-            score=int(row["fit_score"] or 0),
-            score_reason=str(row["score_reason"] or ""),
-            platform=str(row["platform"] or urlsplit(str(row["url"])).hostname or ""),
+def select_candidates(
+    conn: sqlite3.Connection, limit: int, min_score: int, config: dict | None = None
+) -> list[Candidate]:
+    """Use the same policy as the review report for CN/HK campus batches."""
+    configure_strategy(config or load_config(DEFAULT_CONFIG))
+    campus_jobs, _, _, _ = collect_strategy_jobs(conn)
+    candidates = [
+        Candidate(
+            job_id=item.job_id,
+            company=item.company,
+            title=item.title,
+            location=item.location,
+            url=item.url,
+            role_kind="full_time",
+            score=item.score,
+            score_reason=f"Foundation: {item.foundation}",
+            platform=urlsplit(item.url).hostname or "",
         )
-        title_l = candidate.title.casefold()
-        if not location_in_authorized_scope(
-            candidate.location, ["mainland_china", "hong_kong"]
-        ):
-            continue
-        if re.search(
-            r"\b(?:senior|sr\.?|staff|principal|director|manager|lead|leader|expert)\b|"
-            r"资深|高级|专家|主管|经理|总监|首席|架构师",
-            title_l,
-        ):
-            continue
-        if re.search(r"基础设施开发|模型部署|embedded\s+sw|firmware", title_l):
-            continue
-        candidates.append(candidate)
+        for item in campus_jobs
+        if item.score >= min_score and item.url
+    ]
 
     candidates.sort(
         key=lambda item: (
@@ -340,7 +332,7 @@ def build_one_material(
     evidence_profile: dict,
     application_profile: dict,
 ) -> tuple[int, int, str, str, str]:
-    description_conn = sqlite3.connect(JOB_DATABASE)
+    description_conn = connect_database(JOB_DATABASE)
     row = description_conn.execute(
         "SELECT description FROM jobs WHERE id = ?", (candidate.job_id,)
     ).fetchone()
@@ -551,7 +543,7 @@ def main(argv: list[str] | None = None) -> None:
             candidates = load_explicit_candidates(conn, args.job_id)
             target_count = len(candidates)
         else:
-            candidates = select_candidates(conn, args.target, args.min_score)
+            candidates = select_candidates(conn, args.target, args.min_score, config)
             target_count = args.target
             if len(candidates) < args.target:
                 raise SystemExit(

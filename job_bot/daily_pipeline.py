@@ -29,11 +29,12 @@ from job_bot.bot import (  # noqa: E402
     transient_source_error,
 )
 from job_bot.browser_connection import CdpHealthError, check_cdp_health  # noqa: E402
-from private_paths import JOBBOT_OUTPUT  # noqa: E402
+from private_paths import CREDENTIALS_FILE, JOBBOT_OUTPUT  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
 
 
 DEFAULT_CONFIG = ROOT / "job_bot" / "config.china_hk_ic_foreign.json"
-DEFAULT_ENV = ROOT / "private_data" / "credentials" / "passport.env"
+DEFAULT_ENV = CREDENTIALS_FILE
 DEFAULT_STATE = JOBBOT_OUTPUT / "daily_pipeline_state.json"
 
 
@@ -166,7 +167,7 @@ def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
 
 
 def current_run_results(database: Path, started_at: str) -> list[dict[str, Any]]:
-    conn = sqlite3.connect(database)
+    conn = connect_database(database)
     conn.row_factory = sqlite3.Row
     rows = conn.execute(
         """

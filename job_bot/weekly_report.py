@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from job_bot.bot import db_path, load_config  # noqa: E402
+from job_bot.shared_database import connect as connect_database  # noqa: E402
 from job_bot.strategy_report import Candidate, collect, configure_strategy  # noqa: E402
 from private_paths import APPLICATION_OUTPUT, JOBBOT_OUTPUT  # noqa: E402
 from job_bot.campus_employment_report import render_campus_employment  # noqa: E402
@@ -299,8 +300,12 @@ def build_report(
     limit = max(1, int(weekly.get("max_items_per_section", 25)))
 
     configure_strategy(config)
-    conn = sqlite3.connect(database)
-    campus, us_summer, strategy_stats = collect(conn)
+    conn = connect_database(database)
+    strategy_result = collect(conn)
+    if len(strategy_result) == 4:
+        campus, _us_new_grads, us_summer, strategy_stats = strategy_result
+    else:
+        campus, us_summer, strategy_stats = strategy_result
     jobs = job_snapshot(conn, start, end)
     applications = application_snapshot(conn, start, end)
     sources = source_health(conn, start, end)

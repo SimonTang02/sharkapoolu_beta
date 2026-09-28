@@ -15,7 +15,7 @@ class BatchCampaignTests(unittest.TestCase):
     def test_preference_order(self) -> None:
         self.assertEqual(direction_priority("Foundation: digital RTL design"), 0)
         self.assertEqual(direction_priority("Foundation: CPU and computer architecture"), 0)
-        self.assertEqual(direction_priority("Foundation: RTL and silicon verification"), 1)
+        self.assertEqual(direction_priority("Foundation: RTL and silicon verification"), 3)
         self.assertEqual(direction_priority("Foundation: physical design and DFT"), 2)
 
     def test_normalized_duplicate_key(self) -> None:

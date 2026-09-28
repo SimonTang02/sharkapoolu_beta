@@ -1,0 +1,52 @@
+% Fictional demonstration: Mike Malon, NYU Computer Science.
+% Replace every name, date, contact and project before a real application.
+% Keep Summary and Technical Skills section names: cvbot locates these markers.
+% This template compiles with ordinary pdfLaTeX; no institution-specific class.
+\documentclass[10pt,letterpaper]{article}
+\usepackage[margin=0.72in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\pagestyle{empty}
+\newenvironment{rSection}[1]{\par\medskip\textbf{\large #1}\par\smallskip\hrule\smallskip}{\par}
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Mike Malon}\\[4pt]
+  New York, NY \quad \href{mailto:mike.malon@example.com}{mike.malon@example.com}\\[3pt]
+  {\small Fictional resume example; not for submission}
+\end{center}
+
+\begin{rSection}{Summary}
+Computer Science student interested in reliable software and database systems.
+Demonstration projects emphasize clear interfaces, tested transactions and documentation.
+\end{rSection}
+
+\begin{rSection}{Education}
+% Keep this school/date markup: cvbot uses it for scoped graduation updates.
+{\bf New York University} \hfill {\em Sep 2024 -- May 2028 (Expected)}\\
+Bachelor of Science in Computer Science\\
+% GPA is intentionally omitted. Enter only a confirmed value with its scale.
+Illustrative coursework: Data Structures, Algorithms, Databases, Computer Systems.
+\end{rSection}
+
+\begin{rSection}{Technical Skills}
+Python; SQL; SQLite; Git; unit testing.
+% Replace with evidenced skills; do not infer proficiency or years of experience.
+\end{rSection}
+
+\begin{rSection}{Projects}
+\textbf{Campus Task Planner} --- fictional coursework example
+\begin{itemize}
+  \item Built a Python command-line planner with explicit input validation.
+  \item Added deterministic tests for scheduling conflicts and invalid dates.
+\end{itemize}
+\textbf{Library Catalog} --- fictional coursework example
+\begin{itemize}
+  \item Modeled books and loans with SQLite foreign keys and parameterized SQL.
+  \item Tested transaction rollback and documented a reproducible setup.
+\end{itemize}
+% Add real employment/publications only when supported; no invented metrics.
+\end{rSection}
+\end{document}

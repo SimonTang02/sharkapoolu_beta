@@ -36,6 +36,8 @@ PRIVATE_CONFIG = PRIVATE_ROOT / "config" / "job_bot.local.json"
 
 DATABASE_DIR = PRIVATE_ROOT / "database"
 JOB_DATABASE = DATABASE_DIR / "china_hk_ic_foreign.sqlite3"
+DATABASE_CONNECTION_CONFIG = PRIVATE_ROOT / "config" / "database_connection.json"
+DATABASE_BACKUP_DIR = DATABASE_DIR / "backups"
 JOBBOT_OUTPUT = PRIVATE_ROOT / "outputs" / "job_bot"
 APPLICATION_OUTPUT = PRIVATE_ROOT / "outputs" / "application_bot"
 CV_BOT_OUTPUT = PRIVATE_ROOT / "cv" / "reports"

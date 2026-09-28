@@ -1,0 +1,27 @@
+{
+  "_comment": {
+    "fiction": "Demonstration only: Mike Malon is fictional, including his NYU degree, dates and projects. Replace every claim with the real candidate's reviewed evidence.",
+    "identity": "display_name is for letter signing; headline_name is the resume header; email must match the application profile.",
+    "graduation_school": "Institution for the current degree. Keep it consistent with education and the resume.",
+    "expected_graduation_date": "Reviewed month and year used by tailoring; this example is May 2028, not a real candidate fact.",
+    "tailored_summaries": "Reviewed prose by role family; default is the fallback. The generator is hardware-oriented, so review its output for CS roles.",
+    "candidate_summary": "Supported introduction used in generated cover letters. Remove fictional project claims before real use.",
+    "closing_strength": "Evidence-backed closing sentence; do not invent outcomes or proficiency.",
+    "evidence_groups": "Each unique name has match keywords and one verifiable evidence statement. Keywords match jobs; they are not proof of expertise.",
+    "education_gpa": "Map institution to verified GPA display; leave empty when unknown.",
+    "graduation_confirmation": "Record school, integer month/year, confirmed_on and source only after candidate confirmation."
+  },
+  "schema_version": 1,
+  "identity": {"display_name": "Mike Malon", "headline_name": "Mike Malon", "email": "mike.malon@example.com"},
+  "graduation_school": "New York University",
+  "expected_graduation_date": "May 2028 (Expected)",
+  "tailored_summaries": {"default": "Computer Science student building small, tested software systems with Python and SQL."},
+  "candidate_summary": "I am a fictional NYU Computer Science student whose demonstration projects cover Python, SQL and reproducible testing.",
+  "closing_strength": "My example projects show a habit of documenting assumptions and testing changes.",
+  "evidence_groups": [
+    {"name": "software_project", "keywords": ["Python", "testing", "software"], "evidence": "Fictional coursework: built a Python task planner with input validation and deterministic unit tests."},
+    {"name": "database_project", "keywords": ["SQL", "SQLite", "database"], "evidence": "Fictional coursework: designed a SQLite library catalog with foreign keys, parameterized queries and rollback tests."}
+  ],
+  "education_gpa": {},
+  "graduation_confirmation": {"school": "", "year": null, "month": null, "confirmed_on": "", "source": ""}
+}

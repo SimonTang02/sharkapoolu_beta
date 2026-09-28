@@ -34,6 +34,7 @@ from private_paths import (
     JOB_DATABASE,
 )
 from cv.application_keywords import select_keywords, render_keyword_notes
+from job_bot.shared_database import connect as connect_database
 
 
 DEFAULT_PROFILE = EVIDENCE_PROFILE
@@ -476,7 +477,7 @@ def write_bundle(
 
 
 def load_stored_job(database: Path, url: str) -> tuple[str, str, str]:
-    conn = sqlite3.connect(database)
+    conn = connect_database(database)
     try:
         row = conn.execute(
             "SELECT company, title, description, location FROM jobs WHERE url = ?",
