@@ -157,27 +157,28 @@ def _fill_application_form(page, profile: dict) -> list[str]:
     if _fill_blank(page, "input[name='siteLink-1']", str(fields.get("linkedin_url", ""))):
         changed.append("linkedin_url")
 
-    for question, answer in (
-        (
-            "Are you currently or have you previously been a Contractor with Texas Instruments before?",
-            "No",
-        ),
-        ("Have you ever been employed by Texas Instruments before?", "No"),
-        (
+    # Read from profile instead of hardcoding
+    work_auth = profile.get("custom_answers", {}).get(
+        "Are you legally authorized to work in the country where this position is located?"
+    )
+    if work_auth is not None:
+        work_auth_str = "Yes" if work_auth else "No"
+        if _answer_radio_question(
+            page,
             "Do you have the necessary legal work authorization to work in the country of the job(s) to which you are applying?",
-            "Yes",
-        ),
-    ):
-        if _answer_radio_question(page, question, answer):
-            changed.append(question)
+            work_auth_str
+        ):
+            changed.append("work_auth")
 
-    if _select_combobox_if_blank(
-        page,
-        "input[name='CN-STANDARD-ORA_GENDER-STANDARD']",
-        "Male",
-        replace_conflict=True,
-    ):
-        changed.append("gender")
+    gender = profile.get("voluntary_disclosures", {}).get("gender")
+    if gender:
+        if _select_combobox_if_blank(
+            page,
+            "input[name='CN-STANDARD-ORA_GENDER-STANDARD']",
+            gender,
+            replace_conflict=True,
+        ):
+            changed.append("gender")
 
     full_name = " ".join(
         part
