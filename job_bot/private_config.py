@@ -23,6 +23,7 @@ from private_paths import (  # noqa: E402
     APPLICATION_PROFILE,
     CREDENTIALS_FILE,
     EVIDENCE_PROFILE,
+    EASY_SETTINGS,
     PRIVATE_CONFIG,
     PRIVATE_ROOT,
     ensure_private_directories,
@@ -31,6 +32,7 @@ from private_paths import (  # noqa: E402
 
 EXAMPLES = ROOT / "examples"
 TEMPLATES = {
+    EASY_SETTINGS: EXAMPLES / "easy_settings_template.json",
     APPLICATION_PROFILE: EXAMPLES / "application_profile.json",
     EVIDENCE_PROFILE: EXAMPLES / "evidence_profile.json",
     APPLICATION_KEYWORDS: EXAMPLES / "application_keywords.json",
@@ -299,6 +301,12 @@ def validate_credentials(path: Path) -> list[Issue]:
 
 def check_private_tree() -> list[Issue]:
     issues: list[Issue] = []
+    if EASY_SETTINGS.is_file():
+        try:
+            from job_bot.operator_settings import load_settings
+            load_settings(EASY_SETTINGS)
+        except ValueError as exc:
+            _issue(issues, "ERROR", str(EASY_SETTINGS), str(exc))
     application = _load_json(APPLICATION_PROFILE, issues)
     evidence = _load_json(EVIDENCE_PROFILE, issues)
     keywords = _load_json(APPLICATION_KEYWORDS, issues)

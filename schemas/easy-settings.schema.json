@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Beginner operation settings",
+  "type": "object",
+  "required": [
+    "版本",
+    "01_使用模式",
+    "02_功能模块",
+    "03_浏览器与采集",
+    "04_审查与额度",
+    "05_地区范围"
+  ],
+  "properties": {
+    "版本": {
+      "type": "integer",
+      "const": 1
+    },
+    "01_使用模式": {
+      "type": "object",
+      "required": [
+        "总开关",
+        "模式",
+        "自动最终提交"
+      ],
+      "properties": {
+        "总开关": {
+          "type": "boolean"
+        },
+        "模式": {
+          "type": "string",
+          "enum": [
+            "手动辅助",
+            "快速填写",
+            "完整填写"
+          ]
+        },
+        "自动最终提交": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "patternProperties": {
+        "^_": {}
+      },
+      "additionalProperties": false
+    },
+    "02_功能模块": {
+      "type": "object",
+      "required": [
+        "job_bot",
+        "application_bot",
+        "扫描职位",
+        "辅助手动填写",
+        "自动填写",
+        "生成简历材料",
+        "生成手动投递包",
+        "生成报告",
+        "检查登录状态"
+      ],
+      "properties": {
+        "job_bot": {
+          "type": "boolean"
+        },
+        "application_bot": {
+          "type": "boolean"
+        },
+        "扫描职位": {
+          "type": "boolean"
+        },
+        "辅助手动填写": {
+          "type": "boolean"
+        },
+        "自动填写": {
+          "type": "boolean"
+        },
+        "生成简历材料": {
+          "type": "boolean"
+        },
+        "生成手动投递包": {
+          "type": "boolean"
+        },
+        "生成报告": {
+          "type": "boolean"
+        },
+        "检查登录状态": {
+          "type": "boolean"
+        }
+      },
+      "patternProperties": {
+        "^_": {}
+      },
+      "additionalProperties": false
+    },
+    "03_浏览器与采集": {
+      "type": "object",
+      "required": [
+        "HTTP采集",
+        "内置浏览器",
+        "CDP浏览器",
+        "浏览器选择",
+        "内置浏览器无界面",
+        "同时扫描来源数",
+        "网络重试次数"
+      ],
+      "properties": {
+        "HTTP采集": {
+          "type": "boolean"
+        },
+        "内置浏览器": {
+          "type": "boolean"
+        },
+        "CDP浏览器": {
+          "type": "boolean"
+        },
+        "浏览器选择": {
+          "type": "string",
+          "enum": [
+            "内置",
+            "CDP"
+          ]
+        },
+        "内置浏览器无界面": {
+          "type": "boolean"
+        },
+        "同时扫描来源数": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "网络重试次数": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "patternProperties": {
+        "^_": {}
+      },
+      "additionalProperties": false
+    },
+    "04_审查与额度": {
+      "type": "object",
+      "required": [
+        "投递前审查轮数",
+        "快速模式每岗秒数",
+        "完整模式每岗秒数",
+        "快速模式重试次数",
+        "完整模式重试次数",
+        "截取辅助截图"
+      ],
+      "properties": {
+        "投递前审查轮数": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "快速模式每岗秒数": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 1800
+        },
+        "完整模式每岗秒数": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 1800
+        },
+        "快速模式重试次数": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "完整模式重试次数": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "截取辅助截图": {
+          "type": "boolean"
+        }
+      },
+      "patternProperties": {
+        "^_": {}
+      },
+      "additionalProperties": false
+    },
+    "05_地区范围": {
+      "type": "object",
+      "required": [
+        "美国",
+        "香港",
+        "中国大陆",
+        "新加坡",
+        "欧洲",
+        "其他地区",
+        "保留未知地点"
+      ],
+      "properties": {
+        "美国": {
+          "type": "boolean"
+        },
+        "香港": {
+          "type": "boolean"
+        },
+        "中国大陆": {
+          "type": "boolean"
+        },
+        "新加坡": {
+          "type": "boolean"
+        },
+        "欧洲": {
+          "type": "boolean"
+        },
+        "其他地区": {
+          "type": "boolean"
+        },
+        "保留未知地点": {
+          "type": "boolean"
+        }
+      },
+      "patternProperties": {
+        "^_": {}
+      },
+      "additionalProperties": false
+    }
+  },
+  "patternProperties": {
+    "^_": {}
+  },
+  "additionalProperties": false
+}

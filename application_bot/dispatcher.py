@@ -157,8 +157,48 @@ def main() -> int:
     }
     conn.close()
     plans = build_plans(config, rows, args.config, args.env_file, limit_checks)
+    policy = config.get("operator_controls")
+    if policy:
+        from job_bot.operator_settings import require_module, region_allowed
+        from application_bot.operator_review import validate_application_review
+        require_module(config, "fill")
+        conn = connect_db(config)
+        try:
+            for plan in plans:
+                location = conn.execute("SELECT jobs.location FROM jobs JOIN applications ON applications.job_id=jobs.id WHERE applications.id=?", (plan.application_id,)).fetchone()
+                if plan.application_status in ("submitted", "cancelled"):
+                    plan.state, plan.command = "already_finished", None
+                elif not location or not region_allowed(location[0], config):
+                    plan.state, plan.command = "region_disabled", None
+                elif policy["mode"] == "manual":
+                    plan.state, plan.command = "manual_assist_required", None
+                elif plan.command:
+                    try:
+                        validate_application_review(conn, plan.application_id, policy["review_rounds"])
+                    except ValueError as exc:
+                        plan.state, plan.command, plan.error = "review_required", None, str(exc)
+                plan.timeout_seconds = min(plan.timeout_seconds, policy["job_timeout_seconds"]) if plan.timeout_seconds else 0
+        finally:
+            conn.close()
 
-    if args.execute:
+    if args.execute and policy:
+        from job_bot.operator_browser import ApplicationMonitor
+        from application_bot.operator_execution import execute_preparation
+        if any(plan.command for plan in plans):
+            monitor = ApplicationMonitor(config)
+            try:
+                stopped = False
+                for plan in plans:
+                    if stopped and plan.command:
+                        plan.state, plan.command = "batch_stopped_for_manual_checkpoint", None
+                    if not plan.command:
+                        continue
+                    execute_preparation(plan, config, monitor, ROOT)
+                    if plan.result_code and policy["on_interruption"] == "stop":
+                        stopped = True
+            finally:
+                monitor.close()
+    elif args.execute:
         for plan in plans:
             if not plan.command:
                 continue
@@ -212,6 +252,8 @@ def main() -> int:
         f"planned={len(plans)} ready={sum(plan.command is not None for plan in plans)} "
         f"executed={sum(plan.result_code is not None for plan in plans)}"
     )
+    if args.execute and policy:
+        return 0 if plans and all(plan.state in ("adapter_prepared_not_submitted", "already_finished") for plan in plans) else 1
     return 0
 
 

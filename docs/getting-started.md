@@ -1,5 +1,10 @@
 # Setup ownership and readiness
 
+For everyday feature switches after setup, use the annotated
+[`easy_settings.json` guide](beginner-settings.md). Its `jobbot-settings` entry
+point compiles the current base config without changing existing advanced
+configuration or browser progress; personal facts still need separate setup.
+
 This guide describes what a fresh clone actually initializes, what needs
 candidate input, and where an agent or developer can help. An agent is optional:
 a technically experienced user can do the same configuration work. Candidate

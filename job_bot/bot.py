@@ -2750,6 +2750,8 @@ def scan(
     selected_sources: list[str] | None = None,
     max_workers: int | None = None,
 ) -> dict[str, int]:
+    from job_bot.operator_settings import require_module, region_allowed
+    require_module(config, "scan")
     conn = connect_db(config)
     total_seen = 0
     total_new = 0
@@ -2779,6 +2781,9 @@ def scan(
 
     def finish(source: dict[str, Any], run_id: int, postings: list[JobPosting]) -> None:
         nonlocal total_seen, total_new
+        if config.get("operator_controls"):
+            source = {**source, "sync_active": False}
+            postings = [job for job in postings if region_allowed(job.location, config)]
         validate_sync_snapshot(conn, source, postings, config)
         if source.get("sync_active", False):
             conn.execute(
@@ -2930,8 +2935,11 @@ def render_digest(
     edition: int | None = None,
     since: str | None = None,
 ) -> tuple[str, str]:
+    from job_bot.operator_settings import require_module, region_allowed
+    require_module(config, "report")
     conn = connect_db(config)
     jobs = active_jobs(conn) if all_active else recent_jobs(conn, hours, since)
+    jobs = [job for job in jobs if region_allowed(job["location"], config)]
     digest_config = config.get("digest", {})
     max_items = int(digest_config.get("max_items", 0) or 0)
     min_score = int(digest_config.get("min_score", 0) or 0)

@@ -14,6 +14,10 @@ final application submission remains a human action.
 
 ## Key features
 
+- **Beginner controls in one file.** A Chinese annotated settings file selects
+  modules, regions, HTTP or isolated-browser collection, CDP preparation,
+  review rounds, time budgets and retries. `jobbot-settings` checks and previews
+  changes before explicit execution. See [the beginner guide](docs/beginner-settings.md).
 - **Two application workflows.** Manual delivery provides an offline HTML
   dashboard, per-job copyable answers, reviewed PDF and supporting-document
   links, receipt notes, and browser-local progress export. Agent-assisted

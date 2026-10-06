@@ -170,6 +170,7 @@ The maintained private inputs are:
 | `cv/profile/evidence_profile.json` | Verified identity linkage, graduation facts, summaries, GPA map, and claim evidence groups | Template: `examples/evidence_profile.json`; schema: `schemas/evidence-profile.schema.json` |
 | `cv/profile/application_keywords.json` | Evidence-scoped technical and collaboration labels plus role presets and provenance | Template: `examples/application_keywords.json`; schema: `schemas/application-keywords.schema.json` |
 | `config/job_bot.local.json` | Machine paths, source enablement, browser selection, report routing, and other non-secret local overrides | Start from `examples/job_bot.local.json`; keep secrets in `passport.env` |
+| `config/easy_settings.json` | Beginner mode, module, browser, review-round and geographic controls | Template: `examples/easy_settings_template.json`; schema: `schemas/easy-settings.schema.json`; opt-in `jobbot-settings` entry point |
 
 Other private state includes:
 

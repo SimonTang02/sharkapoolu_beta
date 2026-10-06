@@ -63,6 +63,13 @@ def module_command(
     config: dict[str, Any],
     max_workers: int | None,
 ) -> list[str]:
+    from job_bot.operator_settings import require_module
+    if module in ("daily", "scan", "penn_channels"):
+        require_module(config, "scan")
+    if module != "scan" and module != "session_audit":
+        require_module(config, "report")
+    if module == "session_audit":
+        require_module(config, "sessions")
     python = sys.executable
     common = ["--config", str(config_path)]
     if module == "penn_channels":

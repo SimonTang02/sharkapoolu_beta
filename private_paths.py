@@ -33,6 +33,8 @@ APPLICATION_PROFILE = PRIVATE_ROOT / "profiles" / "application_profile.json"
 EVIDENCE_PROFILE = PRIVATE_ROOT / "cv" / "profile" / "evidence_profile.json"
 APPLICATION_KEYWORDS = PRIVATE_ROOT / "cv" / "profile" / "application_keywords.json"
 PRIVATE_CONFIG = PRIVATE_ROOT / "config" / "job_bot.local.json"
+EASY_SETTINGS = PRIVATE_ROOT / "config" / "easy_settings.json"
+EASY_RUNTIME_CONFIG = PRIVATE_ROOT / "config" / "easy_runtime.generated.json"
 
 DATABASE_DIR = PRIVATE_ROOT / "database"
 JOB_DATABASE = DATABASE_DIR / "china_hk_ic_foreign.sqlite3"

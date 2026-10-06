@@ -6,6 +6,13 @@
 
 ## 1. 新对话开始时读取与确认
 
+非技术用户的日常入口为 `jobbot-settings`。先读
+[`docs/beginner-settings.md`](docs/beginner-settings.md) 和私有
+`config/easy_settings.json`；它包含模式、模块、浏览器、审查次数、地区开关。
+新对话可读取入口生成的 `AGENT_TASK.md`，按其中路径恢复目标与真实审查；
+任务包不等于自动启动Agent，也不等于已经提交。旧入口须显式传入生成配置
+才能采用这些开关，不能把私有易用配置的存在解释为已经生效。
+
 先完整阅读 `AGENTS.md` 和本文，再按任务阅读对应模块 README、
 `docs/configuration.md`、`docs/installation.md`、`docs/shared-database.md`。
 无需旧对话即可确定操作接口；真实登录、未知事实和雇主页面变化仍需现场核实。

@@ -32,6 +32,7 @@ cvbot = "cv.bot.bot:main"
 jobbot-config = "job_bot.config_inspect:main"
 jobbot-private = "job_bot.private_config:main"
 jobbot-db = "job_bot.shared_database:main"
+jobbot-settings = "job_bot.easy_cli:main"
 
 [project.urls]
 Repository = "https://github.com/SimonTang02/sharkapoolu_beta"
