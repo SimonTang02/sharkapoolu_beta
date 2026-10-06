@@ -1,0 +1,26 @@
+{
+  "_comment": "Fictional input example. Keep real manifests and Application_Data.json under the private root. Replace PDF hashes only after inspecting the rendered PDFs. Each role folder needs Application_Data.json with the same rank.",
+  "title": "Example manual application kit",
+  "jobs": [
+    {
+      "rank": 1,
+      "company": "Example Company",
+      "title": "Example Hardware Engineer",
+      "requisition": "EXAMPLE-001",
+      "location": "Example Location",
+      "role_kind": "full_time",
+      "folder": "01_Example",
+      "url": "https://example.test/jobs/example-001",
+      "known_gaps": "Work authorization and eligibility remain unconfirmed in this fictional example.",
+      "pdfs": [
+        {
+          "document": "Resume",
+          "pdf": "01_Example/Resume.pdf",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "visual_review": "pending"
+        }
+      ]
+    }
+  ],
+  "supporting_documents": []
+}

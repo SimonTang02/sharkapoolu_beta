@@ -18,6 +18,7 @@ TEXT_SUFFIXES = {
     ".html",
     ".ini",
     ".json",
+    ".js",
     ".md",
     ".ps1",
     ".py",

@@ -2,6 +2,7 @@
 
 New users and coding agents: start with the complete
 [operating and handoff guide](AGENT_HANDOFF.md) and
+[setup ownership and readiness guide](docs/getting-started.md), then the
 [commented public templates](examples/README.md), including a fictional
 Mike Malon / NYU Computer Science resume and the shared-database settings.
 
@@ -11,19 +12,47 @@ hardware and digital-design recruiting, but its source and scoring layers are
 configurable. Candidate data stays outside the public Git history, and every
 final application submission remains a human action.
 
-## Features
+## Key features
 
-- Collect and normalize jobs from HTTP feeds, career APIs, and authenticated
-  browser sessions.
-- Score roles with configurable evidence, geography, degree, and role rules.
-- Generate daily and weekly reports from a local SQLite database.
-- Share the private SQLite database between online WSL machines over SSH; see
-  [setup and operating limits](docs/shared-database.md).
-- Build resume-tailoring notes from an evidence profile and keyword library.
-- Prepare supported application forms in a dedicated browser and stop for
-  review before submission.
-- Validate public configuration and private candidate files without printing
-  secret or personal values.
+- **Two application workflows.** Manual delivery provides an offline HTML
+  dashboard, per-job copyable answers, reviewed PDF and supporting-document
+  links, receipt notes, and browser-local progress export. Agent-assisted
+  preparation provides queues, explicit batches, ATS routing, and supported
+  form filling up to human review. Both workflows leave final submission to
+  the candidate; queueing, uploading, or reaching Review is not a submission.
+- **Preference-based discovery and review.** Collect and normalize jobs from
+  HTTP feeds, career APIs, and authorized browser sessions. Configure source
+  selection, role keywords, score weights and the implemented region/degree/
+  recruiting-cycle filters. Eligibility and work permission still require
+  evidence and candidate confirmation. Adding new regions, years or job
+  families may require adapting the current hardware-focused strategy code.
+- **One application history across machines.** SQLite stores postings and
+  application events. Optional authenticated SSH lets clients operate one
+  host's private database without a database listener. Machines must be online;
+  browser sessions, PDFs and progress exports are not automatically synced.
+  See [the sharing contract](docs/shared-database.md).
+- **Evidence-grounded materials.** `cvbot` selects supported evidence and
+  keywords from a private profile, produces tailoring notes, and can render
+  LaTeX resume and cover-letter PDF bundles with a configured TeX toolchain.
+  Rendered PDFs need review; the generator does not create new qualifications.
+- **Personal customization with private storage.** Identity, evidence,
+  keywords, credentials, sessions, receipts and generated materials stay in a
+  candidate-owned private tree. Public templates use blank or fictional data;
+  configuration and privacy audits report structure without printing values.
+- **Dedicated browser session and tab management.** Supported paths use a
+  separate Chromium profile or restricted Windows Chrome CDP. Session audits,
+  login preflight and audited tab cleanup preserve active application forms
+  and authentication anchors. MFA, CAPTCHA and policy choices stay manual;
+  persistent profiles do not guarantee that a login remains valid.
+- **Reports and optional notifications.** Generate daily, weekly and strategy
+  review reports. SMTP delivery requires explicit private configuration and
+  authorization; dry-run is the default. Recurring execution requires a
+  separately configured scheduler.
+- **New-conversation handoffs.** Every newly rendered manual kit includes a
+  campaign handoff, manifest fingerprint and copyable continuation prompt.
+  A new agent can discover the files and operating rules without old chat
+  history; actual progress still comes from current private records, the
+  user's export and receipts.
 
 ## Quick start
 
@@ -38,7 +67,8 @@ source .venv/bin/activate
 
 The bootstrap script creates `.venv`, installs the package, creates ignored
 private configuration files from safe examples, validates them, and runs the
-test suite. Fill the generated files under `private_data/`, then validate again:
+test suite. A passing blank-template check is not application readiness.
+Fill the generated files under `private_data/`, then validate again:
 
 ```bash
 jobbot-private check
@@ -53,7 +83,9 @@ sudo .venv/bin/python -m playwright install-deps chromium  # Linux only, if need
 ```
 
 See [installation](docs/installation.md) for Windows CDP, TeX, encrypted data,
-and update instructions.
+and update instructions. See [who configures what](docs/getting-started.md)
+before collecting or applying: bootstrap does not populate candidate facts,
+choose sources, create a LaTeX CV, log in to portals, or assemble a manual kit.
 
 ## Repository layout
 
@@ -78,13 +110,14 @@ private_data/      Ignored identity, credentials, sessions, databases, and outpu
 | `make daily` | Collect, rescore, and write daily and weekly reports |
 | `make weekly` | Rebuild the weekly report from SQLite |
 | `make session-audit` | Check configured login sessions without exposing credentials |
+| `applybot manual-kit --manifest <private-manifest> --output <new-private-directory> --progress-key <stable-prefix>` | Render a reviewed offline manual kit with a new-conversation handoff |
 | `make workflow-plan WORKFLOW=http_refresh` | Preview a named modular workflow |
 | `make workflow WORKFLOW=http_refresh` | Run a named modular workflow |
 | `make test` | Run unit tests |
 | `make release-check` | Audit publishable files, test, and validate config |
 
 The installed command-line entry points are `jobbot`, `applybot`, `cvbot`,
-`jobbot-config`, and `jobbot-private`.
+`jobbot-config`, `jobbot-private`, and `jobbot-db`.
 
 ## Configuration model
 

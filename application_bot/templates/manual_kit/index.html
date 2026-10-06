@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>$title</title><style>$style</style></head>
+<body><main id="campaign" data-progress-key="$progress_key">
+<h1>$title</h1>
+<div class="actions"><a href="AGENT_HANDOFF.md">新对话接手说明</a><button data-copy="handoff-prompt">复制接手指令</button></div>
+<details><summary>新对话入口</summary><pre id="handoff-prompt">$handoff_prompt</pre></details>
+<p>序号保留原清单。每岗包含已审阅材料、填写资料和已知资格差距。</p>
+<div class="warn">在公司门户核对资格、实际填写内容及实际上传文件，由你完成最终提交。取得成功回执后再登记进度。</div>
+<div class="actions"><button data-filter="all">全部</button><button data-filter="full_time">正职</button><button data-filter="internship">实习</button><button id="export-progress">导出进度</button></div>
+<p id="progress"></p><p id="copy-status" role="status"></p>
+<p class="small">进度仅保存在此浏览器本地。更换浏览器、文件地址或清除缓存前先导出；登记状态不会向公司发送申请或更新数据库。初始空白状态不代表你尚未投递。</p>
+<section><h2>支持附件</h2><div class="actions">$supporting</div><p class="small">成绩单的官方／非官方属性以原文件及说明为准；按实际门户要求选择。</p></section>
+$cards
+</main><script>$script</script></body></html>

@@ -1,5 +1,52 @@
 # Application bot
 
+## Standard offline manual application kit
+
+`manual-kit` renders reviewed materials into a new private delivery directory,
+using the shared templates in `templates/manual_kit/`. It preserves original
+job numbers and manifest order, supports any batch size, and provides role
+filters, per-field copy buttons, document links, and browser-local progress with
+receipt notes and JSON export. No database or company portal is accessed.
+
+Every new kit also includes a campaign-specific `AGENT_HANDOFF.md`, its manifest
+SHA-256, progress-key prefix, and a copyable new-conversation prompt. That file
+identifies the materials and continuation rules; it does not certify current
+progress. The agent still needs the latest private records and the candidate's
+active job, export or receipt. See [setup ownership](../docs/getting-started.md)
+for what bootstrap initializes and what requires candidate/agent assistance.
+
+```bash
+python3 application_bot/cli.py manual-kit \
+  --manifest private_data/outputs/application_bot/example_source/Manifest.json \
+  --output private_data/outputs/application_bot/example_delivery \
+  --progress-key example-campaign-
+```
+
+The source bundle has a `Manifest.json` (see
+[`manual-kit-manifest.schema.json`](../schemas/manual-kit-manifest.schema.json)
+and the [fictional manifest](../examples/manual_kit_manifest_template.json)).
+Each job needs its original positive `rank`, a unique one-level `folder`, an
+HTTPS job/application URL, and `pdfs` entries with SHA-256 and
+`visual_review: passed`. The generator checks hashes and copies the existing
+PDF bytes; it never generates new CV claims or grants review approval.
+
+Each role folder contains `Application_Data.json` with the same `rank`.
+Optional sections are `common_fields`, `regional_authorization`,
+`role_specific_answers` (label-to-answer objects), `education`,
+`work_experience`, `projects` (lists of objects), `portal_notes`, and
+`transcript_verified_education_facts`. Unconfirmed/empty values remain
+unconfirmed. Optional role TXT/JSON references and manifest supporting documents
+are copied without altering their content or official/unofficial labels.
+
+Output must be below the canonical private root and must not exist. The
+generator refuses to overwrite delivered kits. Choose a distinct, stable
+`--progress-key` per campaign and keep the user's entry file address stable.
+Existing browser progress is loaded without resetting keys; manifest or database
+statuses do not prefill it. Exported progress keeps the `rank`, `status`,
+`receipt` array format. Initial blank status is not evidence of no application.
+Only receipts or explicit candidate confirmation authorize database submission
+registration through the existing `mark_submitted.py` workflow.
+
 This is the stable entry point for browser-assisted application preparation.
 The implementation remains in `job_bot/application_bot.py` during the
 compatibility migration because existing queues, tests, and commands depend on

@@ -1,5 +1,9 @@
 # Installation
 
+Before choosing a workflow, read [setup ownership and readiness](getting-started.md).
+It distinguishes generated blank files from candidate-confirmed facts and
+documents the remaining strategy, browser, material and portal setup work.
+
 For two online WSL machines that need the same private SQLite data, follow
 [the shared database setup](shared-database.md). The database stays on one host,
 and the other machine uses authenticated SSH for database operations.

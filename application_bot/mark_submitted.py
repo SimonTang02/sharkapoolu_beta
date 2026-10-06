@@ -14,6 +14,7 @@ if str(ROOT) not in sys.path:
 
 from job_bot.application_bot import add_event  # noqa: E402
 from job_bot.bot import connect_db, load_config, utc_now  # noqa: E402
+from application_bot.batch_campaign import ensure_campaign_schema  # noqa: E402
 
 
 DEFAULT_CONFIG = ROOT / "job_bot/config.china_hk_ic_foreign.json"
@@ -31,6 +32,7 @@ def main() -> None:
     args = parser.parse_args()
 
     conn = connect_db(load_config(Path(args.config)))
+    ensure_campaign_schema(conn)
     now = utc_now()
     updated: list[tuple[int, str, str]] = []
     for application_id in args.application_ids:

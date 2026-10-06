@@ -10,6 +10,16 @@
 `docs/configuration.md`、`docs/installation.md`、`docs/shared-database.md`。
 无需旧对话即可确定操作接口；真实登录、未知事实和雇主页面变化仍需现场核实。
 
+从零开始时还须读[`docs/getting-started.md`](docs/getting-started.md)：其中逐项
+区分bootstrap已完成、Agent/开发者需配置、用户本人必须确认的工作，说明现有
+地区/年份/毕业日期等限制。空白模板验证通过不代表具备投递资格或材料就绪。
+
+手动HTML标准模板入口为`applybot manual-kit`，详见
+[`application_bot/README.md`](application_bot/README.md)。新生成的投递包包含
+本批`AGENT_HANDOFF.md`、Manifest指纹、进度键及可复制的续接指令。新对话能
+找到操作规则和原目标，但实际进度必须结合最新私有交接、用户导出及真实回执。
+不要把公开模板、默认空白总表或全库submitted数量解释为本批进度。
+
 从项目根目录开始检查：
 
 ```bash
@@ -38,6 +48,7 @@ python3 -m job_bot.private_config paths
 | `application_bot/` / `applybot` | 排队、profile 绑定、登录检查、门户路由、表单准备 | application ID / reviewed PDF / browser |
 | `application_bot/batch_campaign.py` | 指定岗位或策略选出的批次、材料准备 | job IDs / campaign ID |
 | `application_bot/tab_manager.py` | 标签审计、认领、去重清理 | 本机专用浏览器 / tab registry |
+| `application_bot/manual_kit.py` | 标准离线手动投递HTML与新对话接手说明 | 已审阅Manifest / 逐岗Application_Data → 新私有目录 |
 | `jobbot-private` | 私有模板初始化、类型及一致性检查 | examples / schemas / private_paths |
 | `jobbot-db` | 本地或 SSH 数据库、备份准备、变化监控 | 私有 connection config |
 | `scripts/`、`Makefile` | 安装、构建、隐私审计、发布验证 | bootstrap / release-check |

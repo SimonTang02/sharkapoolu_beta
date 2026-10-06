@@ -46,6 +46,7 @@ include = ["application_bot*", "cv*", "examples", "job_bot*", "schemas"]
 namespaces = true
 
 [tool.setuptools.package-data]
+application_bot = ["templates/manual_kit/*"]
 cv = ["latex/*"]
 examples = ["*.json", "*_template.sql", "*_template.tex", "README.md"]
 job_bot = [
