@@ -2,7 +2,9 @@
 
 An agent-driven toolkit for job discovery, tailored resumes, and application tracking.
 
-New users and coding agents: start with the complete
+> **First time using this?** Follow the [step-by-step beginner guide](docs/foolproof_guide.md) for Windows + WSL2 + VS Code installation, resume import, and messages to copy to your agent. The [Chinese release](https://github.com/SimonTang02/sharkapoolu_beta_zh) has its own Chinese guide.
+
+Coding agents: start with the complete
 [operating and handoff guide](AGENT_HANDOFF.md) and
 [setup ownership and readiness guide](docs/getting-started.md), then the
 [commented public templates](examples/README.md), including a fictional
@@ -16,64 +18,36 @@ final application submission remains a human action.
 
 ## Key features
 
-- **Resume onboarding and manual records.** Import an original PDF, text or
-  LaTeX resume into a private review packet with an editable draft and Agent
-  instructions for answers, evidenced keywords and scoring. UTF-8 CSV supports
-  manually maintained jobs and confirmed application history with transactional
-  import. Start with [candidate onboarding](docs/candidate-onboarding.md) and
-  the [Windows + WSL2 + VS Code platform guide](docs/platforms.md).
-- **Beginner controls in one file.** A Chinese annotated settings file selects
-  modules, regions, HTTP or isolated-browser collection, CDP preparation,
-  review rounds, time budgets and retries. `jobbot-settings` checks and previews
-  changes before explicit execution. See [the beginner guide](docs/beginner-settings.md).
-- **Two application workflows.** Manual delivery provides an offline HTML
-  dashboard, per-job copyable answers, reviewed PDF and supporting-document
-  links, receipt notes, and browser-local progress export. Agent-assisted
-  preparation provides queues, explicit batches, ATS routing, and supported
-  form filling up to human review. Both workflows leave final submission to
-  the candidate; queueing, uploading, or reaching Review is not a submission.
-- **Preference-based discovery and review.** Collect and normalize jobs from
-  HTTP feeds, career APIs, and authorized browser sessions. Configure source
-  selection, role keywords, score weights and the implemented region/degree/
-  recruiting-cycle filters. Eligibility and work permission still require
-  evidence and candidate confirmation. Adding new regions, years or job
-  families may require adapting the current hardware-focused strategy code.
-- **One application history across machines.** SQLite stores postings and
-  application events. Optional authenticated SSH lets clients operate one
-  host's private database without a database listener. Machines must be online;
-  browser sessions, PDFs and progress exports are not automatically synced.
-  See [the sharing contract](docs/shared-database.md).
-- **Evidence-grounded materials.** `cvbot` selects supported evidence and
-  keywords from a private profile, produces tailoring notes, and can render
-  LaTeX resume and cover-letter PDF bundles with a configured TeX toolchain.
-  Rendered PDFs need review; the generator does not create new qualifications.
-- **Personal customization with private storage.** Identity, evidence,
-  keywords, credentials, sessions, receipts and generated materials stay in a
-  candidate-owned private tree. Public templates use blank or fictional data;
-  configuration and privacy audits report structure without printing values.
-- **Dedicated browser session and tab management.** Supported paths use a
-  separate Chromium profile or restricted Windows Chrome CDP. Session audits,
-  login preflight and audited tab cleanup preserve active application forms
-  and authentication anchors. MFA, CAPTCHA and policy choices stay manual;
-  persistent profiles do not guarantee that a login remains valid.
-- **Reports and optional notifications.** Generate daily, weekly and strategy
-  review reports. SMTP delivery requires explicit private configuration and
-  authorization; dry-run is the default. Recurring execution requires a
-  separately configured scheduler.
-- **New-conversation handoffs.** Every newly rendered manual kit includes a
-  campaign handoff, manifest fingerprint and copyable continuation prompt.
-  A new agent can discover the files and operating rules without old chat
-  history; actual progress still comes from current private records, the
-  user's export and receipts.
+- **Find relevant jobs.** Tell your agent your roles, locations, and graduation
+  timing. It configures supported sources and ranking, then scans jobs into your
+  database. Defaults focus on hardware; other careers may need adaptation.
+- **Prepare materials from your resume.** Supply a PDF or LaTeX resume and verify
+  the extracted facts. Your agent prepares editable LaTeX and per-job materials;
+  install TeX to render PDFs and review each result before using it.
+- **Get help with application forms.** Use a manual HTML kit with answers and
+  attachments, or supported browser adapters to prepare fields. You handle
+  login, verification, review, and final Submit.
+- **Keep track of real applications.** Use the local database or manually edit
+  UTF-8 CSV records. Mark submitted only after a receipt or your explicit success
+  confirmation. Sharing a database over SSH is optional.
+- **Choose functions and continue later.** One settings file controls modules,
+  regions, review rounds, and preparation modes. Private task/handoff files let
+  a new conversation continue; browser progress exports and receipts establish
+  actual progress.
+
+Start with one job. The [beginner guide](docs/foolproof_guide.md) explains what
+bootstrap handles and what still needs you or an agent. Advanced browser,
+reporting, and sharing options are covered in [installation](docs/installation.md),
+[beginner settings](docs/beginner-settings.md), and [shared databases](docs/shared-database.md).
 
 ## Quick start
 
 Python 3.10 or newer is required.
 
 ```bash
-git clone git@github.com:SimonTang02/sharkapoolu_beta.git
+git clone https://github.com/SimonTang02/sharkapoolu_beta.git
 cd sharkapoolu_beta
-./scripts/bootstrap.sh
+./scripts/bootstrap.sh --with-resume
 source .venv/bin/activate
 ```
 
@@ -90,7 +64,7 @@ jobbot-config --config job_bot/config.china_hk_ic_foreign.json
 For browser-assisted collection and form preparation:
 
 ```bash
-./scripts/bootstrap.sh --with-browser
+./scripts/bootstrap.sh --with-browser --with-resume
 sudo .venv/bin/python -m playwright install-deps chromium  # Linux only, if needed
 ```
 
