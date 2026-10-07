@@ -6,6 +6,14 @@
 
 ## 1. 新对话开始时读取与确认
 
+新候选人从原始PDF/TXT/LaTeX开始，先读
+[`docs/candidate-onboarding.md`](docs/candidate-onboarding.md)：包含简历导入、
+逐页事实溯源、填表字段映射、可消费的评分权重和cvbot定制流程。
+`cvbot import-resume`生成新私有草稿及AGENT_TASK.md，不自动认定资格或覆盖材料。
+纯手工资料/CSV/主库录入见[`docs/manual-database.md`](docs/manual-database.md)。
+推荐Windows+WSL2+VS Code，Mac/原生Windows/Linux差异见
+[`docs/platforms.md`](docs/platforms.md)；只有Codex尚不具备项目运行依赖。
+
 非技术用户的日常入口为 `jobbot-settings`。先读
 [`docs/beginner-settings.md`](docs/beginner-settings.md) 和私有
 `config/easy_settings.json`；它包含模式、模块、浏览器、审查次数、地区开关。

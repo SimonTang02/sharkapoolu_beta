@@ -23,7 +23,6 @@ if str(ROOT) not in sys.path:
 from cv.application_keywords import select_keywords, apply_keyword_selection  # noqa: E402
 from cv.bot.bot import (  # noqa: E402
     DEFAULT_PROFILE as EVIDENCE_PROFILE,
-    FULL_TIME_GRADUATION_DATE,
     render_report,
     safe_slug,
     select_evidence,
@@ -351,7 +350,7 @@ def build_one_material(
         job_text,
         matches,
         (
-            "current.tex (full-time graduation: Jun 2027)"
+            "current.tex (graduation from private evidence profile)"
             if candidate.role_kind == "full_time"
             else "current.tex"
         ),
@@ -371,11 +370,7 @@ def build_one_material(
         CURRENT_RESUME_TEX,
         DEFAULT_BUNDLES,
         bundle_name=bundle_name,
-        graduation_date=(
-            FULL_TIME_GRADUATION_DATE
-            if candidate.role_kind == "full_time"
-            else None
-        ),
+        graduation_date=evidence_profile.get("expected_graduation_date") or None,
         role_kind=candidate.role_kind,
         keyword_selection=keywords,
     )

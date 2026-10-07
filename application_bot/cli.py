@@ -16,6 +16,7 @@ from job_bot.application_bot import main as legacy_main  # noqa: E402
 
 def main() -> None:
     commands = {
+        "import-manual": "job_bot.manual_database",
         "manual-kit": "application_bot.manual_kit",
         "keywords": "cv.application_keywords",
         "session-audit": "application_bot.session_audit",

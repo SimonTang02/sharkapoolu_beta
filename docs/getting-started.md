@@ -59,12 +59,13 @@ Kong and the United States. Other regions require preserved, explicitly
 confirmed private answers and portal-specific review; adding a country to an
 address field does not establish its work authorization.
 
-The legacy full-time bundle entry points request a fixed graduation date
-override in `cv/bot/bot.py` and `application_bot/batch_campaign.py`. Before using
-them for a different candidate or date, an agent or developer must adapt this
-behavior to the confirmed private evidence profile and test the rendered date.
-A structurally valid profile alone does not fix this legacy override. Do not
-run material generation over an approved bundle.
+Original PDF/TXT/TeX intake, evidence-to-answer mapping, actual scoring fields
+and safe tailoring are described in [candidate onboarding](candidate-onboarding.md).
+`cvbot import-resume` preserves the original and creates a review draft and Agent
+task; image-only PDF needs visual reading/OCR. Normal CV and campaign generation
+now use the private evidence graduation date rather than a fixed recruiting-year
+override. Empty dates preserve the reviewed source. The old exported constant is
+compatibility-only; it is no longer automatically applied by these entry points.
 
 The standard HTML generator consumes an already assembled manifest and each
 role's `Application_Data.json`. It is not yet a one-command conversion from

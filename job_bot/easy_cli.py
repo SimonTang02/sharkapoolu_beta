@@ -92,6 +92,8 @@ def agent_packet(config: dict, task: str, ids: list[int]) -> Path:
     text = f"""# 新对话任务包
 
 任务：{task}。先读项目 AGENTS.md、AGENT_HANDOFF.md、docs/beginner-settings.md，
+材料或事实缺失时再按 docs/candidate-onboarding.md 与 docs/manual-database.md 核对；
+这是既有投递任务，不应因此重置资料或重新导入已审阅简历。
 再读本文件旁的 targets.json、配置 {EASY_SETTINGS} 和运行配置 {EASY_RUNTIME_CONFIG}。
 实际数据库通过运行配置和 shared_database 接口读取；不要把数据库复制到新路径。
 

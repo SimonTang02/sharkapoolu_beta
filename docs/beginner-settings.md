@@ -1,6 +1,7 @@
 # 给第一次使用的朋友：只改一份功能配置
 
-安装后，日常只编辑 `private_data/config/easy_settings.json`。设置了
+首次资料初始化先看 [candidate-onboarding.md](candidate-onboarding.md)，
+平台选择看 [platforms.md](platforms.md)。安装后，日常只编辑 `private_data/config/easy_settings.json`。设置了
 `JOBBOT_PRIVATE_DIR` 时，文件位于该私有根目录的 `config/` 内。
 公开示例是 `examples/easy_settings_template.json`，说明文字已经写进文件。
 `true` 表示开启，`false` 表示关闭；保留引号、逗号和区域名称。
@@ -89,7 +90,7 @@ jobbot-settings run --task manual_kit --manifest <private-manifest.json> \
 3. 选择适合朋友的真实职位源、评分和招聘年份。当前策略主要覆盖硬件方向及中国/香港校招、美国新毕业与暑期实习；其他方向需适配。
 4. 建立专用Chrome和本机CDP地址。凭证留在 `passport.env` 或环境变量；入口只接受本机地址，远端需SSH端口映射。用户亲自登录、处理验证码和MFA。
 5. 核实主库位置与SSH主客机角色，检查材料绑定、门户答案和首个真实表单。不得拿演示人物的答案直接投递。
-6. 组装已审阅的Manifest、PDF及逐岗审查记录；修复不同毕业日期的旧材料生成覆盖逻辑，详见 `getting-started.md`。
+6. 组装已审阅的Manifest、PDF及逐岗审查记录；核对真实毕业日期与材料模块，详见 `candidate-onboarding.md`。
 
 `easy_runtime.generated.json` 从现有私有 `job_bot.local.json`（存在时）或公开
 默认配置派生。可以用 `--base-config` 指定另一个既有配置。个人资料和

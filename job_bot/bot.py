@@ -198,6 +198,11 @@ def load_env_file(path: Path) -> None:
 def db_path(config: dict[str, Any]) -> Path:
     raw = config.get("database", {}).get("path") or str(DEFAULT_DB)
     path = Path(raw)
+    if not path.is_absolute() and path.parts[:2] == ("private_data", "database"):
+        resolved = DATABASE_DIR.joinpath(*path.parts[2:]).resolve()
+        if not resolved.is_relative_to(DATABASE_DIR.resolve()):
+            raise ValueError("Database path escapes the canonical private database directory")
+        return resolved
     return path if path.is_absolute() else ROOT / path
 
 
@@ -2395,7 +2400,7 @@ def score_job(job: JobPosting, config: dict[str, Any]) -> tuple[int, str]:
                     points += int(group.get("title_bonus", 0))
                 score += points
                 reasons.append(f"{group.get('name', matched_keyword)} ({matched_keyword}, +{points})")
-        score = min(100, score)
+        score = max(0, min(100, score))
         reason = "Matched: " + "; ".join(reasons) if reasons else "No configured direction match"
         return score, reason
 

@@ -171,6 +171,8 @@ The maintained private inputs are:
 | `cv/profile/application_keywords.json` | Evidence-scoped technical and collaboration labels plus role presets and provenance | Template: `examples/application_keywords.json`; schema: `schemas/application-keywords.schema.json` |
 | `config/job_bot.local.json` | Machine paths, source enablement, browser selection, report routing, and other non-secret local overrides | Start from `examples/job_bot.local.json`; keep secrets in `passport.env` |
 | `config/easy_settings.json` | Beginner mode, module, browser, review-round and geographic controls | Template: `examples/easy_settings_template.json`; schema: `schemas/easy-settings.schema.json`; opt-in `jobbot-settings` entry point |
+| `cv/intake/<new-directory>/` | Original resume, editable transcription and source-linked fact ledger | `cvbot import-resume`; `schemas/resume-fact-ledger.schema.json`; `docs/candidate-onboarding.md` |
+| `database/manual/jobs.csv`, `applications.csv` | Candidate-maintained manual records | CSV templates and `docs/manual-database.md`; preview before explicit transactional import |
 
 Other private state includes:
 
@@ -193,6 +195,9 @@ replacing local candidate files and a backup exists. Directory permissions
 should be `700`; credential and maintained profile files should be `600`.
 Validation and diagnostics may report paths, key names, counts, and status, but
 not candidate values.
+On native Windows, POSIX mode bits cannot verify private-file ACLs: validation
+reports this limitation. Use owner-restricted NTFS ACLs and verify them locally;
+do not treat a structural check as a privacy or application-readiness approval.
 
 ## Fresh-clone installation
 

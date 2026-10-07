@@ -11,7 +11,7 @@ BEGIN;
 -- job_id: 真实 jobs.id 外键，先确保岗位存在。
 -- application_id: 真实 applications.id 外键，不能填 CDP target。
 -- rank: 批次内整数审阅顺序，不证明资格。
--- status: 本表业务状态；submitted 仅在收件证据或用户确认后使用。
+-- status: 批次成员状态，如selected；submitted只在申请已证实成功后同步。
 -- material_bundle: 已生成的私有材料目录路径。
 -- last_error: 最后错误，须脱敏，不含凭据。
 CREATE TABLE IF NOT EXISTS application_campaign_jobs (
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS application_campaign_jobs (
 -- target_count: 批次计划数量，正整数，不等于提交数。
 -- geographic_scope: 本批次经确认的地区标签。
 -- min_score: 批次分数门槛，仍需审阅 JD。
--- status: 本表业务状态；submitted 仅在收件证据或用户确认后使用。
+-- status: 批次状态，如planned；不是某岗submitted或投递总数。
 -- created_at: 创建 UTC 时间，由程序生成。
 -- updated_at: 修改 UTC 时间，由业务程序维护。
 CREATE TABLE IF NOT EXISTS application_campaigns (
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS application_limits (
 -- applications: 字段填写说明
 -- id: 自动整数主键；新增时省略，迁移时保留关联。
 -- job_id: 真实 jobs.id 外键，先确保岗位存在。
--- status: 本表业务状态；submitted 仅在收件证据或用户确认后使用。
+-- status: queued/draft/manual_required/submitted等申请状态；submitted仅凭真实回执或本人明确确认。
 -- tailored_resume_path: 已审阅职位 PDF 路径，执行浏览器的机器须可读。
 -- cover_letter_path: 已审阅求职信路径；未生成 NULL。
 -- profile_path: 本次申请私有 profile 文件路径。
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS job_strategy_reviews (
 -- role_kind: internship/full_time/unknown 等已分类类型。
 -- recruitment_category: 招聘项目类别，须与官方配额类别对应。
 -- description: 正式 JD，保留所有资格条件。
--- status: 本表业务状态；submitted 仅在收件证据或用户确认后使用。
+-- status: 发现/处理状态，如new/collected；勿以本列submitted统计成功申请。
 -- fit_score: 评分器生成的相关性分数，不证明资格。
 -- score_reason: 评分理由，由 scoring 生成。
 -- published_at: 官方发布日期；未知 NULL。
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS job_strategy_reviews (
 -- resume_version: 选择的版本标签或源文件名。
 -- created_at: 创建 UTC 时间，由程序生成。
 -- updated_at: 修改 UTC 时间，由业务程序维护。
--- source_name: 公共 source config 的准确 name。
+-- source_name: 公共source配置的准确name；手动CSV来源为manual_csv。
 -- company: 准确公司名称，用于查询和配额匹配。
 -- external_id: 官方职位 ID，与 URL 核对。
 -- content_hash: 程序生成的内容摘要，不人工填写。
@@ -232,7 +232,16 @@ CREATE TABLE IF NOT EXISTS jobs (
   resume_version TEXT DEFAULT 'current.tex',
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-, source_name TEXT, company TEXT, external_id TEXT, content_hash TEXT, first_seen TEXT, last_seen TEXT, is_active INTEGER DEFAULT 1, raw_json TEXT);
+,
+  source_name TEXT,
+  company TEXT,
+  external_id TEXT,
+  content_hash TEXT,
+  first_seen TEXT,
+  last_seen TEXT,
+  is_active INTEGER DEFAULT 1,
+  raw_json TEXT
+);
 
 -- resume_versions: 字段填写说明
 -- id: 自动整数主键；新增时省略，迁移时保留关联。
@@ -252,10 +261,10 @@ CREATE TABLE IF NOT EXISTS resume_versions (
 
 -- scan_runs: 字段填写说明
 -- id: 自动整数主键；新增时省略，迁移时保留关联。
--- source_name: 公共 source config 的准确 name。
+-- source_name: 公共source配置的准确name；手动CSV来源为manual_csv。
 -- started_at: 本轮扫描开始 UTC 时间。
 -- finished_at: 本轮结束 UTC 时间，未结束 NULL。
--- status: 本表业务状态；submitted 仅在收件证据或用户确认后使用。
+-- status: running/ok/error扫描状态；这里禁止用submitted表示投递。
 -- jobs_seen: 本轮实际读取数量，不表示全站覆盖。
 -- jobs_new: 本轮新增去重岗位数，程序计算。
 -- error: 脱敏来源错误，失败不是空成功快照。

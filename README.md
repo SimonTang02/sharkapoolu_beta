@@ -14,6 +14,12 @@ final application submission remains a human action.
 
 ## Key features
 
+- **Resume onboarding and manual records.** Import an original PDF, text or
+  LaTeX resume into a private review packet with an editable draft and Agent
+  instructions for answers, evidenced keywords and scoring. UTF-8 CSV supports
+  manually maintained jobs and confirmed application history with transactional
+  import. Start with [candidate onboarding](docs/candidate-onboarding.md) and
+  the [Windows + WSL2 + VS Code platform guide](docs/platforms.md).
 - **Beginner controls in one file.** A Chinese annotated settings file selects
   modules, regions, HTTP or isolated-browser collection, CDP preparation,
   review rounds, time budgets and retries. `jobbot-settings` checks and previews

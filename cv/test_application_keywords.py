@@ -179,10 +179,12 @@ Preserve project evidence.
              patch('job_bot.application_bot.connect_db', return_value=conn), \
              patch('job_bot.application_bot.add_event'), \
              patch('job_bot.application_bot.ROOT', self.root), \
+             patch('job_bot.application_bot.APPLICATION_OUTPUT', self.root / 'private_outputs'), \
              patch('job_bot.application_bot.CURRENT_RESUME_TEX', source), \
              patch('cv.application_keywords.APPLICATION_KEYWORDS', self.path):
             cmd_prepare_profile(args)
         saved = Path(conn.execute('SELECT profile_path FROM applications').fetchone()[0])
+        self.assertTrue(saved.is_relative_to(self.root / 'private_outputs'))
         profile = json.loads(saved.read_text())
         self.assertEqual(profile['skills'], ['Behavioral Modeling'])
         self.assertEqual(profile['application_keywords']['preset'], 'architecture')

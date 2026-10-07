@@ -23,6 +23,7 @@ dependencies = []
 
 [project.optional-dependencies]
 browser = ["playwright>=1.55,<2"]
+resume = ["pypdf>=5,<7"]
 dev = []
 
 [project.scripts]
@@ -49,7 +50,7 @@ namespaces = true
 [tool.setuptools.package-data]
 application_bot = ["templates/manual_kit/*"]
 cv = ["latex/*"]
-examples = ["*.json", "*_template.sql", "*_template.tex", "README.md"]
+examples = ["*.json", "*_template.sql", "*_template.tex", "*_template.csv", "README.md"]
 job_bot = [
   "*.json",
   "*.toml",

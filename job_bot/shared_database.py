@@ -150,8 +150,14 @@ to a separate writable local database.
         raise sqlite3.OperationalError("Invalid private database connection configuration") from None
     if config["mode"] == "local":
         return sqlite3.connect(database, timeout=timeout)
+    ensure_ssh_platform()
     return SSHConnection(ssh_command(config, path.name),
                          request_timeout=config["request_timeout"], timeout=timeout)
+
+
+def ensure_ssh_platform() -> None:
+    if os.name == "nt":
+        raise sqlite3.OperationalError("SSH database RPC uses Unix pipes; use WSL on Windows. Writable local fallback is disabled.")
 
 
 class SSHConnection:

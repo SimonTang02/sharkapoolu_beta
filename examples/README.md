@@ -6,6 +6,8 @@ examples establishes a real person's work authorization, nationality or consent.
 
 | File | Purpose and filling instructions |
 | --- | --- |
+| `manual_jobs_template.csv`, `manual_applications_template.csv` | Empty UTF-8 CSV headers for fully manual record keeping. Bootstrap creates missing private copies; field dictionary and confirmation rules: `docs/manual-database.md`. |
+| `candidate_scoring_template.json` | Fictional software preference weights consumed by weighted_keywords_v1. Copy and tune privately; validate include paths and actual scoring behavior. See `docs/candidate-onboarding.md`. |
 | `easy_settings_template.json` | Chinese annotated daily controls for nontechnical users. Bootstrap creates private `config/easy_settings.json` without overwriting it. Use `jobbot-settings check`, `plan`, then explicit `run --execute`; see `docs/beginner-settings.md`. |
 | `manual_kit_manifest_template.json` | Fictional manifest for the standard offline manual-kit HTML templates. Fill real data only in the private source bundle, review PDFs and record their hashes; see `application_bot/README.md`. |
 | `database_connection_template.json` | Every connection field is explained in `_comment`. Fill real settings only in private `config/database_connection.json`; prefer `jobbot-db configure`. |

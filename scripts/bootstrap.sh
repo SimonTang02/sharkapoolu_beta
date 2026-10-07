@@ -4,14 +4,16 @@ set -euo pipefail
 project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 python_bin="${PYTHON:-python3}"
 with_browser=false
+with_resume=false
 run_tests=true
 
 for argument in "$@"; do
   case "$argument" in
     --with-browser) with_browser=true ;;
+    --with-resume) with_resume=true ;;
     --skip-tests) run_tests=false ;;
     -h|--help)
-      echo "Usage: scripts/bootstrap.sh [--with-browser] [--skip-tests]"
+      echo "Usage: scripts/bootstrap.sh [--with-browser] [--with-resume] [--skip-tests]"
       exit 0
       ;;
     *) echo "Unknown option: $argument" >&2; exit 2 ;;
@@ -27,12 +29,17 @@ if [[ ! -x .venv/bin/python ]]; then
 fi
 
 .venv/bin/python -m pip install --upgrade pip
+install_target="."
+if $with_browser && $with_resume; then
+  install_target='.[browser,resume]'
+elif $with_browser; then
+  install_target='.[browser]'
+elif $with_resume; then
+  install_target='.[resume]'
+fi
+.venv/bin/python -m pip install -e "$install_target"
 if $with_browser; then
-  .venv/bin/python -m pip install -e '.[browser]'
-  PLAYWRIGHT_BROWSERS_PATH="$project_root/.playwright-browsers" \
-    .venv/bin/python -m playwright install chromium
-else
-  .venv/bin/python -m pip install -e .
+  .venv/bin/python -m playwright install chromium
 fi
 
 .venv/bin/python -m job_bot.private_config init

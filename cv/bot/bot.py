@@ -42,6 +42,7 @@ DEFAULT_OUT_DIR = CV_BOT_OUTPUT
 DEFAULT_DATABASE = JOB_DATABASE
 DEFAULT_RESUME = CURRENT_RESUME_TEX
 DEFAULT_BUNDLE_DIR = CV_VARIANTS_DIR
+# Compatibility constant for external callers; normal generation uses the private profile.
 FULL_TIME_GRADUATION_DATE = "Jun 2027 (Expected)"
 
 
@@ -350,10 +351,13 @@ Sincerely,\\
 def compile_latex(tex_path: Path, build_dir: Path) -> Path:
     build_dir.mkdir(parents=True, exist_ok=True)
     tex_bin = ROOT / ".TinyTeX" / "bin" / "x86_64-linux" / "latexmk"
+    engine = os.environ.get("JOBBOT_LATEX_ENGINE", "pdflatex")
+    if engine not in ("pdflatex", "xelatex", "lualatex"):
+        raise ValueError("JOBBOT_LATEX_ENGINE must be pdflatex, xelatex or lualatex")
     command = [
         str(tex_bin if tex_bin.is_file() else "latexmk"),
         "-g",
-        "-pdf",
+        {"pdflatex": "-pdf", "xelatex": "-xelatex", "lualatex": "-lualatex"}[engine],
         "-bibtex",
         "-interaction=nonstopmode",
         "-halt-on-error",
@@ -362,12 +366,12 @@ def compile_latex(tex_path: Path, build_dir: Path) -> Path:
     ]
     environment = os.environ.copy()
     if tex_bin.is_file():
-        environment["PATH"] = f"{tex_bin.parent}:{environment.get('PATH', '')}"
+        environment["PATH"] = str(tex_bin.parent) + os.pathsep + environment.get("PATH", "")
     latex_inputs = (ROOT / "cv" / "latex", tex_path.parent.resolve())
-    environment["TEXINPUTS"] = ":".join(
+    environment["TEXINPUTS"] = os.pathsep.join(
         [*(str(path) for path in latex_inputs), environment.get("TEXINPUTS", "")]
     )
-    environment["BIBINPUTS"] = ":".join(
+    environment["BIBINPUTS"] = os.pathsep.join(
         [str(tex_path.parent.resolve()), environment.get("BIBINPUTS", "")]
     )
     completed = subprocess.run(
@@ -509,16 +513,23 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--generate-bundle", action="store_true")
     parser.add_argument("--resume-source", default=str(DEFAULT_RESUME))
     parser.add_argument("--bundle-dir", default=str(DEFAULT_BUNDLE_DIR))
+    parser.add_argument("--latex-engine", choices=("pdflatex", "xelatex", "lualatex"), help="Optional rendering engine, especially XeLaTeX for reviewed Unicode source")
     parser.add_argument(
         "--role-kind",
         choices=("internship", "full_time"),
-        help="Use the full-time graduation-date override for full_time bundles",
+        help="Record role kind; graduation date comes from the private evidence profile",
     )
     return parser
 
 
 def main() -> None:
+    if len(sys.argv) > 1 and sys.argv[1] == "import-resume":
+        from cv.resume_import import main as import_resume
+        sys.argv.pop(1)
+        raise SystemExit(import_resume())
     args = build_parser().parse_args()
+    if args.latex_engine:
+        os.environ["JOBBOT_LATEX_ENGINE"] = args.latex_engine
     profile_path = Path(args.profile)
     if args.job_url:
         stored_company, stored_role, job_description = load_stored_job(
@@ -554,9 +565,7 @@ def main() -> None:
             report,
             Path(args.resume_source),
             Path(args.bundle_dir),
-            graduation_date=(
-                FULL_TIME_GRADUATION_DATE if args.role_kind == "full_time" else None
-            ),
+            graduation_date=profile.get("expected_graduation_date") or None,
             role_kind=args.role_kind,
             keyword_selection=keywords,
         )

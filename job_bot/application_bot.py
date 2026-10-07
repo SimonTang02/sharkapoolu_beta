@@ -27,6 +27,7 @@ from application_bot.portal_registry import resolve_company_profile  # noqa: E40
 from cv.application_keywords import select_keywords, apply_keyword_selection  # noqa: E402
 from private_paths import (  # noqa: E402
     APPLICATION_PROFILE,
+    APPLICATION_OUTPUT,
     BROWSER_PROFILE_DIR,
     BROWSER_STATE_DIR,
     CREDENTIALS_FILE,
@@ -210,7 +211,7 @@ def cmd_prepare_profile(args: argparse.Namespace) -> None:
     safety = profile.setdefault("safety", {})
     safety["allow_submit"] = False
     safety["allow_sensitive_answers"] = False
-    output_dir = ROOT / "job_bot" / "out" / "applications" / str(args.application_id)
+    output_dir = APPLICATION_OUTPUT / "applications" / str(args.application_id)
     output_dir.mkdir(parents=True, exist_ok=True)
     profile_path = output_dir / "profile.json"
     profile_path.write_text(

@@ -1,0 +1,14 @@
+{
+  "_说明": "这是虚构软件候选人的可消费示例，真实权重须由本人确认。复制到私有config/candidate_scoring.json，调整include路径，用jobbot-config检查。使用时明确传--config，或在jobbot-settings中传--base-config。keyword_groups只在weighted_keywords_v1生效，不能只改它而保留foundation_v2。",
+  "includes": ["../../job_bot/config/jobbot.json"],
+  "scoring": {
+    "algorithm": "weighted_keywords_v1",
+    "bands": {"high": 75, "relevant": 60, "adjacent": 45},
+    "keyword_groups": [
+      {"name": "Python application development", "weight": 45, "title_bonus": 10, "keywords": ["Python", "backend developer"]},
+      {"name": "SQL and database projects", "weight": 20, "title_bonus": 5, "keywords": ["SQL", "SQLite", "database"]},
+      {"name": "Early career preference", "weight": 15, "title_bonus": 5, "bonus_only": true, "keywords": ["intern", "new grad"]},
+      {"name": "Seniority mismatch", "weight": -45, "title_bonus": 0, "bonus_only": true, "keywords": ["senior", "principal", "director"]}
+    ]
+  }
+}

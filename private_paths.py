@@ -53,6 +53,8 @@ CURRENT_RESUME_TEX = RESUME_DIR / "current.tex"
 VISA_RESUME_TEX = RESUME_DIR / "visa.tex"
 CURRENT_RESUME_PDF = RESUME_BUILD_DIR / "current.pdf"
 CV_VARIANTS_DIR = PRIVATE_ROOT / "cv" / "variants"
+CV_INTAKE_DIR = PRIVATE_ROOT / "cv" / "intake"
+MANUAL_DATABASE_DIR = PRIVATE_ROOT / "database" / "manual"
 
 
 def ensure_private_directories() -> None:
@@ -71,6 +73,8 @@ def ensure_private_directories() -> None:
         RESUME_DIR,
         RESUME_BUILD_DIR,
         CV_VARIANTS_DIR,
+        CV_INTAKE_DIR,
+        MANUAL_DATABASE_DIR,
     ):
         path.mkdir(parents=True, exist_ok=True)
         try:

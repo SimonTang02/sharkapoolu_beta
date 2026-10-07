@@ -21,7 +21,7 @@ from application_bot.dispatcher import DispatchPlan
 
 
 def template():
-    return json.loads((PROJECT_ROOT / 'examples/easy_settings_template.json').read_text())
+    return json.loads((PROJECT_ROOT / 'examples/easy_settings_template.json').read_text(encoding='utf-8'))
 
 
 class OperatorSettingsTests(unittest.TestCase):
@@ -146,7 +146,7 @@ class ReviewAndExecutionTests(unittest.TestCase):
         plan=self.plan();process=Mock();process.poll.side_effect=[None,0]
         process.communicate.side_effect=[subprocess.TimeoutExpired('synthetic',1),('','')]
         monitor=Mock();monitor.interruption.side_effect=[None,'challenge_required']
-        with patch('application_bot.operator_execution.subprocess.Popen',return_value=process),patch('application_bot.operator_execution.os.killpg') as kill:
+        with patch('application_bot.operator_execution.subprocess.Popen',return_value=process),patch('application_bot.operator_execution.os.name','posix'),patch('application_bot.operator_execution.os.killpg',create=True) as kill:
             execute_preparation(plan,{'operator_controls':{'adapter_retries':0}},monitor,PROJECT_ROOT)
             kill.assert_called_once()
         self.assertEqual(plan.result_code,125);monitor.close.assert_not_called()
@@ -170,9 +170,9 @@ class ReviewAndExecutionTests(unittest.TestCase):
             existing=root/'output/operator_reviews/application_7.json';existing.parent.mkdir(parents=True);existing.write_text('existing evidence')
             with patch('job_bot.easy_cli.PRIVATE_ROOT',root),patch('job_bot.easy_cli.APPLICATION_OUTPUT',root/'output'),patch('application_bot.operator_review.APPLICATION_OUTPUT',root/'output'):
                 path=agent_packet(config,'assist',[7])
-                self.assertIn('AGENTS.md',path.read_text());self.assertIn('3 轮',path.read_text())
-                self.assertEqual(existing.read_text(),'existing evidence')
-                self.assertEqual(json.loads((path.parent/'targets.json').read_text())[0]['id'],7)
+                self.assertIn('AGENTS.md',path.read_text(encoding='utf-8'));self.assertIn('3 轮',path.read_text(encoding='utf-8'))
+                self.assertEqual(existing.read_text(encoding='utf-8'),'existing evidence')
+                self.assertEqual(json.loads((path.parent/'targets.json').read_text(encoding='utf-8'))[0]['id'],7)
                 self.assertEqual(path.stat().st_mode & 0o777,0o600)
 
 class DispatcherPolicyTests(unittest.TestCase):

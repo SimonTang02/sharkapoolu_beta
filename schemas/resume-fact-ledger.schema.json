@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private resume onboarding evidence ledger",
+  "type": "object",
+  "required": ["schema_version", "source_documents", "facts", "keyword_proposals", "scoring_proposals", "unresolved_questions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "source_documents": {"type": "array", "items": {"type": "object", "required": ["id", "filename", "sha256"], "properties": {"id": {"type": "string"}, "filename": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "facts": {"type": "array", "items": {"type": "object", "required": ["id", "profile_path", "value", "status", "source_id", "page", "quotation"], "properties": {
+      "id": {"type": "string"}, "profile_path": {"type": "string"}, "value": {}, "status": {"enum": ["resume_stated", "user_confirmed", "unresolved"]},
+      "source_id": {"type": "string"}, "page": {"type": ["integer", "null"], "minimum": 1}, "quotation": {"type": "string"},
+      "confirmation": {"type": "object", "required": ["date", "source"], "properties": {"date": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1}}}
+    }, "allOf": [{"if": {"properties": {"status": {"const": "user_confirmed"}}}, "then": {"required": ["confirmation"]}}]}},
+    "keyword_proposals": {"type": "array", "items": {"type": "object", "required": ["id", "term", "fact_ids", "scope", "claim_status"], "properties": {"id": {"type": "string"}, "term": {"type": "string"}, "fact_ids": {"type": "array", "items": {"type": "string"}}, "scope": {"type": "string"}, "claim_status": {"type": "string"}}}},
+    "scoring_proposals": {"type": "array", "items": {"type": "object", "required": ["group", "terms", "weight", "rationale", "user_confirmed"], "properties": {"group": {"type": "string"}, "terms": {"type": "array", "items": {"type": "string"}}, "weight": {"type": "integer"}, "rationale": {"type": "string"}, "user_confirmed": {"type": "boolean"}}}},
+    "unresolved_questions": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -44,18 +44,18 @@ class ManualKitTests(unittest.TestCase):
 
     def test_preserves_nonconsecutive_ranks_and_manifest_order(self):
         result = self.render()
-        text = (self.output / "index.html").read_text()
+        text = (self.output / "index.html").read_text(encoding='utf-8')
         self.assertEqual(result["jobs"], 2)
         self.assertLess(text.index('data-rank="7"'), text.index('data-rank="3"'))
         self.assertNotIn('data-rank="1"', text)
-        self.assertEqual(json.loads((self.output / "Manifest.json").read_text()), self.manifest)
+        self.assertEqual(json.loads((self.output / "Manifest.json").read_text(encoding='utf-8')), self.manifest)
         self.assertEqual((self.output / "07_Example/resume.pdf").read_bytes(),
                          (self.source / "07_Example/resume.pdf").read_bytes())
         self.assertEqual((self.output / "index.html").stat().st_mode & 0o777, 0o600)
 
     def test_escapes_answers_and_retains_unconfirmed_values(self):
         self.render()
-        text = (self.output / "07_Example/index.html").read_text()
+        text = (self.output / "07_Example/index.html").read_text(encoding='utf-8')
         self.assertIn("A &lt; B &amp; C", text)
         self.assertIn("Unconfirmed", text)
         self.assertIn("未提供：仅如实填写，不能编造", text)
@@ -66,7 +66,7 @@ class ManualKitTests(unittest.TestCase):
         sentinel.write_text("existing kit and progress address")
         with self.assertRaises(FileExistsError):
             self.render()
-        self.assertEqual(sentinel.read_text(), "existing kit and progress address")
+        self.assertEqual(sentinel.read_text(encoding='utf-8'), "existing kit and progress address")
 
     def test_hash_mismatch_and_unreviewed_pdf_fail_before_output(self):
         for change in ({"sha256": "0" * 64}, {"visual_review": "pending"}):
@@ -107,14 +107,14 @@ class ManualKitTests(unittest.TestCase):
 
     def test_new_conversation_has_campaign_and_progress_provenance(self):
         self.render()
-        handoff = (self.output / "AGENT_HANDOFF.md").read_text()
+        handoff = (self.output / "AGENT_HANDOFF.md").read_text(encoding='utf-8')
         self.assertIn(str(self.output), handoff)
         self.assertIn("example-campaign-", handoff)
         self.assertIn(hashlib.sha256((self.output / "Manifest.json").read_bytes()).hexdigest(), handoff)
         self.assertIn("Actual manual progress is unknown", handoff)
         self.assertIn("official receipt evidence or explicit candidate", handoff)
         self.assertIn("original ranks", handoff)
-        index = (self.output / "index.html").read_text()
+        index = (self.output / "index.html").read_text(encoding='utf-8')
         self.assertIn('href="AGENT_HANDOFF.md"', index)
         self.assertIn('data-copy="handoff-prompt"', index)
 

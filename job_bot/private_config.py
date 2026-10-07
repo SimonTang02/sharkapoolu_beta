@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import stat
@@ -24,6 +25,7 @@ from private_paths import (  # noqa: E402
     CREDENTIALS_FILE,
     EVIDENCE_PROFILE,
     EASY_SETTINGS,
+    MANUAL_DATABASE_DIR,
     PRIVATE_CONFIG,
     PRIVATE_ROOT,
     ensure_private_directories,
@@ -32,6 +34,8 @@ from private_paths import (  # noqa: E402
 
 EXAMPLES = ROOT / "examples"
 TEMPLATES = {
+    MANUAL_DATABASE_DIR / "jobs.csv": EXAMPLES / "manual_jobs_template.csv",
+    MANUAL_DATABASE_DIR / "applications.csv": EXAMPLES / "manual_applications_template.csv",
     EASY_SETTINGS: EXAMPLES / "easy_settings_template.json",
     APPLICATION_PROFILE: EXAMPLES / "application_profile.json",
     EVIDENCE_PROFILE: EXAMPLES / "evidence_profile.json",
@@ -294,7 +298,9 @@ def validate_credentials(path: Path) -> list[Issue]:
             _issue(issues, "WARNING", f"{path}:{line_number}", f"duplicate variable: {name}")
         names.add(name)
     mode = stat.S_IMODE(path.stat().st_mode)
-    if mode & 0o077:
+    if os.name == "nt":
+        _issue(issues, "WARNING", str(path), "Windows privacy requires owner-restricted NTFS ACLs; Unix mode 600 cannot verify them")
+    elif mode & 0o077:
         _issue(issues, "ERROR", str(path), f"permissions are {mode:o}; expected 600")
     return issues
 

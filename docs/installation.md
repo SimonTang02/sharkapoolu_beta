@@ -1,5 +1,9 @@
 # Installation
 
+Recommended Windows + WSL2 + VS Code setup and audited Mac/native Windows/Linux
+limits are in [platforms.md](platforms.md). Native Windows has a PowerShell
+bootstrap entry point; Linux-specific shell/Make commands are not interchangeable.
+
 Before choosing a workflow, read [setup ownership and readiness](getting-started.md).
 It distinguishes generated blank files from candidate-confirmed facts and
 documents the remaining strategy, browser, material and portal setup work.
@@ -38,6 +42,9 @@ the same revision.
 The first run creates:
 
 ```text
+private_data/config/easy_settings.json
+private_data/database/manual/jobs.csv
+private_data/database/manual/applications.csv
 private_data/credentials/passport.env
 private_data/profiles/application_profile.json
 private_data/cv/profile/evidence_profile.json
@@ -83,8 +90,9 @@ libraries. The command requires administrator access:
 sudo .venv/bin/python -m playwright install-deps chromium
 ```
 
-By default browsers are stored in `.playwright-browsers/`. Both this directory
-and the virtual environment are ignored by Git.
+New bootstrap installs use the standard Playwright OS cache (or the explicitly
+set `PLAYWRIGHT_BROWSERS_PATH`). Older `.playwright-browsers/` remains ignored
+and is not deleted. Set the same override for installation and later commands.
 
 ### Dedicated Windows Chrome through CDP
 
@@ -159,3 +167,10 @@ git pull --ff-only
 
 Private files are preserved. Review release notes and rerun
 `jobbot-private check` whenever schemas or examples change.
+
+## Original resume and manual database
+
+Use `./scripts/bootstrap.sh --with-resume` for optional PDF text extraction,
+then follow [candidate-onboarding.md](candidate-onboarding.md). The importer
+creates a new private review packet without replacing existing source or PDFs.
+For CSV-only operation, see [manual-database.md](manual-database.md).
