@@ -1,5 +1,7 @@
 # Sharkapoolu
 
+An agent-driven toolkit for job discovery, tailored resumes, and application tracking.
+
 New users and coding agents: start with the complete
 [operating and handoff guide](AGENT_HANDOFF.md) and
 [setup ownership and readiness guide](docs/getting-started.md), then the

@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sharkapoolu"
 version = "0.1.0"
-description = "Local-first job discovery, resume tailoring, and review-assisted application tooling"
+description = "An agent-driven toolkit for job discovery, tailored resumes, and application tracking."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [{name = "SimonTang02"}]
-keywords = ["job-search", "resume", "browser-automation", "hardware-engineering"]
+keywords = ["job-search", "ai-agents", "resume", "browser-automation", "hardware-engineering"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: MIT License",
