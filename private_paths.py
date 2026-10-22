@@ -31,6 +31,7 @@ PRIVATE_ROOT = Path(
 CREDENTIALS_FILE = PRIVATE_ROOT / "credentials" / "passport.env"
 APPLICATION_PROFILE = PRIVATE_ROOT / "profiles" / "application_profile.json"
 EVIDENCE_PROFILE = PRIVATE_ROOT / "cv" / "profile" / "evidence_profile.json"
+RESUME_FACT_LEDGER = PRIVATE_ROOT / "cv" / "profile" / "fact_ledger.json"
 APPLICATION_KEYWORDS = PRIVATE_ROOT / "cv" / "profile" / "application_keywords.json"
 PRIVATE_CONFIG = PRIVATE_ROOT / "config" / "job_bot.local.json"
 EASY_SETTINGS = PRIVATE_ROOT / "config" / "easy_settings.json"

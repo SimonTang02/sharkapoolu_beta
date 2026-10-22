@@ -1,0 +1,80 @@
+{
+  "source_documents": [
+    {
+      "id": "report",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "filename": "fictional-reviewed-report.txt"
+    }
+  ],
+  "facts": [
+    {
+      "id": "summary",
+      "value": "Engineering student with reviewed academic projects.",
+      "status": "user_confirmed",
+      "source_id": "report",
+      "confirmation": {
+        "date": "2026-01-01",
+        "source": "candidate"
+      },
+      "profile_path": "resume_content",
+      "page": 1,
+      "quotation": "Engineering student with reviewed academic projects."
+    },
+    {
+      "id": "skills",
+      "value": "Python; SystemVerilog",
+      "status": "user_confirmed",
+      "source_id": "report",
+      "confirmation": {
+        "date": "2026-01-01",
+        "source": "candidate"
+      },
+      "profile_path": "resume_content",
+      "page": 1,
+      "quotation": "Python; SystemVerilog"
+    },
+    {
+      "id": "rtl",
+      "value": "Implemented an academic pipeline and tested hazard handling.",
+      "status": "user_confirmed",
+      "source_id": "report",
+      "confirmation": {
+        "date": "2026-01-01",
+        "source": "candidate"
+      },
+      "profile_path": "resume_content",
+      "page": 1,
+      "quotation": "Implemented an academic pipeline and tested hazard handling."
+    },
+    {
+      "id": "memory",
+      "value": "Compared memory model latency and energy in a team study.",
+      "status": "user_confirmed",
+      "source_id": "report",
+      "confirmation": {
+        "date": "2026-01-01",
+        "source": "candidate"
+      },
+      "profile_path": "resume_content",
+      "page": 1,
+      "quotation": "Compared memory model latency and energy in a team study."
+    },
+    {
+      "id": "scope",
+      "value": "Contributed benchmark scripts, with a limited code contribution.",
+      "status": "user_confirmed",
+      "source_id": "report",
+      "confirmation": {
+        "date": "2026-01-01",
+        "source": "candidate"
+      },
+      "profile_path": "resume_content",
+      "page": 1,
+      "quotation": "Contributed benchmark scripts, with a limited code contribution."
+    }
+  ],
+  "schema_version": 1,
+  "keyword_proposals": [],
+  "scoring_proposals": [],
+  "unresolved_questions": []
+}

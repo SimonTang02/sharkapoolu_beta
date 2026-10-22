@@ -13,10 +13,10 @@
   \begin{list}{}{\leftmargin=0pt\topsep=0pt\parsep=0pt\itemsep=0pt}\item[]%
 }{\end{list}\vspace{1pt}}
 \renewenvironment{rSubsection}[4]{%
-  \par\addvspace{5pt}\noindent\begin{minipage}{\linewidth}%
+  \par\addvspace{5pt}\cvneedspace{5\baselineskip}\noindent%
   {\bfseries #1}\hfill {#2}\par
   \ifthenelse{\equal{#3}{}}{}{{\itshape #3}\hfill #4\par}%
   \begin{list}{\textbullet}{\leftmargin=1em\labelsep=0.4em\topsep=2pt\parsep=0pt\itemsep=2pt}%
-}{\end{list}\end{minipage}\par\vspace{3pt}}
+}{\end{list}\par\vspace{3pt}}
 \AtBeginDocument{\hypersetup{hidelinks}\setlength{\bibitemsep}{2pt}}
 \AtEndDocument{\ifnum\value{page}>2\PackageWarningNoLine{cvcompact}{Resume exceeds two pages. Edit content and inspect rendered PDF before upload}\fi}

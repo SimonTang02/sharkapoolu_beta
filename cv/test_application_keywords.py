@@ -112,7 +112,8 @@ class KeywordIntegrationTests(unittest.TestCase):
     def test_cv_bundle_and_report_use_same_selection(self):
         selection = self.select()
         source = self.root / 'source.tex'
-        source.write_text(r'''\begin{rSection}{Summary}
+        source.write_text(r'''Alex Example alex@example.test
+\begin{rSection}{Summary}
 Old summary.
 \end{rSection}
 \begin{rSection}{Technical Skills}
@@ -124,7 +125,12 @@ Preserve project evidence.
         report = render_report(PROFILE, 'Example', 'GPU Architecture', '', [], 'fixture', keyword_selection=selection)
         self.assertIn('Keep scope.', report)
         self.assertIn('Teamwork', report)
-        with patch('cv.bot.bot.compile_latex', side_effect=lambda tex, build: build / (tex.stem + '.pdf')):
+        def compile_stub(tex, build):
+            build.mkdir(parents=True, exist_ok=True)
+            pdf = build / (tex.stem + '.pdf')
+            pdf.write_bytes(b'%PDF synthetic compile boundary')
+            return pdf
+        with patch('cv.bot.bot.compile_latex', side_effect=compile_stub), patch.dict('sys.modules', {'pypdf': None}):
             bundle = write_bundle(PROFILE, 'Example', 'GPU Architecture', '', [], report,
                                   source, self.root / 'bundles', keyword_selection=selection)
         rendered = (bundle / 'resume.tex').read_text()

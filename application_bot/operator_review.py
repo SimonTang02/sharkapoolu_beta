@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from cv.resume_plan import verify_attachment_bundle
 from private_paths import APPLICATION_OUTPUT, PRIVATE_ROOT, APPLICATION_PROFILE, EVIDENCE_PROFILE, PROJECT_ROOT
 
 CHECKS = ("qualification", "fields", "attachments")
@@ -74,6 +75,12 @@ def validate_application_review(conn, application_id: int, required_rounds: int)
                 attachments.append(document)
         if not attachments or not any(file.suffix.lower() == ".pdf" for file in attachments):
             raise ValueError("当前岗位未绑定可审查的PDF附件")
+        # A PDF may be unchanged while its fact ledger/JD/template has changed.
+        # Bind the current versioned manifest into the attachment review as well.
+        for document in list(attachments):
+            manifest = verify_attachment_bundle(document)
+            if manifest is not None and manifest not in attachments:
+                attachments.append(manifest)
         record = json.loads(review_path(application_id).read_text(encoding="utf-8"))
         if record.get("job_fingerprint") != job_fingerprint(row[1], row[2]):
             raise ValueError("岗位JD或URL已变化，请重新审查")

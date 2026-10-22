@@ -47,10 +47,27 @@ from private_paths import (
     CURRENT_RESUME_TEX,
     CV_VARIANTS_DIR,
     JOB_DATABASE,
+    RESUME_FACT_LEDGER,
+    APPLICATION_KEYWORDS,
 )
 
 DEFAULT_OUT = APPLICATION_OUTPUT
 DEFAULT_BUNDLES = CV_VARIANTS_DIR
+
+
+def _resume_ledger(profile: dict) -> dict | None:
+    if profile.get('resume_content') is None:
+        return None
+    return json.loads(RESUME_FACT_LEDGER.read_text(encoding='utf-8'))
+
+
+def _resume_inputs(profile: dict) -> list[Path]:
+    paths = [EVIDENCE_PROFILE, APPLICATION_PROFILE]
+    if APPLICATION_KEYWORDS.is_file():
+        paths.append(APPLICATION_KEYWORDS)
+    if profile.get('resume_content') is not None:
+        paths.append(RESUME_FACT_LEDGER)
+    return paths
 
 
 @dataclass(frozen=True)
@@ -373,6 +390,9 @@ def build_one_material(
         graduation_date=evidence_profile.get("expected_graduation_date") or None,
         role_kind=candidate.role_kind,
         keyword_selection=keywords,
+        application_profile=application_profile,
+        fact_ledger=_resume_ledger(evidence_profile),
+        input_paths=_resume_inputs(evidence_profile),
     )
     manifest = json.loads((bundle / "manifest.json").read_text(encoding="utf-8"))
     isolated = copy.deepcopy(application_profile)

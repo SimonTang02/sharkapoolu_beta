@@ -27,3 +27,9 @@ Copy profiles into their canonical locations, `resume_template.tex` to private
 `jobbot-private init`. Review [the handoff guide](../AGENT_HANDOFF.md) before using
 the same commands with real material. Bootstrap never copies the fictional
 person over an existing private profile.
+
+## Structured resume examples
+
+`structured_evidence_template.json` and `resume_fact_ledger_template.json` contain
+fictional data demonstrating project-level tailoring. They are not initialized
+as candidate facts. Read `cv/bot/README.md` before mapping a real reviewed ledger.

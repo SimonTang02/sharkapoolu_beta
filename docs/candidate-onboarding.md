@@ -104,6 +104,15 @@ Agent至少构造：有直接证据的目标岗位、相邻岗位、技能缺口
 
 ## 5. 使用简历定制模块
 
+项目级定制的新契约见 [cvbot结构化事实说明](../cv/bot/README.md#structured-project-tailoring-and-current-facts)。
+Agent应把已由本人确认的完整描述登记为fact_ledger中的文本事实，再在
+evidence_profile.resume_content中用fact_ids选取摘要、技能、项目和研究；
+不是将JD需求写成新事实。单岗可传--fact-ledger，批量读取私有
+cv/profile/fact_ledger.json。先核对事实、贡献范围、完成状态与来源，再启用该字段。
+旧档案没有resume_content时仍为有限定制草稿，会标为待事实迁移；不要误称已完成深度定制。
+新版输出到新目录，禁止覆盖旧bundle。使用附件前运行cvbot verify-bundle并逐页审阅；
+指纹通过不等于本人批准，项目标题、日期及未管理的教育等段落仍须核对。
+
 重建的源文件须保留 `\begin{rSection}{Summary}` 和
 `\begin{rSection}{Technical Skills}` 标记；其他教育/项目事实保留原文依据。
 `examples/resume_template.tex`演示这些标记，人物与经历均为虚构。

@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from private_paths import APPLICATION_OUTPUT, PRIVATE_ROOT  # noqa: E402
+from cv.resume_plan import verify_attachment_bundle  # noqa: E402
 
 TEMPLATES = Path(__file__).with_name("templates") / "manual_kit"
 STATUSES = ("未开始", "填写中", "已提交", "受阻", "跳过")
@@ -147,6 +148,7 @@ def render_kit(manifest_path: Path, output: Path, progress_key: str) -> dict:
                 raise ValueError("Reviewed PDF entries must reference PDF files")
             if pdf.get("visual_review") != "passed":
                 raise ValueError("PDF materials require an explicit passed visual review")
+            verify_attachment_bundle(asset(source, pdf['pdf']))
             include(pdf["pdf"], pdf["sha256"])
         for filename in ROLE_FILES:
             relative = folder + "/" + filename

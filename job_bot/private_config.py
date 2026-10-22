@@ -88,6 +88,14 @@ def _expect_type(
 
 def validate_application_profile(data: dict[str, Any], path: str = "application_profile") -> list[Issue]:
     issues: list[Issue] = []
+    from cv.resume_plan import length_policy
+    try:
+        length_policy(data, '')
+        guidance = data.get('career_preferences', {}).get('resume_language_policy', {}).get('company_specific_length_guidance', {})
+        for company in guidance:
+            length_policy(data, company)
+    except (ValueError, TypeError, AttributeError):
+        _issue(issues, 'ERROR', f'{path}.career_preferences.resume_language_policy', 'invalid page preference or company guidance')
     version = data.get("schema_version", 1)
     if version != 1:
         _issue(issues, "ERROR", f"{path}.schema_version", "supported value is 1")
@@ -181,6 +189,12 @@ def validate_application_profile(data: dict[str, Any], path: str = "application_
 
 def validate_evidence_profile(data: dict[str, Any], path: str = "evidence_profile") -> list[Issue]:
     issues: list[Issue] = []
+    if 'resume_content' in data:
+        from cv.resume_plan import validate_content
+        try:
+            validate_content(data['resume_content'])
+        except (ValueError, TypeError, KeyError):
+            _issue(issues, 'ERROR', f'{path}.resume_content', 'invalid structured resume content; see schema')
     if data.get("schema_version", 1) != 1:
         _issue(issues, "ERROR", f"{path}.schema_version", "supported value is 1")
     identity = _expect_type(data, "identity", dict, path, issues)

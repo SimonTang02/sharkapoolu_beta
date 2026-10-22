@@ -10,6 +10,7 @@ truth claim by itself.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import re
@@ -34,6 +35,7 @@ from private_paths import (
     JOB_DATABASE,
 )
 from cv.application_keywords import select_keywords, render_keyword_notes
+from cv.resume_plan import digest, file_hash, length_policy, plan_resume, render_plan, verify_bundle
 from job_bot.shared_database import connect as connect_database
 
 
@@ -276,6 +278,7 @@ def render_tailored_resume(
     matches: list[EvidenceMatch],
     graduation_date: str | None = None,
     keyword_selection: dict | None = None,
+    content_plan: dict | None = None,
 ) -> str:
     graduation_date = graduation_date or profile.get("expected_graduation_date")
     source_text = set_graduation_date(
@@ -283,6 +286,10 @@ def render_tailored_resume(
         graduation_date,
         str(profile.get("graduation_school") or ""),
     )
+    if content_plan is not None:
+        return "% Generated from versioned confirmed statements; review before use.\n" + render_plan(
+            source_text, content_plan, latex_escape
+        )
     summary = tailored_summary(profile, role, matches)
     pattern = re.compile(
         r"(\\begin\{rSection\}\{Summary\}\s*).*?(\s*\\end\{rSection\})",
@@ -384,6 +391,7 @@ def compile_latex(tex_path: Path, build_dir: Path) -> Path:
         text=True,
         encoding="utf-8",
         errors="replace",
+        timeout=180,
     )
     if completed.returncode:
         tail = "\n".join(completed.stdout.splitlines()[-40:])
@@ -407,6 +415,9 @@ def write_bundle(
     graduation_date: str | None = None,
     role_kind: str | None = None,
     keyword_selection: dict | None = None,
+    application_profile: dict | None = None,
+    fact_ledger: dict | None = None,
+    input_paths: list[Path] | None = None,
 ) -> Path:
     graduation_date = graduation_date or profile.get("expected_graduation_date")
     if keyword_selection is None:
@@ -414,7 +425,43 @@ def write_bundle(
     bundle_path = bundle_root / (
         bundle_name or f"{safe_slug(company)}_{safe_slug(role)}"
     )
-    bundle_path.mkdir(parents=True, exist_ok=True)
+    # Validate and plan before creating any files. Each build is a new version:
+    # never let reruns silently replace reviewed or already submitted attachments.
+    policy = length_policy(application_profile or {}, company, role)
+    content_plan = None
+    effective_profile, effective_matches = profile, matches
+    if profile.get("resume_content") is not None:
+        if fact_ledger is None:
+            raise ValueError("Structured resume content requires --fact-ledger")
+        content_plan = plan_resume(profile, fact_ledger, role, job_description, policy)
+        # Resume and letter use the same exact selected facts. Do not reuse stale
+        # evidence-group prose or an older report after a fact correction.
+        effective_profile = copy.deepcopy(profile)
+        effective_profile['candidate_summary'] = ' '.join(s['text'] for s in content_plan['summary'])
+        effective_profile['closing_strength'] = 'Thank you for considering my application.'
+        effective_matches = [EvidenceMatch(p['title'], ' '.join(s['text'] for s in p['statements']),
+                                          tuple(str(i) for i in range(max(2, p['score']))))
+                             for p in content_plan['projects']]
+        review_packet = render_report(effective_profile, company, role, job_description,
+                                      effective_matches, source_resume.name,
+                                      keyword_selection=keyword_selection)
+    source_text = source_resume.read_text(encoding="utf-8")
+    rendered_resume = render_tailored_resume(
+        profile, source_text, role, matches, graduation_date=graduation_date,
+        keyword_selection=keyword_selection, content_plan=content_plan)
+    identity = profile.get('identity', {})
+    if not all(str(identity.get(k) or '').strip() for k in ('display_name', 'email')):
+        raise ValueError('Bundle generation requires a confirmed name and email')
+    if any(str(identity[k]) not in rendered_resume and latex_escape(str(identity[k])) not in rendered_resume
+           for k in ('display_name', 'email')):
+        raise ValueError('Resume source identity differs from the evidence profile')
+    dependencies = [source_resume, Path(__file__), ROOT / 'cv' / 'resume_plan.py', *(input_paths or []),
+                    *sorted((ROOT / 'cv' / 'latex').glob('*')),
+                    *sorted(source_resume.parent.glob('*.bib'))]
+    input_files = [{'path': str(p.resolve()), 'sha256': file_hash(p)}
+                   for p in dict.fromkeys(dependencies) if p.is_file()]
+    bundle_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    bundle_path.mkdir(mode=0o700, exist_ok=False)
     # Keep relative bibliography references usable in the isolated bundle.
     for bibliography in source_resume.parent.glob("*.bib"):
         destination = bundle_path / bibliography.name
@@ -423,19 +470,9 @@ def write_bundle(
     resume_tex = bundle_path / "resume.tex"
     cover_tex = bundle_path / "cover_letter.tex"
     review_path = bundle_path / "review_packet.md"
-    resume_tex.write_text(
-        render_tailored_resume(
-            profile,
-            source_resume.read_text(encoding="utf-8"),
-            role,
-            matches,
-            graduation_date=graduation_date,
-            keyword_selection=keyword_selection,
-        ),
-        encoding="utf-8",
-    )
+    resume_tex.write_text(rendered_resume, encoding="utf-8")
     cover_tex.write_text(
-        render_cover_letter_tex(profile, company, role, matches),
+        render_cover_letter_tex(effective_profile, company, role, effective_matches),
         encoding="utf-8",
     )
     if "## Application keywords" not in review_packet:
@@ -444,6 +481,9 @@ def write_bundle(
     keyword_path = bundle_path / "application_keywords.json"
     keyword_path.write_text(json.dumps(keyword_selection, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     keyword_path.chmod(0o600)
+    plan_path = bundle_path / 'content_plan.json'
+    plan_path.write_text(json.dumps(content_plan or {'mode': 'legacy_source_requires_fact_migration'},
+                                    ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     build_path = bundle_path / "build"
     resume_pdf = compile_latex(resume_tex, build_path)
     cover_pdf = compile_latex(cover_tex, build_path)
@@ -453,7 +493,43 @@ def write_bundle(
     build_log = log_path.read_text(encoding="utf-8", errors="replace") if log_path.is_file() else ""
     page_match = re.search(r"Output written on .*?\((\d+) pages?[,)]", build_log, re.S)
     page_count = int(page_match.group(1)) if page_match else None
+    pdf_identity = None
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        pass  # Legacy installations still create drafts; no PDF identity approval.
+    else:
+        reader = PdfReader(resume_pdf)
+        page_count = len(reader.pages)
+        text = ' '.join(page.extract_text() or '' for page in reader.pages)
+        compact = re.sub(r'\s+', '', text).casefold()
+        pdf_identity = all(re.sub(r'\s+', '', str(identity[k])).casefold() in compact
+                           for k in ('display_name', 'email'))
+        if not pdf_identity:
+            raise ValueError('Rendered resume identity missing or mismatched')
+    if page_count is not None and page_count > policy['max_pages']:
+        raise ValueError('Resume exceeds resolved page budget; edit content and regenerate')
+    overfull = len(re.findall(r'Overfull \\hbox', build_log))
+    missing = len(re.findall(r'Missing character:', build_log))
+    if overfull or missing:
+        raise ValueError('Resume has overflowing text or missing glyphs; repair before bundling')
+    if any(file_hash(Path(entry['path'])) != entry['sha256'] for entry in input_files):
+        raise ValueError('Inputs changed during generation; regenerate into a new bundle')
+    output_files = [{'path': str(p.resolve()), 'sha256': file_hash(p)}
+                    for p in (resume_tex, cover_tex, resume_pdf, cover_pdf, plan_path, keyword_path, review_path)]
     manifest = {
+        "pipeline_version": 2,
+        "generation_mode": 'structured_facts' if content_plan else 'legacy_source_requires_fact_migration',
+        "content_plan": str(plan_path),
+        "input_files": input_files,
+        "output_files": output_files,
+        "input_values_sha256": digest({'profile': profile, 'ledger': fact_ledger,
+                                       'policy': policy, 'company': company, 'role': role,
+                                       'jd': job_description, 'keywords': keyword_selection,
+                                       'engine': os.environ.get('JOBBOT_LATEX_ENGINE', 'pdflatex')}),
+        "content_review": "pending",
+        "candidate_review": "pending",
+        "pdf_identity_validation": pdf_identity,
         "company": company,
         "role": role,
         "resume_tex": str(resume_tex),
@@ -465,11 +541,14 @@ def write_bundle(
         "graduation_date": graduation_date,
         "human_review_required": True,
         "layout_review": {
-            "recommended_max_pages": 2,
+            "policy": policy,
+            "recommended_max_pages": policy['max_pages'],
             "page_count": page_count,
-            "within_page_budget": page_count <= 2 if page_count is not None else None,
+            "within_page_budget": page_count <= policy['max_pages'] if page_count is not None else None,
+            "overfull_boxes": overfull,
+            "missing_glyphs": missing,
             "rendered_pdf_review": "pending",
-            "instruction": "Inspect every rendered page before upload; trim content and repair pagination if over two pages.",
+            "instruction": "Inspect every page and content coverage; page preference is not a command to pad the resume.",
         },
         "application_keywords": str(keyword_path),
     }
@@ -477,6 +556,9 @@ def write_bundle(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    for path in bundle_path.rglob('*'):
+        if path.is_file():
+            path.chmod(0o600)
     return bundle_path
 
 
@@ -507,6 +589,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--company", help="Required with --job-description; optional override with --job-url")
     parser.add_argument("--role", help="Required with --job-description; optional override with --job-url")
     parser.add_argument("--profile", default=str(DEFAULT_PROFILE))
+    parser.add_argument("--application-profile", type=Path, help="Candidate length policy; otherwise use canonical private profile when present")
+    parser.add_argument("--fact-ledger", type=Path, help="Confirmed intake ledger for structured project tailoring")
     parser.add_argument("--keyword-library", type=Path, help="Override the private application keyword library")
     parser.add_argument("--resume-version", default="current.tex")
     parser.add_argument("--out-dir", default=str(DEFAULT_OUT_DIR))
@@ -523,6 +607,12 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    if len(sys.argv) > 1 and sys.argv[1] == 'verify-bundle':
+        parser = argparse.ArgumentParser(description='Check bundle fingerprints; this does not approve content')
+        parser.add_argument('manifest', type=Path)
+        args = parser.parse_args(sys.argv[2:])
+        print(json.dumps(verify_bundle(args.manifest)))
+        return
     if len(sys.argv) > 1 and sys.argv[1] == "import-resume":
         from cv.resume_import import main as import_resume
         sys.argv.pop(1)
@@ -556,6 +646,21 @@ def main() -> None:
         keyword_selection=keywords,
     )
     if args.generate_bundle:
+        from private_paths import APPLICATION_PROFILE, RESUME_FACT_LEDGER, APPLICATION_KEYWORDS
+        application_path = args.application_profile or APPLICATION_PROFILE
+        application = json.loads(application_path.read_text(encoding='utf-8')) if application_path.is_file() else {}
+        ledger_path = args.fact_ledger or (RESUME_FACT_LEDGER if profile.get('resume_content') is not None else None)
+        ledger = json.loads(ledger_path.read_text(encoding='utf-8')) if ledger_path else None
+        input_paths = [profile_path]
+        if application_path.is_file():
+            input_paths.append(application_path)
+        if ledger_path:
+            input_paths.append(ledger_path)
+        library_path = args.keyword_library or APPLICATION_KEYWORDS
+        if library_path.is_file():
+            input_paths.append(library_path)
+        if args.job_description:
+            input_paths.append(Path(args.job_description))
         bundle = write_bundle(
             profile,
             company,
@@ -568,6 +673,7 @@ def main() -> None:
             graduation_date=profile.get("expected_graduation_date") or None,
             role_kind=args.role_kind,
             keyword_selection=keywords,
+            application_profile=application, fact_ledger=ledger, input_paths=input_paths,
         )
         print(bundle)
         return

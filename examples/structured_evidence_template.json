@@ -1,0 +1,49 @@
+{
+  "identity": {
+    "display_name": "Alex Example",
+    "headline_name": "Alex Example",
+    "email": "alex@example.test"
+  },
+  "candidate_summary": "OLD SUMMARY",
+  "closing_strength": "OLD CLOSING",
+  "tailored_summaries": {
+    "default": "Reviewed summary"
+  },
+  "evidence_groups": [],
+  "resume_content": {
+    "version": 1,
+    "summary_fact_ids": [
+      "summary"
+    ],
+    "skill_fact_ids": [
+      "skills"
+    ],
+    "projects": [
+      {
+        "id": "cpu",
+        "title": "Academic processor",
+        "dates": "2025",
+        "keywords": [
+          "RTL"
+        ],
+        "fact_ids": [
+          "rtl",
+          "scope"
+        ]
+      },
+      {
+        "id": "mem",
+        "title": "Memory models",
+        "dates": "2025",
+        "keywords": [
+          "memory"
+        ],
+        "fact_ids": [
+          "memory",
+          "scope"
+        ]
+      }
+    ]
+  },
+  "schema_version": 1
+}

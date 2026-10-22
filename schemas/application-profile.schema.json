@@ -69,7 +69,54 @@
       },
       "additionalProperties": true
     },
-    "career_preferences": {"type": "object"},
+    "career_preferences": {
+      "type": "object",
+      "properties": {
+        "resume_language_policy": {
+          "type": "object",
+          "properties": {
+            "preferred_pages": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2
+            },
+            "max_pages_preferred": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2
+            },
+            "company_specific_length_guidance": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "preferred_pages": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "kind": {
+                    "type": "string"
+                  },
+                  "checked_on": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
     "personal_facts_confirmation": {
       "type": "object",
       "description": "Optional dated provenance for candidate-confirmed facts that do not yet have a first-class field."

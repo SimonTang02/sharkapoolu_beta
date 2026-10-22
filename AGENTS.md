@@ -9,7 +9,7 @@ tests, browser behavior, or release files. More detail is available in
 [`SECURITY.md`](SECURITY.md).
 
 At the start of a new conversation, also read [`AGENT_HANDOFF.md`](AGENT_HANDOFF.md)
-for the complete installation, operating, application and shared-database guide.
+for current behavior and task-specific installation, application and database references.
 Public templates and their filling instructions are indexed in
 [`examples/README.md`](examples/README.md). Inspect the actual local private
 configuration and machine role before operating an existing installation.

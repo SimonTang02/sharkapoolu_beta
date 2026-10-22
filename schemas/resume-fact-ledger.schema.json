@@ -9,6 +9,7 @@
     "facts": {"type": "array", "items": {"type": "object", "required": ["id", "profile_path", "value", "status", "source_id", "page", "quotation"], "properties": {
       "id": {"type": "string"}, "profile_path": {"type": "string"}, "value": {}, "status": {"enum": ["resume_stated", "user_confirmed", "unresolved"]},
       "source_id": {"type": "string"}, "page": {"type": ["integer", "null"], "minimum": 1}, "quotation": {"type": "string"},
+      "superseded_by": {"type": "string", "description": "Replacement fact ID; superseded facts cannot be generated."},
       "confirmation": {"type": "object", "required": ["date", "source"], "properties": {"date": {"type": "string", "minLength": 1}, "source": {"type": "string", "minLength": 1}}}
     }, "allOf": [{"if": {"properties": {"status": {"const": "user_confirmed"}}}, "then": {"required": ["confirmation"]}}]}},
     "keyword_proposals": {"type": "array", "items": {"type": "object", "required": ["id", "term", "fact_ids", "scope", "claim_status"], "properties": {"id": {"type": "string"}, "term": {"type": "string"}, "fact_ids": {"type": "array", "items": {"type": "string"}}, "scope": {"type": "string"}, "claim_status": {"type": "string"}}}},

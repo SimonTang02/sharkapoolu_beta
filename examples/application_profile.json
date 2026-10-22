@@ -70,6 +70,7 @@
       "china_owned_employers": "",
       "other_employers": "",
       "explicit_role_language_requirement_overrides_default": true,
+      "preferred_pages": 2,
       "max_pages_preferred": 2,
       "rendered_pdf_review_required": true,
       "chinese_font": ""
