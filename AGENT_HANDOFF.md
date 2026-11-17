@@ -4,6 +4,8 @@ This is the short entry point for a new conversation. Read `AGENTS.md`, identify
 what the user wants, then open only the relevant references below. English is the
 development upstream; the Chinese edition is maintained separately. Public docs
 contain operating contracts, not a candidate's application history.
+Submission choices are documented in [Agent rules](docs/agent-rules.md);
+load [DEVELOPER.md](DEVELOPER.md) only for public development or Git operations.
 
 ## Start here
 
@@ -23,7 +25,7 @@ Do not reset Git, reinitialize profiles, replace databases or replay old tab cle
 | Forms, batches, login, tabs, manual HTML | [application bot](application_bot/README.md) |
 | Manual jobs/application records | [manual database](docs/manual-database.md) |
 | SSH shared database, backup and recovery | [shared database](docs/shared-database.md) |
-| Public changes and releases | `AGENTS.md`, [release guide](docs/GITHUB_RELEASE.md) |
+| Public changes and releases | `AGENTS.md`, `DEVELOPER.md`, [release guide](docs/GITHUB_RELEASE.md) |
 
 ## Installation and private state
 

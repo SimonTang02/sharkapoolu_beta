@@ -234,18 +234,75 @@ def ascii_role_label(role: str, matches: list[EvidenceMatch]) -> str:
     return fallback + internship
 
 
+def summary_key_for_title(role: str) -> str | None:
+    """Select a reviewed role family only when the title states one clearly."""
+    title = role.replace("SoC", "SOC")
+    title = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1 \2", title)
+    title = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", title)
+    title = re.sub(r"[\W_]+", " ", title.casefold()).strip()
+    if re.search(
+        r"\b(?:talent|candidate)\s+(?:pool|community|network|pipeline|bank)\b"
+        r"|\b(?:general|future|internship|career|engineering)\s+opportunities\b"
+        r"|\b(?:general interest|expression of interest)\b",
+        title,
+    ) or any(term in title for term in ("人才池", "人才库", "人才庫", "人才储备", "人才儲備")):
+        return None
+
+    development = bool(re.search(
+        r"\b(?:software|development|developer|compiler|algorithm|tools?)\b", title
+    )) or any(term in title for term in ("软件", "軟體", "开发", "開發", "研发", "研發"))
+    eda = bool(re.search(r"(?<![a-z0-9])(?:eda|cad)(?![a-z0-9])", title))
+    synthesis = bool(re.search(r"\b(?:logic synthesis|synthesis)\b", title))
+    rtl_tools = bool(re.search(r"\brtl\b", title)) and bool(re.search(
+        r"\b(?:software|compiler|tools?)\b", title
+    ))
+    if (eda and development) or (synthesis and development) or rtl_tools or "logic synthesis" in title:
+        return "EDA and logic synthesis"
+
+    architecture = bool(re.search(
+        r"\b(?:cpu|gpu|soc|chip|computer|hardware)\s+(?:micro)?architecture\b"
+        r"(?!\s+verification\b)"
+        r"|\b(?:architecture|microarchitecture)\s+(?:engineer|engineering|intern|designer|researcher)\b"
+        r"|\b(?:cpu|gpu|soc|chip|computer|hardware)\s+architect\b",
+        title,
+    ))
+    chinese_architecture = any(term in title for term in ("架构", "架構", "体系结构", "體系結構"))
+    chinese_verification = any(term in title for term in ("验证", "驗證"))
+    if architecture or (chinese_architecture and not chinese_verification):
+        return "CPU and computer architecture"
+
+    digital = bool(re.search(
+        r"\b(?:digital(?:\s+(?:ic|logic|hardware|circuit))?|rtl|asic|soc|fpga)"
+        r"\s+design\b(?!\s+verification\b)"
+        r"|\brtl\s+(?:engineer|engineering|developer|development)\b",
+        title,
+    )) or bool(re.search(
+        r"(?:数字|數字|數位|rtl|asic|soc|fpga|芯片|晶片)\s*"
+        r"(?:ic|电路|電路|逻辑|邏輯)?\s*(?:设计|設計)(?!\s*(?:验证|驗證))",
+        title,
+    ))
+    if digital:
+        return "Digital RTL design"
+    if re.search(r"\b(?:verification|dv)\b", title) or chinese_verification:
+        return "Design verification"
+    return None
+
+
 def tailored_summary(
     profile: dict[str, Any], role: str, matches: list[EvidenceMatch]
 ) -> str:
-    primary = matches[0].name if matches else "Digital RTL and CPU architecture"
+    title_primary = summary_key_for_title(role)
+    primary = title_primary or (
+        matches[0].name if matches else "Digital RTL and CPU architecture"
+    )
     summaries = profile.get("tailored_summaries", {})
     summary = summaries.get(primary) or summaries.get("default")
     if not summary:
         raise RuntimeError(
-            f"Private evidence profile lacks a tailored summary for {primary!r}"
+            f"Private evidence profile lacks a tailored summary for {primary!r} "
+            "and a nonempty default fallback"
         )
     return str(summary)
-
 
 def set_graduation_date(
     source_text: str,

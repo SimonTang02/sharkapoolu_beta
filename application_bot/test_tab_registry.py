@@ -87,6 +87,16 @@ class TabRegistryTests(unittest.TestCase):
         apply = "https://careers.qualcomm.com/careers/apply?pid=446717251740"
         self.assertEqual(job_fingerprint(detail), job_fingerprint(apply))
 
+    def test_standard_ats_detail_and_apply_urls_share_job_fingerprint(self) -> None:
+        lever = "https://jobs.eu.lever.co/cirrus/639a7c66-76c4-4c22-9b9f-43af17595103"
+        self.assertEqual(job_fingerprint(lever), job_fingerprint(lever + "/apply"))
+        ashby = "https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d"
+        self.assertEqual(job_fingerprint(ashby), job_fingerprint(ashby + "/application"))
+        greenhouse = (
+            "https://job-boards.greenhouse.io/asteraearlycareer2027/jobs/4731399005"
+        )
+        self.assertEqual(job_fingerprint(greenhouse), job_fingerprint(greenhouse + "#app"))
+
     def test_registered_target_id_wins_over_other_matching_tabs(self) -> None:
         expected = "https://example.test/jobs/123456"
         context = FakeContext()

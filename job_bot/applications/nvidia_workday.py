@@ -363,7 +363,7 @@ def _select_dropdown(
             code_match = re.search(r"\(?(\+\d{1,4})\)?", segment)
             match_pattern = (
                 re.compile(rf"{re.escape(code_match.group(1))}(?:\D|$)", re.I)
-                if code_match
+                if code_match and segment.casefold() != "united states of america (+1)"
                 else exact_segment
             )
             # The searchable input also prompts Workday to materialize the
@@ -415,6 +415,9 @@ def fill_safe_fields(
     elif phone_digits.startswith("86") and len(phone_digits) > 2:
         phone_country_label = "China (+86)"
         local_phone = phone_digits[2:]
+    elif raw_phone.startswith("+1") and phone_digits.startswith("1") and len(phone_digits) == 11:
+        phone_country_label = "United States of America (+1)"
+        local_phone = phone_digits[1:]
     if (
         (company_rules or {}).get("phone_number_format") == "grouped_4"
         and len(local_phone) == 8
@@ -619,6 +622,74 @@ def _fill_month_year(container: Any, month: Any, year: Any) -> dict[str, Any]:
         }
 
 
+def _click_education_add(page: Any, label: str) -> dict[str, Any]:
+    """Click one Education action, refusing ambiguous or document-wide scopes."""
+    diagnostic: dict[str, Any] = {
+        "clicked": False, "label": label, "scope": "",
+        "reason": "education_scope_not_found",
+    }
+    try:
+        named_groups = page.get_by_role(
+            "group", name=re.compile(r"^\s*Education\s*$", re.I)
+        )
+        legacy_groups = page.get_by_role("group").filter(
+            has_text=re.compile(r"^\s*Education\b", re.I)
+        )
+        markers = page.locator("#Education-section")
+        scopes = [(named_groups, "education_group"), (legacy_groups, "education_group_text")]
+        if markers.count() == 1:
+            scopes.append((markers.locator("xpath=.."), "education_section_parent"))
+        elif markers.count() > 1:
+            diagnostic["reason"] = "education_scope_ambiguous"
+            return diagnostic
+        for collection, scope_name in scopes:
+            visible_scopes = [
+                collection.nth(index) for index in range(collection.count())
+                if collection.nth(index).is_visible()
+            ]
+            if len(visible_scopes) > 1:
+                diagnostic.update(scope=scope_name, reason="education_scope_ambiguous")
+                return diagnostic
+            if not visible_scopes:
+                continue
+            scope = visible_scopes[0]
+            diagnostic["scope"] = scope_name
+            if scope_name == "education_section_parent" and scope.evaluate(
+                "element => element.tagName.toLowerCase()"
+            ) in {"html", "body", "main", "form"}:
+                diagnostic["reason"] = "education_scope_too_broad"
+                continue
+            other_section = re.compile(r"^\s*(?:Work Experience|Languages|Certifications)\s*$", re.I)
+            if scope.locator('input[name="jobTitle"]').count() or any(
+                scope.get_by_role(role, name=other_section).count()
+                for role in ("heading", "group")
+            ):
+                diagnostic["reason"] = "education_scope_contains_other_section"
+                continue
+            buttons = scope.get_by_role("button", name=label, exact=True)
+            visible_buttons = [
+                buttons.nth(index) for index in range(buttons.count())
+                if buttons.nth(index).is_visible()
+            ]
+            if len(visible_buttons) > 1:
+                diagnostic["reason"] = "education_add_ambiguous"
+                return diagnostic
+            if not visible_buttons:
+                diagnostic["reason"] = "education_add_not_found"
+                continue
+            try:
+                visible_buttons[0].click(timeout=10_000)
+            except Exception:
+                diagnostic["reason"] = "education_add_failed"
+                return diagnostic
+            page.wait_for_timeout(500)
+            diagnostic.update(clicked=True, reason="clicked")
+            return diagnostic
+    except Exception:
+        diagnostic["reason"] = "education_scope_query_failed"
+    return diagnostic
+
+
 def fill_experience_fields(
     page: Any,
     profile: dict[str, Any],
@@ -732,12 +803,33 @@ def fill_experience_fields(
 
     education = profile.get("education", [])
     for index, entry in enumerate(education):
-        existing_school_count = page.locator('input[name="schoolName"]:visible').count()
-        if index and existing_school_count <= index:
-            page.get_by_role("button", name="Add Another", exact=True).first.click()
-            page.wait_for_timeout(500)
         school_inputs = page.locator('input[name="schoolName"]:visible')
-        school_inputs.nth(index).wait_for(state="visible", timeout=5000)
+        existing_school_count = school_inputs.count()
+        add_diagnostic = None
+        if existing_school_count <= index:
+            add_label = "Add" if existing_school_count == 0 else "Add Another"
+            add_diagnostic = _click_education_add(page, add_label)
+            if not add_diagnostic["clicked"]:
+                results["education"].append({
+                    "school": entry.get("school", ""),
+                    "school_filled": False,
+                    "add_control_found": False,
+                    "fields_rendered": False,
+                    "add_diagnostic": add_diagnostic,
+                })
+                break
+            school_inputs = page.locator('input[name="schoolName"]:visible')
+        try:
+            school_inputs.nth(index).wait_for(state="visible", timeout=5000)
+        except Exception:
+            results["education"].append({
+                "school": entry.get("school", ""),
+                "school_filled": False,
+                "add_control_found": bool(add_diagnostic and add_diagnostic["clicked"]),
+                "fields_rendered": False,
+                "add_diagnostic": add_diagnostic,
+            })
+            break
         school_ok = _fill_locator(school_inputs.nth(index), str(entry.get("school", "")))
 
         degree_buttons = page.locator(
@@ -2030,6 +2122,9 @@ def run_preview(
                     manual_intervention
                     or server_draft_saved
                     or current_stage == "Review"
+                    or validation_blocked
+                    or resume_ready
+                    or any(item.get("status") == "filled" for item in fields)
                 )
             )
 

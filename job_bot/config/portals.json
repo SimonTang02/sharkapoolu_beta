@@ -73,6 +73,44 @@
           "job_specific_questions": "inventory_and_fill_confirmed_only",
           "success_marker": "感谢您的申请"
         }
+      },
+      {
+        "id": "cirrus_lever",
+        "priority": 100,
+        "adapter": "lever",
+        "company_patterns": ["^Cirrus Logic$"],
+        "rules": {
+          "locale": "en",
+          "resume_upload": true,
+          "custom_questions": "inventory_and_fill_confirmed_only",
+          "sensitive_questions": ["referral source", "office location", "visa status", "export control", "data processing acknowledgement"],
+          "submit_control": "hcaptcha_manual"
+        }
+      },
+      {
+        "id": "astera_greenhouse",
+        "priority": 100,
+        "adapter": "greenhouse",
+        "company_patterns": ["^Astera Labs"],
+        "rules": {
+          "locale": "en",
+          "resume_upload": true,
+          "custom_questions": "inventory_and_fill_confirmed_only",
+          "sensitive_questions": ["legal first name", "legal last name", "visa sponsorship"],
+          "submit_control": "recaptcha_manual"
+        }
+      },
+      {
+        "id": "etched_ashby",
+        "priority": 100,
+        "adapter": "ashby",
+        "company_patterns": ["^Etched$"],
+        "rules": {
+          "locale": "en",
+          "resume_upload": true,
+          "custom_questions": "inventory_and_fill_confirmed_only",
+          "submit_control": "recaptcha_manual"
+        }
       }
     ],
     "adapters": [
@@ -119,6 +157,41 @@
         "timeout_seconds": 420,
         "session_probe": {"kind": "source_template", "template": "{host}/en-US/{site}/userHome", "scope": "{host}/{site}"},
         "supports_draft": true
+      },
+      {
+        "id": "lever",
+        "priority": 70,
+        "platforms": ["lever"],
+        "host_suffixes": ["jobs.lever.co", "jobs.eu.lever.co"],
+        "apply_path": "/apply",
+        "script": "application_bot/lever.py",
+        "env_option": "--env",
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "greenhouse",
+        "priority": 70,
+        "platforms": ["greenhouse"],
+        "host_suffixes": ["job-boards.greenhouse.io", "boards.greenhouse.io", "job-boards.eu.greenhouse.io"],
+        "script": "application_bot/greenhouse.py",
+        "env_option": "--env",
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
+      },
+      {
+        "id": "ashby",
+        "priority": 70,
+        "platforms": ["ashby"],
+        "host_suffixes": ["jobs.ashbyhq.com"],
+        "apply_path": "/application",
+        "script": "application_bot/ashby.py",
+        "env_option": "--env",
+        "timeout_seconds": 240,
+        "session_probe": {"kind": "application_url"},
+        "supports_draft": false
       },
       {
         "id": "eightfold",

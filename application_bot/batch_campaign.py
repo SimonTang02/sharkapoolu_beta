@@ -342,17 +342,76 @@ def render_campaign(
     return "\n".join(lines)
 
 
+MATERIAL_TERMINAL_STATUSES = (
+    "submitted", "cancelled", "canceled", "withdrawn", "rejected",
+    "closed", "completed", "terminal",
+)
+
+
+def _material_status_is_terminal(status: str | None) -> bool:
+    # Missing linked state is unsafe. Generation failures remain retryable.
+    return status is None or str(status).strip().casefold() in MATERIAL_TERMINAL_STATUSES
+
+
+def _material_target_is_pending(
+    conn: sqlite3.Connection, campaign_id: int, job_id: int, application_id: int
+) -> bool:
+    row = conn.execute(
+        """
+        SELECT applications.status, application_campaign_jobs.status,
+               application_campaigns.status
+        FROM application_campaign_jobs
+        JOIN applications ON applications.id = application_campaign_jobs.application_id
+                         AND applications.job_id = application_campaign_jobs.job_id
+        JOIN application_campaigns ON application_campaigns.id = application_campaign_jobs.campaign_id
+        WHERE application_campaign_jobs.campaign_id = ?
+          AND application_campaign_jobs.job_id = ?
+          AND application_campaign_jobs.application_id = ?
+        """,
+        (campaign_id, job_id, application_id),
+    ).fetchone()
+    return bool(
+        row and not any(_material_status_is_terminal(row[index]) for index in range(3))
+        and str(row[1]).strip().casefold() != "materials_ready"
+    )
+
+
+def _material_write_guard() -> tuple[str, tuple[str, ...]]:
+    placeholders = ",".join("?" for _ in MATERIAL_TERMINAL_STATUSES)
+    guard = f"""
+        lower(trim(application_campaign_jobs.status)) NOT IN ({placeholders})
+        AND EXISTS (
+            SELECT 1 FROM applications AS linked_application
+            JOIN application_campaigns AS linked_campaign
+              ON linked_campaign.id = application_campaign_jobs.campaign_id
+            WHERE linked_application.id = application_campaign_jobs.application_id
+              AND linked_application.job_id = application_campaign_jobs.job_id
+              AND lower(trim(linked_application.status)) NOT IN ({placeholders})
+              AND lower(trim(linked_campaign.status)) NOT IN ({placeholders})
+        )
+    """
+    return guard, MATERIAL_TERMINAL_STATUSES * 3
+
+
 def build_one_material(
     candidate: Candidate,
     application_id: int,
     evidence_profile: dict,
     application_profile: dict,
-) -> tuple[int, int, str, str, str]:
+    *,
+    campaign_id: int | None = None,
+) -> tuple[int, int, str, str, str] | None:
     description_conn = connect_database(JOB_DATABASE)
-    row = description_conn.execute(
-        "SELECT description FROM jobs WHERE id = ?", (candidate.job_id,)
-    ).fetchone()
-    description_conn.close()
+    try:
+        if campaign_id is not None and not _material_target_is_pending(
+            description_conn, campaign_id, candidate.job_id, application_id
+        ):
+            return None
+        row = description_conn.execute(
+            "SELECT description FROM jobs WHERE id = ?", (candidate.job_id,)
+        ).fetchone()
+    finally:
+        description_conn.close()
     job_text = "\n".join(
         value
         for value in (candidate.title, candidate.location, str(row[0] or ""))
@@ -387,7 +446,6 @@ def build_one_material(
         CURRENT_RESUME_TEX,
         DEFAULT_BUNDLES,
         bundle_name=bundle_name,
-        graduation_date=evidence_profile.get("expected_graduation_date") or None,
         role_kind=candidate.role_kind,
         keyword_selection=keywords,
         application_profile=application_profile,
@@ -400,7 +458,14 @@ def build_one_material(
     isolated["documents"]["resume_path"] = manifest["resume_pdf"]
     isolated["documents"]["cover_letter_path"] = manifest["cover_letter_pdf"]
     isolated.setdefault("safety", {})["allow_submit"] = False
-    output_dir = ROOT / "job_bot" / "out" / "applications" / str(application_id)
+    if campaign_id is not None:
+        status_conn = connect_database(JOB_DATABASE)
+        try:
+            if not _material_target_is_pending(status_conn, campaign_id, candidate.job_id, application_id):
+                return None
+        finally:
+            status_conn.close()
+    output_dir = APPLICATION_OUTPUT / "applications" / str(application_id)
     output_dir.mkdir(parents=True, exist_ok=True)
     profile_path = output_dir / "profile.json"
     profile_path.write_text(
@@ -423,95 +488,119 @@ def prepare_materials(
     candidates: list[Candidate],
     workers: int,
 ) -> None:
+    app_rows = conn.execute(
+        """
+        SELECT application_campaign_jobs.job_id, application_campaign_jobs.application_id,
+               application_campaign_jobs.status AS campaign_job_status,
+               applications.status AS application_status,
+               application_campaigns.status AS campaign_status
+        FROM application_campaign_jobs
+        JOIN applications ON applications.id = application_campaign_jobs.application_id
+                         AND applications.job_id = application_campaign_jobs.job_id
+        JOIN application_campaigns ON application_campaigns.id = application_campaign_jobs.campaign_id
+        WHERE application_campaign_jobs.campaign_id = ?
+        """,
+        (campaign_id,),
+    ).fetchall()
+    pending_rows = [
+        row for row in app_rows
+        if str(row["campaign_job_status"]).strip().casefold() != "materials_ready"
+        and not any(_material_status_is_terminal(row[key]) for key in (
+            "application_status", "campaign_job_status", "campaign_status"
+        ))
+    ]
+    app_ids = {int(row["job_id"]): int(row["application_id"]) for row in pending_rows}
+    pending_candidates = [candidate for candidate in candidates if candidate.job_id in app_ids]
+    if not pending_candidates:
+        return
     evidence_profile = json.loads(EVIDENCE_PROFILE.read_text(encoding="utf-8"))
     application_profile = hydrate_known_resume_contacts(
         json.loads(APPLICATION_PROFILE.read_text(encoding="utf-8")),
         CURRENT_RESUME_TEX.read_text(encoding="utf-8"),
     )
-    app_rows = conn.execute(
-        """
-        SELECT job_id, application_id, status
-        FROM application_campaign_jobs WHERE campaign_id = ?
-        """,
-        (campaign_id,),
-    ).fetchall()
-    app_ids = {int(row["job_id"]): int(row["application_id"]) for row in app_rows}
-    pending_ids = {
-        int(row["job_id"])
-        for row in app_rows
-        if row["status"] != "materials_ready"
-    }
-    pending_candidates = [
-        candidate for candidate in candidates if candidate.job_id in pending_ids
-    ]
+    guard, guard_parameters = _material_write_guard()
     failures: list[tuple[int, str]] = []
+    prepared_count = 0
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         futures = {
             pool.submit(
-                build_one_material,
-                candidate,
-                app_ids[candidate.job_id],
-                evidence_profile,
-                application_profile,
+                build_one_material, candidate, app_ids[candidate.job_id],
+                evidence_profile, application_profile, campaign_id=campaign_id,
             ): candidate
             for candidate in pending_candidates
         }
         for future in as_completed(futures):
             candidate = futures[future]
             try:
-                job_id, application_id, bundle, resume, cover = future.result()
+                result = future.result()
+                if result is None:
+                    continue
+                job_id, application_id, bundle, resume, cover = result
+                if not _material_target_is_pending(conn, campaign_id, job_id, application_id):
+                    continue
                 now = utc_now()
-                conn.execute(
-                    """
+                updated = conn.execute(
+                    f"""
+                    UPDATE application_campaign_jobs
+                    SET status = 'materials_ready', material_bundle = ?, last_error = NULL
+                    WHERE campaign_id = ? AND job_id = ? AND application_id = ?
+                      AND lower(trim(status)) <> 'materials_ready' AND {guard}
+                    """,
+                    (bundle, campaign_id, job_id, application_id, *guard_parameters),
+                )
+                if not updated.rowcount:
+                    conn.commit()
+                    continue
+                updated = conn.execute(
+                    f"""
                     UPDATE applications
                     SET tailored_resume_path = ?, cover_letter_path = ?, profile_path = ?,
                         updated_at = ?
-                    WHERE id = ?
+                    WHERE id = ? AND EXISTS (
+                        SELECT 1 FROM application_campaign_jobs
+                        WHERE campaign_id = ? AND job_id = ? AND application_id = applications.id
+                          AND {guard}
+                    )
                     """,
                     (
-                        resume,
-                        cover,
-                        str(ROOT / "job_bot" / "out" / "applications" / str(application_id) / "profile.json"),
-                        now,
-                        application_id,
+                        resume, cover,
+                        str(APPLICATION_OUTPUT / "applications" / str(application_id) / "profile.json"),
+                        now, application_id, campaign_id, job_id, *guard_parameters,
                     ),
                 )
-                conn.execute(
-                    """
-                    UPDATE application_campaign_jobs
-                    SET status = 'materials_ready', material_bundle = ?, last_error = NULL
-                    WHERE campaign_id = ? AND job_id = ?
-                    """,
-                    (bundle, campaign_id, job_id),
-                )
-                add_event(
-                    conn,
-                    application_id,
-                    "materials_prepared",
-                    {"campaign_id": campaign_id, "bundle": bundle},
-                )
+                if not updated.rowcount:
+                    conn.rollback()
+                    continue
+                add_event(conn, application_id, "materials_prepared", {"campaign_id": campaign_id, "bundle": bundle})
                 conn.commit()
+                prepared_count += 1
             except Exception as exc:
+                conn.rollback()
                 error = f"{type(exc).__name__}: {str(exc)[-1200:]}"
-                failures.append((candidate.job_id, error))
-                conn.execute(
-                    """
+                updated = conn.execute(
+                    f"""
                     UPDATE application_campaign_jobs
                     SET status = 'material_failed', last_error = ?
-                    WHERE campaign_id = ? AND job_id = ?
+                    WHERE campaign_id = ? AND job_id = ? AND application_id = ?
+                      AND lower(trim(status)) <> 'materials_ready' AND {guard}
                     """,
-                    (error, campaign_id, candidate.job_id),
+                    (error, campaign_id, candidate.job_id, app_ids[candidate.job_id], *guard_parameters),
                 )
+                if updated.rowcount:
+                    failures.append((candidate.job_id, error))
                 conn.commit()
+    if not prepared_count and not failures:
+        return
     status = "materials_ready" if not failures else "material_partial"
+    placeholders = ",".join("?" for _ in MATERIAL_TERMINAL_STATUSES)
     conn.execute(
-        "UPDATE application_campaigns SET status = ?, updated_at = ? WHERE id = ?",
-        (status, utc_now(), campaign_id),
+        f"""UPDATE application_campaigns SET status = ?, updated_at = ? WHERE id = ?
+            AND lower(trim(status)) NOT IN ({placeholders})""",
+        (status, utc_now(), campaign_id, *MATERIAL_TERMINAL_STATUSES),
     )
     conn.commit()
     if failures:
         raise RuntimeError(f"Material generation failed for {len(failures)} jobs")
-
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)

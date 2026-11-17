@@ -21,7 +21,11 @@ if LOCAL_PACKAGES.is_dir() and str(LOCAL_PACKAGES) not in sys.path:
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from application_bot.portal_registry import adapters_from_config, resolve_adapter  # noqa: E402
+from application_bot.portal_registry import (  # noqa: E402
+    adapters_from_config,
+    application_url,
+    resolve_adapter,
+)
 from job_bot.application_bot import resolve_browser_connection  # noqa: E402
 from job_bot.bot import connect_db, load_config, load_env_file  # noqa: E402
 from job_bot.browser_connection import check_cdp_health  # noqa: E402
@@ -132,7 +136,7 @@ def build_probes(config: dict[str, Any], conn) -> list[SessionProbe]:
                 reason = "no representative application with an external ID"
         elif kind == "application_url":
             scope = company
-            url = app.get("draft_url") or app.get("url") or None
+            url = application_url(adapter, app.get("draft_url") or app.get("url") or "") or None
             if not url:
                 reason = "no representative application exists for this portal"
         else:
@@ -216,7 +220,7 @@ def classify_session(
     )
     if "/userhome" in url_l or authenticated_text:
         return "authenticated", "an authenticated candidate/profile page is visible"
-    if adapter in {"eightfold", "infineon_eightfold", "ti_oracle", "amd_icims", "generic_icims"} and visible_controls:
+    if adapter in {"eightfold", "infineon_eightfold", "ti_oracle", "amd_icims", "generic_icims", "lever", "greenhouse", "ashby"} and visible_controls:
         return "application_accessible", "an editable application page is accessible without a login boundary"
     return "unknown", "page loaded without a reliable authenticated or signed-out signal"
 

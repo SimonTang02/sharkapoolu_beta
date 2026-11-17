@@ -1,7 +1,12 @@
+import json
 import sqlite3
 import unittest
+from pathlib import Path
 
 from application_bot.session_audit import build_probes, classify_session
+
+
+PORTALS_CONFIG = Path(__file__).resolve().parents[1] / "job_bot" / "config" / "portals.json"
 
 
 class SessionAuditTests(unittest.TestCase):
@@ -57,6 +62,19 @@ class SessionAuditTests(unittest.TestCase):
         )
         self.assertEqual(state, "authenticated")
 
+    def test_standard_ats_application_page_is_accessible(self) -> None:
+        for adapter in ("lever", "greenhouse", "ashby"):
+            state, _ = classify_session(
+                adapter=adapter,
+                url="https://job-boards.greenhouse.io/example/jobs/123456",
+                title="Job Application",
+                body="First Name Last Name Email Phone Resume/CV",
+                http_status=200,
+                password_visible=False,
+                visible_controls=8,
+            )
+            self.assertEqual(state, "application_accessible", adapter)
+
     def test_handshake_pennkey_duo_and_student_page(self) -> None:
         for url, body, expected in [
             ("https://upenn.joinhandshake.com/login", "Log-In Using Your PennKey.", "authentication_required"),
@@ -68,6 +86,63 @@ class SessionAuditTests(unittest.TestCase):
                                         body=body, http_status=200,
                                         password_visible=False, visible_controls=2)
             self.assertEqual(state, expected)
+
+    def test_standard_ats_probe_uses_the_application_page(self) -> None:
+        config = json.loads(PORTALS_CONFIG.read_text(encoding="utf-8"))
+        config["sources"] = [
+            {"name": "Cirrus", "type": "lever", "company": "Cirrus Logic",
+             "url": "https://jobs.eu.lever.co/cirrus/639a7c66"},
+            {"name": "Astera", "type": "greenhouse", "company": "Astera Labs",
+             "url": "https://job-boards.greenhouse.io/asteraearlycareer2027/jobs/4731399005"},
+            {"name": "Etched", "type": "ashby", "company": "Etched",
+             "url": "https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d"},
+        ]
+        conn = self.connection()
+        conn.executescript(
+            """
+            INSERT INTO jobs VALUES
+              (1, 'Cirrus Logic', 'https://jobs.eu.lever.co/cirrus/639a7c66', 'lever', '639a7c66'),
+              (2, 'Astera Labs',
+               'https://job-boards.greenhouse.io/asteraearlycareer2027/jobs/4731399005',
+               'greenhouse', '4731399005'),
+              (3, 'Etched',
+               'https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d',
+               'ashby', '5f1f5739');
+            INSERT INTO applications VALUES
+              (1, 1, NULL, 'queued'), (2, 2, NULL, 'queued'), (3, 3, NULL, 'queued');
+            """
+        )
+        probes = {probe.adapter: probe for probe in build_probes(config, conn)}
+        self.assertEqual(
+            probes["lever"].url, "https://jobs.eu.lever.co/cirrus/639a7c66/apply"
+        )
+        self.assertEqual(
+            probes["greenhouse"].url,
+            "https://job-boards.greenhouse.io/asteraearlycareer2027/jobs/4731399005",
+        )
+        self.assertEqual(
+            probes["ashby"].url,
+            "https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d/application",
+        )
+
+    def test_saved_application_page_is_probed_without_a_second_route(self) -> None:
+        config = json.loads(PORTALS_CONFIG.read_text(encoding="utf-8"))
+        config["sources"] = [
+            {"name": "Cirrus", "type": "lever", "company": "Cirrus Logic",
+             "url": "https://jobs.eu.lever.co/cirrus/639a7c66"},
+        ]
+        conn = self.connection()
+        conn.executescript(
+            """
+            INSERT INTO jobs VALUES
+              (1, 'Cirrus Logic', 'https://jobs.eu.lever.co/cirrus/639a7c66', 'lever', '639a7c66');
+            INSERT INTO applications VALUES
+              (1, 1, 'https://jobs.eu.lever.co/cirrus/639a7c66/apply', 'draft_saved');
+            """
+        )
+        probes = build_probes(config, conn)
+        self.assertEqual(len(probes), 1)
+        self.assertEqual(probes[0].url, "https://jobs.eu.lever.co/cirrus/639a7c66/apply")
 
 
 if __name__ == "__main__":

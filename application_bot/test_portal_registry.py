@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 
@@ -88,6 +89,71 @@ class PortalRegistryTests(unittest.TestCase):
         )
         self.assertEqual(profile["id"], "nvidia_workday")
         self.assertEqual(profile["rules"]["tenant"], "nvidia")
+
+
+class ConfiguredStandardAtsTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.root = Path(__file__).resolve().parents[1]
+        cls.config = json.loads(
+            (cls.root / "job_bot" / "config" / "portals.json").read_text(encoding="utf-8")
+        )
+
+    def test_standard_ats_adapters_and_profiles_are_registered(self) -> None:
+        cases = [
+            (
+                "Cirrus Logic",
+                "lever",
+                "https://jobs.eu.lever.co/cirrus/639a7c66-76c4-4c22-9b9f-43af17595103",
+                "lever",
+                "application_bot/lever.py",
+                "cirrus_lever",
+            ),
+            (
+                "Astera Labs",
+                "greenhouse",
+                "https://job-boards.greenhouse.io/asteraearlycareer2027/jobs/4731399005",
+                "greenhouse",
+                "application_bot/greenhouse.py",
+                "astera_greenhouse",
+            ),
+            (
+                "Etched",
+                "ashby",
+                "https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d",
+                "ashby",
+                "application_bot/ashby.py",
+                "etched_ashby",
+            ),
+        ]
+        for company, platform, url, adapter_id, script, profile_id in cases:
+            adapter = resolve_adapter(self.config, company=company, platform=platform, url=url)
+            self.assertIsNotNone(adapter, company)
+            self.assertEqual(adapter.id, adapter_id)
+            self.assertEqual(adapter.script, script)
+            self.assertFalse(adapter.supports_draft)
+            self.assertEqual(adapter.session_probe.get("kind"), "application_url")
+            self.assertTrue((self.root / script).is_file())
+            profile = resolve_company_profile(self.config, company=company, adapter_id=adapter_id)
+            self.assertEqual(profile.get("id"), profile_id)
+
+    def test_new_adapter_command_uses_its_script_and_env(self) -> None:
+        adapter = resolve_adapter(
+            self.config,
+            company="Etched",
+            platform="ashby",
+            url="https://jobs.ashbyhq.com/etched/5f1f5739-3b58-467c-b351-ff183c94d96d",
+        )
+        command = adapter_command(
+            adapter,
+            application_id=11,
+            config_path=Path("config.json"),
+            env_path=Path("passport.env"),
+        )
+        self.assertIn("application_bot/ashby.py", command[1])
+        self.assertIn("--env", command)
+        self.assertIn("11", command)
+        self.assertIn("--application-id", command)
 
 
 if __name__ == "__main__":

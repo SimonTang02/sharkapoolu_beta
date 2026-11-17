@@ -1067,10 +1067,72 @@
       "official_reference": "https://www.birentech.com/join/"
     },
     {
+      "name": "CXMT Campus Memory and IC Careers",
+      "type": "zhiye",
+      "api_url": "https://cxmt.zhiye.com/api/Jobad/GetJobAdPageList",
+      "public_url": "https://cxmt.zhiye.com/campus/detail",
+      "public_url_id_field": "Id",
+      "public_url_id_param": "jobAdId",
+      "categories": ["2"],
+      "page_size": 100,
+      "max_pages": 5,
+      "timeout_seconds": 20,
+      "company": "CXMT",
+      "source_category": "official_company_search",
+      "sync_active": false,
+      "role_kinds": ["internship", "full_time", "unknown"],
+      "title_include_patterns": [
+        "DRAM|HBM|DDR|存储|芯片|电路|数字|模拟|设计|验证|架构|EDA|算法|软件|FPGA|SIPI|信号完整性|产品工程|测试开发|智能半导体|AI研究"
+      ],
+      "official_reference": "https://cxmt.zhiye.com/campus/jobs"
+    },
+    {
+      "name": "CXMT Internship Memory and IC Careers",
+      "type": "zhiye",
+      "api_url": "https://cxmt.zhiye.com/api/Jobad/GetJobAdPageList",
+      "public_url": "https://cxmt.zhiye.com/intern/detail",
+      "public_url_id_field": "Id",
+      "public_url_id_param": "jobAdId",
+      "categories": ["3"],
+      "page_size": 100,
+      "max_pages": 2,
+      "timeout_seconds": 20,
+      "company": "CXMT",
+      "source_category": "official_company_search",
+      "sync_active": false,
+      "role_kinds": ["internship", "full_time", "unknown"],
+      "title_include_patterns": [
+        "DRAM|HBM|DDR|存储|芯片|电路|数字|模拟|设计|验证|架构|EDA|算法|软件|FPGA|SIPI|信号完整性|产品工程|测试开发|智能半导体|AI研究"
+      ],
+      "official_reference": "https://cxmt.zhiye.com/intern/jobs"
+    },
+    {
+      "name": "CXMT Social Memory and IC Careers",
+      "type": "zhiye",
+      "api_url": "https://cxmt.zhiye.com/api/Jobad/GetJobAdPageList",
+      "public_url": "https://cxmt.zhiye.com/social/detail",
+      "public_url_id_field": "Id",
+      "public_url_id_param": "jobAdId",
+      "categories": ["1"],
+      "page_size": 100,
+      "max_pages": 20,
+      "timeout_seconds": 20,
+      "company": "CXMT",
+      "source_category": "official_company_search",
+      "sync_active": false,
+      "role_kinds": ["internship", "full_time", "unknown"],
+      "title_include_patterns": [
+        "DRAM|HBM|DDR|存储|芯片|电路|数字|模拟|设计|验证|架构|EDA|算法|软件|FPGA|SIPI|信号完整性|产品工程|测试开发|智能半导体|AI研究"
+      ],
+      "official_reference": "https://cxmt.zhiye.com/social/jobs"
+    },
+    {
       "name": "Moore Threads Careers",
       "type": "zhiye",
       "api_url": "https://mthreads.zhiye.com/api/Jobad/GetJobAdPageList",
-      "public_url": "https://mthreads.zhiye.com/campus/jobs",
+      "public_url": "https://mthreads.zhiye.com/campus/detail",
+      "public_url_id_field": "Id",
+      "public_url_id_param": "jobAdId",
       "categories": [
         "2"
       ],

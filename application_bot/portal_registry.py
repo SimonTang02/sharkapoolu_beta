@@ -28,6 +28,7 @@ class PortalAdapter:
     supports_draft: bool
     timeout_seconds: int
     session_probe: dict[str, Any]
+    apply_path: str
 
 
 def adapters_from_config(config: dict[str, Any]) -> list[PortalAdapter]:
@@ -48,6 +49,7 @@ def adapters_from_config(config: dict[str, Any]) -> list[PortalAdapter]:
                 supports_draft=bool(raw.get("supports_draft", False)),
                 timeout_seconds=int(raw.get("timeout_seconds", 180)),
                 session_probe=dict(raw.get("session_probe", {})),
+                apply_path=str(raw.get("apply_path") or ""),
             )
         )
     return sorted(adapters, key=lambda item: (-item.priority, item.id))
@@ -74,6 +76,24 @@ def resolve_adapter(
         if _matches(adapter, company=company, platform=platform, url=url):
             return adapter
     return None
+
+
+def application_url(adapter: PortalAdapter | None, url: str) -> str:
+    """Return the application form URL for a job-detail URL.
+
+    ``apply_path`` is declared in ``portals.json`` so the read-only session
+    probe and the login preflight both target the application page instead of
+    the job-description page.  An empty ``apply_path`` means the job page
+    itself holds the form, as it does on Greenhouse.
+    """
+    base = str(url or "").strip()
+    apply_path = adapter.apply_path if adapter else ""
+    if not base or not apply_path:
+        return base
+    trimmed = base.rstrip("/")
+    if trimmed.endswith(apply_path):
+        return trimmed
+    return f"{trimmed}{apply_path}"
 
 
 def resolve_adapter_by_url(config: dict[str, Any], url: str) -> PortalAdapter | None:

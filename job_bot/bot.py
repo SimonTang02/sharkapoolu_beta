@@ -1069,8 +1069,10 @@ def fetch_zhiye(source: dict[str, Any]) -> list[JobPosting]:
             if not external_id or external_id in seen_ids:
                 continue
             seen_ids.add(external_id)
+            public_id = str(item.get(source.get("public_url_id_field", "JobAdId")) or external_id)
             public_url = url_with_query(
-                str(source.get("public_url") or ""), jobId=external_id
+                str(source.get("public_url") or ""),
+                **{str(source.get("public_url_id_param", "jobId")): public_id},
             )
             location_values = item.get("LocNames") or []
             if isinstance(location_values, str):
@@ -2423,6 +2425,115 @@ def matched_keywords(keywords: list[str], haystack: str) -> list[str]:
     return [keyword for keyword in keywords if keyword_matches(keyword, haystack)]
 
 
+def eda_development_evidence(job: JobPosting) -> tuple[str, list[str]] | None:
+    """Recognize tool builders, not software roles that merely use EDA tools.
+
+    Require a development title, implementation skills, a technical domain,
+    and ownership of relevant development work. Product names or an employer
+    name alone are insufficient. CAE/mesh work is explicitly lower-confidence.
+    This is retrieval relevance, not a candidate-eligibility override.
+    """
+    title = strip_html(job.title).casefold()
+    if not re.search(r"\b(?:software|algorithm|r&d)\b|软件|算法|研发", title):
+        return None
+    if re.search(
+        r"\b(?:qa|qc|sdet|dv|pv|fae|test|testing|verification|validation|"
+        r"sales|support|customer|application engineer|applications engineer|"
+        r"firmware|embedded|web|cloud|devops|full.stack|front.end|back.end)\b"
+        r"|质量|测试|验证|客户|应用工程师|固件|嵌入式", title,
+    ):
+        return None
+
+    text = html.unescape(re.sub(r"<[^>]+>", "\n", job.description)).casefold()
+    # A desired qualification is not itself a responsibility to build a tool.
+    duties = re.split(
+        r"\b(?:(?:position|minimum|basic|preferred|required)\s+"
+        r"(?:requirements|qualifications)|(?m:^\s*requirements\s*:?\s*$))",
+        text, maxsplit=1,
+    )[0]
+    text = " ".join(text.split())
+    duties = "\n".join(" ".join(line.split()) for line in duties.splitlines())
+    if re.search(
+        r"\b(?:qa|quality assurance|product validation|regression testing|"
+        r"design verification)\s+(?:team|role|position|engineer)\b", duties,
+    ):
+        return None
+    if not re.search(r"\bc\s*/\s*c\+\+|\bc\+\+|\bpython\b", text):
+        return None
+
+    product = re.search(
+        r"\b(?:spectre(?:\s*fx)?|fastspice|spice|innovus|conformal|calibre)\b",
+        title + " " + text,
+    )
+    domain = re.search(
+        r"\b(?:eda|electronic design automation|circuit simul\w*|"
+        r"logic synthesis|physical synthesis|digital implementation)\b", text,
+    )
+    parasitic = re.search(r"\bparasitic (?:model\w*|extract\w*)\b", text)
+    if parasitic and not re.search(r"\b(?:on.chip|circuit|interconnect|eda)\b", text):
+        parasitic = None
+    if not (product or domain or parasitic):
+        return None
+
+    # Link a development verb to an engine/algorithm object in the same clause.
+    # Routine application code, test harnesses, and tool usage do not qualify.
+    activity = re.compile(
+        r"\b(?:develop(?:s|ing)?|design(?:s|ing)?|implement(?:s|ing)?|"
+        r"optimi[sz](?:e|es|ing)|research(?:es|ing)?|accelerat(?:e|es|ing))\b"
+        r"[^.!?;\n]{0,160}?\b(?:algorithms?|numerical methods|"
+        r"(?:circuit|spice|digital circuit) simul\w*|"
+        r"(?:simulation|placement|routing|synthesis) engines?|"
+        r"physical synthesis|placement|routing|parasitic model\w*|"
+        r"ic design and verification solutions|eda (?:tools?|technolog\w*)|"
+        r"geometry model\w*|mesh generation|mesh algorithms?)\b",
+    )
+    def positive_work(
+        pattern: re.Pattern[str], require_domain: bool = True,
+    ) -> re.Match[str] | None:
+        for match in pattern.finditer(duties):
+            prefix = duties[max(0, match.start() - 80):match.start()]
+            clause = re.split(r"[.!?;\n]", duties[match.start():match.start() + 400], maxsplit=1)[0]
+            if re.search(
+                r"(?:\b(?:not|never|no|company|employer)\b|rather than)"
+                r"[^.!?;\n]{0,60}$", prefix,
+            ) or re.search(
+                r"\b(?:test harness\w*|testbench\w*|test cases?|regression tests?|"
+                r"quality assurance|customer support|tutorials?)\b", clause,
+            ):
+                continue
+            if not require_domain or re.search(
+                r"\b(?:circuit|simul\w*|eda|synthesis|placement|routing|parasitic|"
+                r"numerical|mathematical|ic design|geometry|mesh|topology|sat)\b",
+                clause,
+            ):
+                return match
+        return None
+
+    work = positive_work(activity)
+    # FastSPICE research can describe the algorithm as accelerating transistor
+    # circuits rather than naming an algorithm explicitly.
+    if work is None and product:
+        work = positive_work(re.compile(
+            r"\bresearch and develop\b[^.!?;\n]{0,120}"
+            r"\b(?:speeding up|accelerat\w*)\b[^.!?;\n]{0,100}\bcircuit\b",
+        ))
+    mesh = re.search(r"\b(?:mesh|geometry|geometric|topology)\b", text)
+    if mesh:
+        mesh_work = work or positive_work(re.compile(
+            r"\bdevelop(?:ing)? new features\b[^.!?;\n]{0,100}"
+            r"\b(?:product specifications|mesh)\b",
+        ), require_domain=False)
+        if mesh_work and domain and re.search(r"\balgorithms?|numerical methods\b", text):
+            return "EDA/CAE algorithm development", [domain.group(), mesh.group()]
+    if work and (product or parasitic or (domain and re.search(
+        r"\b(?:simulation engines?|numerical methods|logic synthesis|"
+        r"physical synthesis|placement|routing|sat solving)\b", text,
+    ))):
+        signals = [hit.group() for hit in (product, domain, parasitic) if hit]
+        return "EDA tool/algorithm development", list(dict.fromkeys(signals))
+    return None
+
+
 def score_job_foundations(
     job: JobPosting,
     scoring: dict[str, Any],
@@ -2436,24 +2547,33 @@ def score_job_foundations(
 
     title = job.title.casefold()
     body = " ".join((job.title, job.description)).casefold()
+    eda_evidence = eda_development_evidence(job)
+    eda_exception = False
     foundation_matches: list[dict[str, Any]] = []
     for foundation in scoring.get("foundation_groups", []):
         keywords = [str(keyword) for keyword in foundation.get("keywords", [])]
         title_hits = matched_keywords(keywords, title)
         body_hits = matched_keywords(keywords, body)
+        is_eda = any(keyword.casefold() in {"eda", "electronic design automation"}
+                     for keyword in keywords)
+        if eda_evidence and is_eda:
+            eda_exception = True
+            body_hits = list({hit.casefold(): hit for hit in body_hits + eda_evidence[1]}.values())
         if title_hits:
             points = int(foundation.get("base_score", 0))
             match_scope = "title"
             hits = title_hits
         else:
             min_body_hits = max(1, int(foundation.get("min_body_hits", 2)))
-            if len(body_hits) < min_body_hits:
+            if len(body_hits) < min_body_hits and not (eda_evidence and is_eda):
                 continue
             points = int(foundation.get("base_score", 0)) + int(
                 foundation.get("body_only_adjustment", -10)
             )
             match_scope = "description"
             hits = body_hits
+        if eda_evidence and is_eda and eda_evidence[0].startswith("EDA/CAE"):
+            points -= 8  # Adjacent mesh/CAE work must not outrank core EDA.
         foundation_matches.append(
             {
                 "name": str(foundation.get("name") or hits[0]),
@@ -2494,6 +2614,8 @@ def score_job_foundations(
         f"Foundation: {primary['name']} ({primary['scope']}: "
         f"{', '.join(primary['hits'][:3])}, {score:+d})"
     ]
+    if eda_exception and eda_evidence:
+        reasons.append(f"Evidence: {eda_evidence[0]} ({', '.join(eda_evidence[1])})")
 
     secondary_bonus = int(scoring.get("foundation_secondary_bonus", 4))
     max_secondary = max(0, int(scoring.get("max_secondary_foundations", 2)))
@@ -2516,6 +2638,9 @@ def score_job_foundations(
         if not hits:
             continue
         points = int(modifier.get("points", 0))
+        if eda_exception and points < 0 and modifier.get("name") == "software-first role":
+            reasons.append("Exception: software-first role (tool-development evidence)")
+            continue
         score += points
         reasons.append(
             f"Modifier: {modifier.get('name', hits[0])} "

@@ -6,6 +6,7 @@ examples establishes a real person's work authorization, nationality or consent.
 
 | File | Purpose and filling instructions |
 | --- | --- |
+| `agent_preferences_template.md` | Optional Agent-readable submission mode and candidate/application scope. Copy only into private `config/agent_preferences.md`; bootstrap does not create it. See `docs/agent-rules.md`. |
 | `manual_jobs_template.csv`, `manual_applications_template.csv` | Empty UTF-8 CSV headers for fully manual record keeping. Bootstrap creates missing private copies; field dictionary and confirmation rules: `docs/manual-database.md`. |
 | `candidate_scoring_template.json` | Fictional software preference weights consumed by weighted_keywords_v1. Copy and tune privately; validate include paths and actual scoring behavior. See `docs/candidate-onboarding.md`. |
 | `easy_settings_template.json` | Chinese annotated daily controls for nontechnical users. Bootstrap creates private `config/easy_settings.json` without overwriting it. Use `jobbot-settings check`, `plan`, then explicit `run --execute`; see `docs/beginner-settings.md`. |

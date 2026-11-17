@@ -90,10 +90,6 @@ def main() -> None:
             "cover_letter_path": row["cover_letter_path"],
         }
         profile.setdefault("safety", {})["allow_submit"] = False
-        if row["role_kind"] == "full_time":
-            for education in profile.get("education", []):
-                if "Pennsylvania" in str(education.get("school", "")):
-                    education["to_month"] = 6
         profile_path.parent.mkdir(parents=True, exist_ok=True)
         profile_path.write_text(
             json.dumps(profile, ensure_ascii=False, indent=2) + "\n",

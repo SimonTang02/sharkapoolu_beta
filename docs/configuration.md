@@ -87,7 +87,10 @@ make workflow-plan WORKFLOW=<name>
 - `session_audit`: login-probe concurrency and timeout.
 - `company_profiles`: company matching and account rules.
 - `adapters`: platform/host routing, scripts, timeouts, session probes, and
-  draft capability.
+  draft capability. An optional `apply_path` records the application-form route
+  a portal appends to its job URL (for example `/apply` on Lever); the session
+  probe and login preflight use it so they never inspect a job-description page
+  in place of the form. Leave it unset when the job page holds the form.
 
 Declaring an adapter does not authorize an application submission.
 

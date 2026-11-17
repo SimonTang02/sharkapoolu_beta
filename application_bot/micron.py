@@ -134,16 +134,10 @@ def _fill_if_present(page, selector: str, value: str) -> bool:
 
 
 def _confirmed_email(profile: dict) -> str:
-    field = str(profile.get("fields", {}).get("email", "")).strip()
-    if field:
-        return field
-    facts = profile.get("personal_facts_confirmation", {})
-    for key in ("cross_employer_contact_and_interview_20260925",):
-        block = facts.get(key, {})
-        email = str(block.get("primary_university_email", "")).strip()
-        if email:
-            return email
-    return ""
+    # Use the application-bound field, not a candidate-specific historical
+    # confirmation key. Missing identity must remain unresolved.
+    value = profile.get("fields", {}).get("email")
+    return value.strip() if isinstance(value, str) else ""
 
 
 def _select_question(page, label_fragment: str, value: str) -> bool:

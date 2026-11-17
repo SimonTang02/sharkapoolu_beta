@@ -53,10 +53,11 @@ compatibility migration because existing queues, tests, and commands depend on
 that path.
 
 The bot may open an application, fill approved profile data, upload a reviewed
-resume, save artifacts, and stop at review by default. Final submission requires
-explicit session authorization scoped to the relevant applications and a completed
-review. Record authorization in an ignored local campaign manifest; authorization
-for one campaign does not apply to unrelated applications. Never infer
+resume, save artifacts, and stop at Review. Program adapters never submit.
+A capable Agent's final browser action follows `confirm` (default), `after_review`
+or `direct` in [Agent rules](../docs/agent-rules.md). Record the selected mode and
+exact candidate/application scope in private preferences or a campaign handoff;
+authorization for one campaign does not cover unrelated applications. Never infer
 legal/immigration answers or bypass CAPTCHA/MFA.
 
 When preparing skill tags or personal-strength answers, consult
@@ -97,13 +98,19 @@ python3 application_bot/cli.py dispatch --application-id 1
 
 `session-audit` derives one probe per ATS session scope from `portals.json`,
 checks unrelated tenants concurrently, records no cookie or field values, and
-closes every temporary page. `login-tabs` reads that audit and opens only pages
-that actually require login/MFA. `dispatch` maps an application to its adapter;
+closes every temporary page. For portals that host the form on a separate route
+(Lever, Ashby) it probes the application page declared by the adapter's
+`apply_path`; Greenhouse keeps the job page because the form is rendered there.
+`login-tabs` reads that audit and opens only pages that actually require
+login/MFA. `dispatch` maps an application to its adapter;
 it writes a plan by default and runs nothing unless `--execute` is supplied.
 
 Run `login-preflight` before dispatching a campaign. It opens or reuses exactly
 one bot-owned inspection tab per company, even when multiple employers share
-the same ATS. Complete login/MFA review there first; only then create the
+the same ATS. Each tab navigates to the same application page the dispatcher
+will use, not the job-description page, so the review reflects the real field
+state; preflight still only inspects login/session state and never fills or
+submits. Complete login/MFA review there first; only then create the
 application-specific tabs. Re-running preflight deduplicates its own company
 tabs and never closes an application tab that may contain form state.
 
@@ -113,6 +120,22 @@ each employer's field enumerations, required sections, consent rules, and known
 limitations. The first application is the template-learning run; subsequent
 roles for the same company reuse that profile rather than relearning behavior
 from another employer using the same ATS.
+
+Lever, Greenhouse, and Ashby have single-page preparation adapters under
+`application_bot/`. They fill profile-backed contact fields, upload the selected
+PDF, inventory custom questions, and stop before final submission. Lever opens
+`<job>/apply`, Greenhouse uses the job page itself, and Ashby opens
+`<job>/application`; the same route is declared in `portals.json` as
+`apply_path` so the session probe and `login-preflight` target that page
+instead of the job description. The Lever adapter leaves current-company and
+custom-card answers unresolved when no
+profile fact is available; Greenhouse leaves education/country comboboxes and
+custom questions for review; Ashby uses `_systemfield_*` selectors and a label
+fallback. All three may present CAPTCHA at final submit. `dispatch --execute`
+requires a working Playwright CDP attachment; a healthy `/json/version` endpoint
+alone does not establish that the attachment works. Check the resulting private
+`fill_tests/` artifact and the browser form before treating a preparation as
+complete.
 
 `nvidia-preview` remains available as a backward-compatible alias. Standard
 Workday tenants can use `workday-preview`, but each tenant may require its own

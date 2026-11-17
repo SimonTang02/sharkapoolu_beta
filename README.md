@@ -4,8 +4,8 @@ An agent-driven toolkit for job discovery, tailored resumes, and application tra
 
 > **First time using this?** Follow the [step-by-step beginner guide](docs/foolproof_guide.md) for Windows + WSL2 + VS Code installation, resume import, and messages to copy to your agent. The [Chinese release](https://github.com/SimonTang02/sharkapoolu_beta_zh) has its own Chinese guide.
 
-Coding agents: start with the complete
-[operating and handoff guide](AGENT_HANDOFF.md) and
+Coding agents: start with [AGENTS.md](AGENTS.md), the current private task,
+[operating references](AGENT_HANDOFF.md) and
 [setup ownership and readiness guide](docs/getting-started.md), then the
 [commented public templates](examples/README.md), including a fictional
 Mike Malon / NYU Computer Science resume and the shared-database settings.
@@ -14,7 +14,8 @@ Sharkapoolu is a local-first toolkit for job discovery, ranking, resume
 tailoring, and review-assisted application preparation. It was built around
 hardware and digital-design recruiting, but its source and scoring layers are
 configurable. Candidate data stays outside the public Git history, and every
-final application submission remains a human action.
+final application submission follows the scoped [Agent preference](docs/agent-rules.md);
+program adapters stop at Review.
 
 ## Key features
 
@@ -26,7 +27,7 @@ final application submission remains a human action.
   install TeX to render PDFs and review each result before using it.
 - **Get help with application forms.** Use a manual HTML kit with answers and
   attachments, or supported browser adapters to prepare fields. You handle
-  login, verification, review, and final Submit.
+  login and verification; final Submit follows your scoped Agent preference.
 - **Keep track of real applications.** Use the local database or manually edit
   UTF-8 CSV records. Mark submitted only after a receipt or your explicit success
   confirmation. Sharing a database over SSH is optional.
@@ -116,8 +117,9 @@ private synced directory. A wheel installation defaults to the platform data
 directory instead of writing inside `site-packages`.
 
 Start with [configuration.md](docs/configuration.md). The repository-level
-[AGENTS.md](AGENTS.md) gives coding agents the complete operating contract,
-including safety rules, command selection, and extension points.
+[AGENTS.md](AGENTS.md) gives coding agents the daily operating contract,
+including safety rules and task selection. Load [DEVELOPER.md](DEVELOPER.md)
+for public development, interfaces and Git release checks.
 
 ## Safety and privacy
 
@@ -126,7 +128,8 @@ including safety rules, command selection, and extension points.
 - Legal authorization, sponsorship, demographic, and declaration answers must
   come from explicit candidate input.
 - Automation may prepare and save a draft only when its separate safety gate is
-  enabled. It must never click the final Submit control.
+  enabled. Program adapters never click final Submit; a capable Agent follows
+  your scoped [submission preference](docs/agent-rules.md).
 - Run `make public-audit` before publishing. Use `make history-audit` when an
   older Git history may have contained personal files.
 

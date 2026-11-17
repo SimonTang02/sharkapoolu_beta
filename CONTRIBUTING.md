@@ -27,5 +27,5 @@ belongs in `application_bot/` or `job_bot/applications/`. Add a deterministic
 fixture test and keep network access out of unit tests. Application adapters
 must preserve the review gate and must never make final submission the default.
 
-See `AGENTS.md` for repository invariants and `docs/interfaces.md` for extension
-contracts.
+Read `DEVELOPER.md` for the complete development and Git release contract,
+`AGENTS.md` for daily rules, and `docs/interfaces.md` for extension contracts.

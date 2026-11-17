@@ -61,16 +61,19 @@ class MicronContactTests(unittest.TestCase):
         self.assertEqual(_local_phone("+852 0000 0000"), "00000000")
         self.assertEqual(_local_phone("00000000"), "00000000")
 
-    def test_confirmed_email_falls_back_to_fact(self) -> None:
+    def test_missing_email_does_not_use_historical_fact(self) -> None:
         profile = {
             "fields": {"email": ""},
             "personal_facts_confirmation": {
-                "cross_employer_contact_and_interview_20260925": {
+                "example_historical_confirmation": {
                     "primary_university_email": "student@example.com",
                 }
             },
         }
-        self.assertEqual(_confirmed_email(profile), "student@example.com")
+        self.assertEqual(_confirmed_email(profile), "")
+
+    def test_null_email_remains_unresolved(self) -> None:
+        self.assertEqual(_confirmed_email({"fields": {"email": None}}), "")
 
     def test_field_email_wins_over_fact(self) -> None:
         profile = {

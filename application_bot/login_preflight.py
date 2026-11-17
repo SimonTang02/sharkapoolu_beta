@@ -26,7 +26,11 @@ if LOCAL_PACKAGES.is_dir() and str(LOCAL_PACKAGES) not in sys.path:
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from application_bot.portal_registry import resolve_adapter  # noqa: E402
+from application_bot.portal_registry import (  # noqa: E402
+    PortalAdapter,
+    application_url,
+    resolve_adapter,
+)
 from job_bot.application_bot import resolve_browser_connection  # noqa: E402
 from job_bot.applications.nvidia_workday import _playwright_api  # noqa: E402
 from job_bot.bot import connect_db, load_config, load_env_file  # noqa: E402
@@ -64,17 +68,21 @@ def _workday_user_home(url: str) -> str:
     return url
 
 
-def _login_check_url(adapter_id: str | None, row) -> str:
+def _login_check_url(adapter: PortalAdapter | None, row) -> str:
     url = str(row["url"] or "")
-    if adapter_id == "workday":
+    if adapter is None:
+        return url
+    if adapter.id == "workday":
         return _workday_user_home(url)
-    if adapter_id == "amd_icims" and row["external_id"]:
+    if adapter.id == "amd_icims" and row["external_id"]:
         title = str(row["title"] or "").casefold()
         host = "campus-amd.icims.com" if any(
             marker in title for marker in ("intern", "co-op", "student", "实习")
         ) else "global-external-amd.icims.com"
         return f"https://{host}/jobs/{row['external_id']}/login"
-    return url
+    # Standard ATS portals declare the application-form route in portals.json so
+    # the preflight lands on the apply page rather than the job-description page.
+    return application_url(adapter, url)
 
 
 def build_login_targets(config, rows) -> list[LoginTarget]:
@@ -99,7 +107,7 @@ def build_login_targets(config, rows) -> list[LoginTarget]:
                 adapter=adapter.id if adapter else None,
                 application_id=int(row["application_id"]),
                 representative_url=str(row["url"] or ""),
-                login_check_url=_login_check_url(adapter.id if adapter else None, row),
+                login_check_url=_login_check_url(adapter, row),
                 label=f"jobbot-login-company-{safe_label(company)}",
             )
         )

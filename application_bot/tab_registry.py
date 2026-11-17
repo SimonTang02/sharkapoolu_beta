@@ -87,7 +87,7 @@ def job_fingerprint(url: str) -> str:
         if match:
             return f"{host}|job:{match.group(1).casefold()}"
     normalized_path = re.sub(
-        r"/(?:apply|autofillWithResume|applyManually|useMyLastApplication)(?:/.*)?$",
+        r"/(?:apply|application|autofillWithResume|applyManually|useMyLastApplication)(?:/.*)?$",
         "",
         urllib.parse.unquote(parts.path),
         flags=re.I,

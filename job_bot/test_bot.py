@@ -384,6 +384,23 @@ class StructuredCareerSourceTests(unittest.TestCase):
         self.assertEqual(jobs[0].external_id, "42")
         self.assertEqual(jobs[0].role_kind, "full_time")
 
+    @patch("job_bot.bot.post_json")
+    def test_zhiye_uuid_detail_route_preserves_numeric_identity(self, post_json) -> None:
+        post_json.return_value = {
+            "Count": 1,
+            "Data": [{"JobAdId": 42, "Id": "example-job-uuid",
+                      "JobAdName": "RTL Engineer", "Kind": "全职"}],
+        }
+        jobs = fetch_zhiye({
+            "name": "Zhiye fixture", "type": "zhiye", "company": "Example",
+            "api_url": "https://jobs.example.test/api/jobs",
+            "public_url": "https://jobs.example.test/campus/detail",
+            "public_url_id_field": "Id", "public_url_id_param": "jobAdId",
+        })
+        self.assertEqual(jobs[0].external_id, "42")
+        self.assertEqual(jobs[0].url,
+                         "https://jobs.example.test/campus/detail?jobAdId=example-job-uuid")
+
     @patch("job_bot.bot.http_get")
     def test_jobsyn_maps_public_search_results(self, http_get) -> None:
         http_get.return_value = json.dumps({
